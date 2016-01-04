@@ -2,7 +2,7 @@
   "name": "fermenter",
   "version": "1.0.0",
   "description": "Automate your fermenter-closet",
-  "main": "index.js",
+  "main": "./app/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cjk/smart-fermenter.git"
@@ -14,19 +14,22 @@
     "node": ">=0.12"
   },
   "author": "Claus Klingberg",
-  "license": "GPL-2",
+  "license": "GPL-2.0",
   "devDependencies": {
-    "node-gyp": "^3.2.1"
+    "babel-eslint": "latest",
+    "gulp": "^3.9.0",
+    "gulp-nodemon": "^2.0.4",
+    "gulp-util": "^3.0.6",
+    "nodemon": "latest",
+    "piping": "latest",
+    "tape": "latest"
   },
-  "dependencies": {
-  }
   "dependencies": {
     "babel": "latest",
     "babel-core": "latest",
     "babel-preset-es2015": "^6.1.18",
     "babel-preset-stage-0": "^6.1.18",
     "babel-register": "^6.2.0",
-    "eibd": "^0.3.4",
     "hapi": "latest",
     "immutable": "latest",
     "inert": "latest",
@@ -36,14 +39,5 @@
     "redis": "latest",
     "socket.io": "latest",
     "socket.io-client": "latest"
-  },
-  "devDependencies": {
-    "babel-eslint": "latest",
-    "gulp": "^3.9.0",
-    "gulp-nodemon": "^2.0.4",
-    "gulp-util": "^3.0.6",
-    "nodemon": "latest",
-    "piping": "latest",
-    "tape": "latest"
   }
 }
