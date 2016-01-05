@@ -1,3 +1,4 @@
+import Kefir from 'kefir';
 import sensorLib from 'node-dht-sensor';
 
 const sensor = {
@@ -9,4 +10,10 @@ const sensor = {
   }
 };
 
-export default sensor;
+const sensorStream = sensor.initialize() ?
+                     Kefir.fromPoll(2000, () => {
+                       return sensor.read();
+                     }) :
+                     Kefir.constantError('Failed to initialize temp-/humidity-sensor.');
+
+export default sensorStream;

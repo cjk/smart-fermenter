@@ -1,8 +1,7 @@
 /* import config from './config';
    import server from './server'; */
 
-import tempHumSensor from './sensors/tempHumidity';
-import Kefir from 'kefir';
+import tempHumStream from './sensors/tempHumidity';
 
 /* const {busEvents, busState} = createBusStreams(); */
 
@@ -11,16 +10,11 @@ import Kefir from 'kefir';
 /* server({conf: config.server, busEmitter: busEvents, busState: busState});
    console.log('Server initialized and ready to run.'); */
 
-if (tempHumSensor.initialize()) {
-  const sensorStream = Kefir.fromPoll(2000, () => {
-    return tempHumSensor.read();
-  });
-
-  sensorStream.onValue((readout) => {
+tempHumStream
+  .onValue((readout) => {
     console.log('Temperature: ' + readout.temperature.toFixed(2) + 'C, ' +
                 'humidity: ' + readout.humidity.toFixed(2) + '%');
+  })
+  .onError(error => {
+    console.warn(error);
   });
-
-} else {
-  console.warn('Failed to initialize sensor');
-}
