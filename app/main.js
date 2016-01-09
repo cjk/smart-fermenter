@@ -1,7 +1,7 @@
-/* import config from './config';
-   import server from './server'; */
+/* import config from './config'; */
 
 import tempHumStream from './sensors/tempHumidity';
+import server from './server';
 
 /* const {busEvents, busState} = createBusStreams(); */
 
@@ -10,10 +10,14 @@ import tempHumStream from './sensors/tempHumidity';
 /* server({conf: config.server, busEmitter: busEvents, busState: busState});
    console.log('Server initialized and ready to run.'); */
 
-tempHumStream
+const throttledStream = tempHumStream.throttle(10000);
+server(throttledStream);
+
+/* Debugging to console */
+throttledStream
   .onValue((readout) => {
-    console.log('Temperature: ' + readout.temperature.toFixed(2) + 'C, ' +
-                'humidity: ' + readout.humidity.toFixed(2) + '%');
+    console.log('Temperature: ' + readout.temperature + 'C, ' +
+                'humidity: ' + readout.humidity + '%');
   })
   .onError(error => {
     console.warn(error);
