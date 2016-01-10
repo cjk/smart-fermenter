@@ -2,38 +2,45 @@ import rcswitch from 'rcswitch';
 
 const radioTransport = {
   type: 'radio-433mhz',
-  pin-out: 16
+  pin: 16
 };
 
 const switches = {
   heater: {
     desc: 'Fermenter Closet heater',
     transport: radioTransport,
-    systemCode: 11111,
-    unitCode: 4
+    systemCode: '10011',
+    unitCode: 2
   }
 };
 
-function prepareSwitch(switch) {
-  rcswitch.enableTransmit(switch.transport.pin-out);
+function prepareSwitch(sw) {
+  console.log('Transmitting using PIN #'+sw.transport.pin);
+  rcswitch.enableTransmit(sw.transport.pin);
 }
 
-function switchOn(switch) {
-  prepareSwitch(switch);
-  rcswitch.switchOn(switch.systemCode, switch.unitCode);
+function switchOn(sw) {
+  console.log(`Switching ${sw.desc} on <${sw.systemCode}#${sw.unitCode}> ON:`)
+  prepareSwitch(sw);
+  rcswitch.switchOn(sw.systemCode, sw.unitCode);
 }
 
-function switchOff(switch) {
-  prepareSwitch(switch);
-  rcswitch.switchOff(switch.systemCode, switch.unitCode);
+function switchOff(sw) {
+  console.log(`Switching ${sw.desc} OFF.`)
+  prepareSwitch(sw);
+  rcswitch.switchOff(sw.systemCode, sw.unitCode);
 }
 
 /* rcswitch.disableTransmit(); */
 
-function switch(type, switch) {
-    if (type === 'on') {
-      switchOn(switch);
-    } else {
-      switchOff(switch);
-    }
+function remoteSwitch(switchName, state) {
+  const sw = switches[switchName];
+
+  if (state === 'on') {
+    switchOn(sw);
+  } else {
+    switchOff(sw);
+  }
 }
+
+export default remoteSwitch;
