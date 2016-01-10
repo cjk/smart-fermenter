@@ -36,6 +36,7 @@
     "kefir": "latest",
     "node-dht-sensor": "^0.0.8",
     "ramda": "latest",
+    "rcswitch": "^0.2.3",
     "redis": "latest",
     "socket.io": "latest",
     "socket.io-client": "latest"
