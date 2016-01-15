@@ -6,6 +6,8 @@ const [humUpperLimit, humLowerLimit] = [65, 38];
 
 const initialState = new InitialState;
 
+const simulateSwitchesOnly = true;
+
 function fermenterController(envStream) {
   return envStream.scan((prev, cur) => {
     /* Update previous state with new one, except for the heater-/humidifier state-values! */
@@ -13,11 +15,12 @@ function fermenterController(envStream) {
 
     if (state.temperature > heatUpperLimit && prev.heaterIsRunning) {
       console.log('Too hot, switch heater off!');
-      remoteSwitch('heater', 'off');
+      simulateSwitchesOnly ? () => {} : remoteSwitch('heater', 'off');
       return state.set('heaterIsRunning', false);
+
     } else if (state.temperature < heatLowerLimit && !(prev.heaterIsRunning)) {
       console.log('Too cold, switch heater on!');
-      remoteSwitch('heater', 'on');
+      simulateSwitchesOnly ? () => {} : remoteSwitch('heater', 'on');
       return state.set('heaterIsRunning', true);
     }
 
