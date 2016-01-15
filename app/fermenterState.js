@@ -1,17 +1,13 @@
 import {Record} from 'immutable';
 
 const InitialState = Record({
-  createdAt: Date.now(),
-  temperature: 0,
-  humidity: 0,
-  isValid: false,
-  errors: 0
+  createdAt: null,
+  temperature: null,
+  humidity: null,
+  isValid: null,
+  errors: 0,
+  heaterIsRunning: false,
+  humidifierIsRunning: false
 });
 
-const initialState = new InitialState;
-
-export default function fermenterStateReducer(state = initialState) {
-  if (!(state instanceof InitialState)) return initialState.merge(state);
-
-  return state;
-}
+export default InitialState;
