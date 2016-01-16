@@ -3,17 +3,17 @@ import moment from 'moment';
 import server from './server';
 import tempHumStream from './sensors/tempHumidity';
 
-const throttledStream = tempHumStream.throttle(6000);
-
 /* Add current date to stream */
-const fermenterEnvStream = throttledStream.map(env => {
+const fermenterEnvStream = tempHumStream.map(env => {
   env.createdAt = Date.now();
   return env;
 });
 
-server(fermenterEnvStream);
+const throttledFermenterEnvStream = fermenterEnvStream.throttle(6000, {trailing: false});
 
-const actOnEnvStream = fermenterController(fermenterEnvStream);
+server(throttledFermenterEnvStream);
+
+const actOnEnvStream = fermenterController(throttledFermenterEnvStream);
 
 actOnEnvStream
    .onValue((readout) => {
