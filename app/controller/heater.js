@@ -1,14 +1,13 @@
-import InitialState from './fermenterState';
-import remoteSwitch from './actors';
+import InitialState from '../fermenterState';
+import remoteSwitch from '../actors';
 
-const [heatUpperLimit, heatLowerLimit] = [22, 20];
-const [humUpperLimit, humLowerLimit] = [65, 38];
+const [heatUpperLimit, heatLowerLimit] = [22, 21];
 
 const initialState = new InitialState;
 
 const simulateSwitchesOnly = true;
 
-function fermenterController(envStream) {
+function heaterController(envStream) {
   return envStream.scan((prev, cur) => {
     /* Update previous state with new one, except for the heater-/humidifier state-values! */
     const state = prev.merge(cur, [['heaterIsRunning', prev.heaterIsRunning]]);
@@ -28,4 +27,4 @@ function fermenterController(envStream) {
   }, initialState);
 }
 
-export default fermenterController;
+export default heaterController;

@@ -11,6 +11,12 @@ const switches = {
     transport: radioTransport,
     systemCode: '10011',
     unitCode: 2
+  },
+  humidifier: {
+    desc: 'Fermenter Closet humidifier',
+    transport: radioTransport,
+    systemCode: '10011',
+    unitCode: 3
   }
 };
 
