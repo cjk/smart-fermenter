@@ -11,18 +11,19 @@ const fermenterEnvStream = tempHumStream.map(env => {
 });
 
 const throttledFermenterEnvStream = fermenterEnvStream.throttle(6000, {trailing: false});
-server(throttledFermenterEnvStream);
+/* server(throttledFermenterEnvStream); */
 
 const controlledTempStream = heaterController(throttledFermenterEnvStream);
 const controlledHumidityStream = humidifierController(controlledTempStream);
 
 /* const controlledEnvStream = Kefir.merge([controlledTempStream, controlledHumidityStream]); */
 
-/* const adjustEnvStream = Kefir.combine([adjustTemperature, adjustHumidity], (heaterState, humidifierState) => heaterState.merge(humidifierState, [['humidifierIsRunning', humidifierState.humidifierIsRunning]])); */
+const controlledEnvStream = Kefir.combine([controlledTempStream, controlledHumidityStream], (heaterState, humidifierState) => heaterState.merge(humidifierState, [['humidifierIsRunning', humidifierState.humidifierIsRunning]]));
 
-// controlledEnvStream
+server(controlledEnvStream.throttle(8000,  {trailing: false}));
 
-controlledHumidityStream
+// controlledHumidityStream
+controlledEnvStream
   .onValue((fermenterState) => {
     console.log(JSON.stringify(
       fermenterState.set('createdAt', moment(fermenterState.get('createdAt')).format()))
