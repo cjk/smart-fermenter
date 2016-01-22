@@ -20,7 +20,7 @@ const controlledHumidityStream = humidifierController(controlledTempStream);
 
 const controlledEnvStream = Kefir.combine([controlledTempStream, controlledHumidityStream], (heaterState, humidifierState) => heaterState.merge(humidifierState, [['humidifierIsRunning', humidifierState.humidifierIsRunning]]));
 
-server(controlledEnvStream.throttle(8000,  {trailing: false}));
+server(controlledEnvStream.throttle(8000, {trailing: false}));
 
 // controlledHumidityStream
 controlledEnvStream
@@ -31,4 +31,4 @@ controlledEnvStream
   })
   .onError(error => {
     console.warn(error);
-  })
+  });
