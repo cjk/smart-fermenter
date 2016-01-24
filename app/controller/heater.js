@@ -1,11 +1,11 @@
 import InitialState from '../fermenterState';
 import remoteSwitch from '../actors';
 
-const [heatUpperLimit, heatLowerLimit] = [22, 21];
+const [heatUpperLimit, heatLowerLimit] = [30, 25];
 
 const initialState = new InitialState;
 
-const simulateSwitchesOnly = true;
+const simulateSwitchesOnly = false;
 
 function heaterController(envStream) {
   return envStream.scan((prev, cur) => {

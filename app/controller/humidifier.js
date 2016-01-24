@@ -1,11 +1,11 @@
 import InitialState from '../fermenterState';
 import remoteSwitch from '../actors';
 
-const [humUpperLimit, humLowerLimit] = [65, 60];
+const [humUpperLimit, humLowerLimit] = [56, 50];
 
 const initialState = new InitialState;
 
-const simulateSwitchesOnly = true;
+const simulateSwitchesOnly = false;
 
 function humidifierController(envStream) {
   return envStream.scan((prev, cur) => {

@@ -32,7 +32,7 @@ function switchOn(sw) {
 }
 
 function switchOff(sw) {
-  console.log(`Switching ${sw.desc} OFF.`)
+  console.log(`Switching ${sw.desc} on <${sw.systemCode}#${sw.unitCode}> OFF.`)
   prepareSwitch(sw);
   rcswitch.switchOff(sw.systemCode, sw.unitCode);
 }
