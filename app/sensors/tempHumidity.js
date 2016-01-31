@@ -23,7 +23,7 @@ const sensorStream = sensor.initialize() ?
                      (
                        Kefir.
                              fromPoll(2000, readSensor).
-                             toProperty(readSensor)
+                             toProperty()
                      ) :
                      Kefir.constantError('Failed to initialize temp-/humidity-sensor.');
 

@@ -1,17 +1,18 @@
 import InitialState from '../fermenterState';
 import remoteSwitch from '../actors';
 
-const [heatUpperLimit, heatLowerLimit] = [30, 25];
+const [heatUpperLimit, heatLowerLimit] = [27, 25];
 
 const initialState = new InitialState();
 
 function heaterController(envStream) {
   return envStream.scan((prev, cur) => {
+
+    if (!cur.isValid)
+      return prev;
+
     /* Update previous state with new one, except for the heater-/humidifier state-values! */
     const state = prev.merge(cur, [['heaterIsRunning', prev.heaterIsRunning]]);
-
-    if (!state.isValid)
-      return state;
 
     if (state.temperature > heatUpperLimit && prev.heaterIsRunning) {
       console.log('Controller: Too hot, switch heater off!');

@@ -7,11 +7,12 @@ const initialState = new InitialState();
 
 function humidifierController(envStream) {
   return envStream.scan((prev, cur) => {
+
+    if (!cur.isValid)
+      return prev;
+
     /* Update previous state with new one, except for the humidifier-/humidifier state-values! */
     const state = prev.merge(cur, [['humidifierIsRunning', prev.humidifierIsRunning]]);
-
-    if (!state.isValid)
-      return state;
 
     if (state.humidity > humUpperLimit && prev.humidifierIsRunning) {
       console.log('Controller: Too humid, switch humidifier off!');

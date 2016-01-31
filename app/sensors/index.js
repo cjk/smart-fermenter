@@ -1,6 +1,6 @@
-//import tempHumStream from './tempHumidity';
 import Kefir from 'kefir';
-import tempHumStream from './simulatedTempHumidity';
+import tempHumStream from './tempHumidity';
+//import tempHumStream from './simulatedTempHumidity';
 
 const sanitizedTempHumStream = tempHumStream.map(state => {
 
