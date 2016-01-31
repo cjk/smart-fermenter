@@ -3,23 +3,24 @@ import remoteSwitch from '../actors';
 
 const [heatUpperLimit, heatLowerLimit] = [30, 25];
 
-const initialState = new InitialState;
-
-const simulateSwitchesOnly = false;
+const initialState = new InitialState();
 
 function heaterController(envStream) {
   return envStream.scan((prev, cur) => {
     /* Update previous state with new one, except for the heater-/humidifier state-values! */
     const state = prev.merge(cur, [['heaterIsRunning', prev.heaterIsRunning]]);
 
+    if (!state.isValid)
+      return state;
+
     if (state.temperature > heatUpperLimit && prev.heaterIsRunning) {
-      console.log('Too hot, switch heater off!');
-      simulateSwitchesOnly ? () => {} : remoteSwitch('heater', 'off');
+      console.log('Controller: Too hot, switch heater off!');
+      remoteSwitch('heater', 'off');
       return state.set('heaterIsRunning', false);
 
     } else if (state.temperature < heatLowerLimit && !(prev.heaterIsRunning)) {
-      console.log('Too cold, switch heater on!');
-      simulateSwitchesOnly ? () => {} : remoteSwitch('heater', 'on');
+      console.log('Controller: Too cold, switch heater on!');
+      remoteSwitch('heater', 'on');
       return state.set('heaterIsRunning', true);
     }
 

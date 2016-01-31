@@ -4,7 +4,7 @@ const InitialState = Record({
   createdAt: null,
   temperature: null,
   humidity: null,
-  isValid: null,
+  isValid: false,
   errors: 0,
   heaterIsRunning: false,
   humidifierIsRunning: false

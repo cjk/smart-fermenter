@@ -3,10 +3,10 @@ import sensorLib from 'node-dht-sensor';
 import fermenterState from '../fermenterState';
 
 const sensor = {
-  initialize: function () {
+  initialize: () => {
     return sensorLib.initialize(22, 4);
   },
-  read: function () {
+  read: () => {
     return sensorLib.read();
   }
 };
