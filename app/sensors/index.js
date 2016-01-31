@@ -1,4 +1,5 @@
 //import tempHumStream from './tempHumidity';
+import Kefir from 'kefir';
 import tempHumStream from './simulatedTempHumidity';
 
 const sanitizedTempHumStream = tempHumStream.map(state => {
@@ -8,6 +9,6 @@ const sanitizedTempHumStream = tempHumStream.map(state => {
     return state.set('isValid', true)
                 .set('createdAt', Date.now());
   return state;
-});
+}).flatMap(state => state.errors > 0 ? Kefir.constantError(state.set('isValid', false).toJS()) : Kefir.constant(state));
 
 export default sanitizedTempHumStream;

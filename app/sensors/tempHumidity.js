@@ -16,8 +16,7 @@ function readSensor() {
 
   return state
     .set('temperature', state.temperature.toFixed(1))
-    .set('humidity', state.humidity.toFixed(1))
-    .toJS();
+    .set('humidity', state.humidity.toFixed(1));
 }
 
 const sensorStream = sensor.initialize() ?
