@@ -1,6 +1,18 @@
-import MySwitch from './switch';
+import Kefir from 'kefir';
+import SwitchData from './switch';
 import swList from './switchList';
 
+const handleDevices = (envStream) => {
+
+  Kefir.withInterval(4000, (emitter => {
+    envStream.take(1).onValue(v => console.log('[deviceHandler] ', v.heater.get('shouldBeRunning')));
+    //emitter.emit();
+    //r.log();
+    //console.log()
+  })).onValue(() => {});
+};
+
+/* TODO: Old code - rewrite + refactor into the above: */
 const swTransport = {
   type: 'radio-433mhz',
   pin: 16
@@ -8,7 +20,7 @@ const swTransport = {
 
 function remoteSwitch(switchLib) {
   return (switchName, state) => {
-    const sw = new MySwitch(swList.get(switchName)).set('transport', swTransport);
+    const sw = new SwitchData(swList.get(switchName)).set('transport', swTransport);
 
     const prepareSwitch = (sw) =>  {
       switchLib.enableTransmit(sw.transport.pin);
@@ -34,4 +46,4 @@ function remoteSwitch(switchLib) {
   };
 }
 
-export default remoteSwitch;
+export default handleDevices;

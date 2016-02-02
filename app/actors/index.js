@@ -1,6 +1,11 @@
-import remoteSwitch from './remoteSwitch';
+import deviceHandler from './handleDevices';
 
-import Switch from './simulatedSwitch';
-//import Switch from 'rcswitch';
+/* TODO: old code - probably no longer needed here: */
+//import remoteSwitch from './remoteSwitch';
+///* Physical switching is done here: */
+//import Switch from './simulatedSwitch';
+////import Switch from 'rcswitch';
 
-export default remoteSwitch(Switch);
+const handleDevices = (envStream) => deviceHandler(envStream);
+
+export default handleDevices;
