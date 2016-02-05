@@ -10,7 +10,7 @@ const Env = Record({
 
 const Device = Record({
   isOn: false,
-  shouldBeRunning: false,
+  shouldSwitchTo: null,
   isSwitching: false
 });
 
