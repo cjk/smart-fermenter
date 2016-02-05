@@ -10,7 +10,7 @@ const switcher = remoteSwitch(switchImpl);
 const handleDevices = (envStream) => {
 
   const diff = envStream.map(state => state.get('devices'))
-                        .diff((prev, next) => {
+                        .scan((prev, next) => {
                           const prevShouldRun = prev.getIn(['heater', 'shouldBeRunning']);
                           const nextShouldRun = next.getIn(['heater', 'shouldBeRunning']);
                           console.log(`PREV-NEXT: ${prevShouldRun} <-> ${nextShouldRun}`);
@@ -30,7 +30,7 @@ const handleDevices = (envStream) => {
     setTimeout(() => {
       callback(1);
       switcher('heater', onOff);
-    }, 1000);
+    }, 100);
   });
 
   diff.onValue(devState => {
