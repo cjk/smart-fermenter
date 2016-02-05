@@ -6,7 +6,7 @@ import envStream from './sensors';
 const fermenterEnvStream = controlEnvironment(envStream);
 handleDevices(fermenterEnvStream);
 
-//server(fermenterEnvStream.throttle(8000, {trailing: false}));
+server(fermenterEnvStream.throttle(8000, {trailing: false}));
 
 //envStream
 //.onError(error => {
@@ -14,6 +14,9 @@ handleDevices(fermenterEnvStream);
 //})
 //.log(); //console.log(env.set('createdAt', moment.format(env.get('createdAt'))).toJS())
 
-fermenterEnvStream
-                           .map(state => state.toJS())
-                           .log();
+/* DEBUGGING */
+//fermenterEnvStream
+//.map(state => state.toJS())
+//.log();
+
+console.log('----------------------------------------------------------------------');

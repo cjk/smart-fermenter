@@ -1,17 +1,40 @@
-import {Map} from 'immutable';
 import Kefir from 'kefir';
-import State from '../initialState';
+import state, {Env} from '../initialState';
 
-const initialEnv = Map({
+const interval = 1500;
+
+const env = new Env({
   temperature: 20.0,
   humidity: 49.0,
-  createdAt: null,
+  createdAt: Date.now(),
+  isValid: true,
   errors: 0
 });
 
-const initialState = new State().set('env', initialEnv);
+const initialState = state.set('env', env);
 
-const simulatedTempHumStream = Kefir.interval(2000, initialState).toProperty();
+//const simulatedTempHumStream = Kefir.interval(interval, initialState).toProperty();
+
   /*                      Kefir.constantError('Failed to initialize temp-/humidity-sensor.'); */
+
+const simulatedTempHumStream = Kefir.repeat(n => {
+  n += 1;
+
+  console.log('### TEST-RUN #', n);
+  switch (n) {
+    case 1:
+      return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 26)).take(1).toProperty();
+    case 4:
+      return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 40)).take(1).toProperty();
+
+    case 8:
+      console.log('##### ENDING TEST');
+      return false;
+
+    default:
+      return Kefir.interval(interval, initialState).take(1).toProperty();
+  }
+  return false;
+});
 
 export default simulatedTempHumStream;

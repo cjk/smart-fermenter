@@ -1,21 +1,26 @@
 import {Record, Map} from 'immutable';
 
-const InitialState = Record({
-  env: Map({
-    createdAt: null,
-    temperature: null,
-    humidity: null,
-    isValid: false,
-    errors: 0,
-  }),
-  heater: Map({
-    isOn: false,
-    shouldBeRunning: false
-  }),
-  humidifier: Map({
-    isOn: false,
-    shouldBeRunning: false
+const Env = Record({
+  createdAt: null,
+  temperature: null,
+  humidity: null,
+  isValid: false,
+  errors: 0,
+});
+
+const Device = Record({
+  isOn: false,
+  shouldBeRunning: false,
+  isSwitching: false
+});
+
+const InitialState = Map({
+  env: new Env,
+  devices: Map({
+    heater: new Device(),
+    humidifier: new Device()
   })
 });
 
+export {Env, Device};
 export default InitialState;

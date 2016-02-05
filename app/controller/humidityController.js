@@ -4,13 +4,15 @@ const [humUpperLimit, humLowerLimit] = [56, 50];
 
 function humidifierController(envStream) {
   return envStream.map(state => {
-    if (state.humidity > humUpperLimit) {
-      console.log('Controller: Too humid, switch humidifier off!');
-      return state.updateIn(['humidifier', 'shouldBeRunning'], v => true);
+    const humidity = state.getIn(['env', 'humidity']);
 
-    } else if (state.humidity < humLowerLimit) {
-      console.log('Controller: Too try, switch humidifier on!');
-      return state.updateIn(['humidifier', 'shouldBeRunning'], v => true);
+    if (humidity > humUpperLimit) {
+      console.log('[controller]: too humid - humidifier should NOT be running');
+      return state.updateIn(['devices', 'humidifier', 'shouldBeRunning'], v => false);
+
+    } else if (humidity > humLowerLimit) {
+      console.log('[controller]: too try - humidifier should be running');
+      return state.updateIn(['devices', 'humidifier', 'shouldBeRunning'], v => true);
     }
     return state;
   });
