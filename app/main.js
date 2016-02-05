@@ -15,8 +15,8 @@ server(fermenterEnvStream.throttle(8000, {trailing: false}));
 //.log(); //console.log(env.set('createdAt', moment.format(env.get('createdAt'))).toJS())
 
 /* DEBUGGING */
-//fermenterEnvStream
-//.map(state => state.toJS())
-//.log();
+fermenterEnvStream
+  .map(state => state.toJS())
+  .log();
 
 console.log('----------------------------------------------------------------------');
