@@ -1,6 +1,6 @@
 import Kefir from 'kefir';
 import sensorLib from 'node-dht-sensor';
-import State from '../InitialState';
+import state from '../initialState';
 
 const sensor = {
   initialize: () => {
@@ -14,7 +14,7 @@ const sensor = {
 function readSensor() {
   const env = sensor.read();
 
-  return new State()
+  return state
     .updateIn(['env', 'temperature'], temp => env.temperature.toFixed(1))
     .updateIn(['env', 'humidity'], hum => env.humidity.toFixed(1));
 }
