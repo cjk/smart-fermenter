@@ -1,12 +1,11 @@
-import Kefir from 'kefir';
 import temperatureController from './temperatureController';
 import humidityController from './humidityController';
 
 const controlledFermenterEnvStream = (envStream) => {
-  const h = temperatureController(envStream);
-  const t = humidityController(envStream);
+  const t = temperatureController(envStream);
+  const h = humidityController(t);
 
-  return Kefir.combine([h, t], (h, t) => t.merge(h)).toProperty();
+  return h;
 };
 
 export default controlledFermenterEnvStream;

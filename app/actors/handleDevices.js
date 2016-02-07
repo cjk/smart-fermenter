@@ -1,5 +1,6 @@
-import Kefir from 'kefir';
+import {List, Map} from 'immutable';
 import initialState from '../initialState';
+import Kefir from 'kefir';
 
 /* For switching */
 import switchImpl from './simulatedSwitch';
@@ -7,39 +8,68 @@ import remoteSwitch from './remoteSwitch';
 
 const switcher = remoteSwitch(switchImpl);
 
-const shouldSwitchPath = ['heater', 'shouldSwitchTo'];
+const devices = List.of('heater', 'humidifier');
+
+const shouldSwitchPath = (dev) => [dev, 'shouldSwitchTo'];
+const isOnPath = (dev) => [dev, 'isOn'];
+
+const compareForDevice = (prev, curr) =>  {
+  const next = devices.reduce((next, dev) => {
+    /* TODO Apply destructuring */
+    const lastIsOn = prev.getIn(isOnPath(dev));
+
+    const deviceAlreadyOnOff = (dev, shouldSwitchTo) => {
+      const isOn = prev.getIn(isOnPath(dev));
+      return (isOn && shouldSwitchTo === 'off') || (!isOn && shouldSwitchTo === 'on');
+    };
+
+    const lastShouldSwitch = prev.getIn(shouldSwitchPath(dev));
+    const shouldSwitch = curr.getIn(shouldSwitchPath(dev));
+    const isSwitching = shouldSwitch && (lastShouldSwitch !== shouldSwitch) && deviceAlreadyOnOff(dev, shouldSwitch);
+
+    //console.log(`#### <${dev}> - setting lastIsOn to: ${lastIsOn}`);
+    //console.log(`#### <${dev}> - lastShouldSwitch: ${lastShouldSwitch}`);
+    //console.log(`#### <${dev}> - shouldSwitch: ${shouldSwitch}`);
+
+    if (isSwitching) {
+      console.log(`>>> We *switch* ${dev} ${shouldSwitch}!`);
+      return next.mergeIn([dev], curr.setIn([dev, 'isOn'], shouldSwitch === 'on' ? true : false)
+                                     .setIn([dev, 'isSwitching'], true)
+                                     .get(dev));
+    } else {
+      console.log(`Not switching ${dev}`);
+      return next.mergeIn([dev], curr.setIn([dev, 'isSwitching'], false)
+                                     .setIn([dev, 'isOn'], lastIsOn)
+                                     .get(dev));
+    }
+  }, Map());
+  console.log('NEXT:', next);
+  return next;
+};
+
+const needsSwitching = (state) => state.some(dev => dev.get('isSwitching'));
+
+const doSwitch = (dev, onOff) => Kefir.fromCallback(callback => {
+  //console.info(`[## starting switch action for device ${dev} ##]`);
+  setTimeout(() => {
+    callback(1);
+    switcher(dev, onOff);
+  }, 100);
+});
 
 const handleDevices = (envStream) => {
 
   const diff = envStream.map(state => state.get('devices'))
-                        .scan((prev, curr) => {
-                          const lastShouldSwitch = prev.getIn(shouldSwitchPath);
-                          const shouldSwitch = curr.getIn(shouldSwitchPath);
-
-                          console.log('#### lastShouldSwitch: ' + lastShouldSwitch);
-                          console.log('#### shouldSwitch: ' + shouldSwitch);
-                          if (shouldSwitch && (lastShouldSwitch !== shouldSwitch)) {
-                            console.log('>>> We should SWITCH!');
-                            return curr.setIn(['heater', 'isOn'], shouldSwitch === 'on' ? true : false)
-                                       .setIn(['heater', 'isSwitching'], true);
-                          } else {
-                            console.log('>>> No switch necessary!');
-                            return curr.setIn(['heater', 'isSwitching'], false);
-                          }
-                        }, initialState.get('devices'))
-                        .filter(state => state.getIn(['heater', 'isSwitching']));
-
-  const doSwitch = (onOff) => Kefir.fromCallback(callback => {
-    console.info('[## starting switch action ##]');
-    setTimeout(() => {
-      callback(1);
-      switcher('heater', onOff);
-    }, 100);
-  });
+                        .scan(compareForDevice, initialState.get('devices'))
+                        .filter(needsSwitching);
 
   diff.onValue(devState => {
-    console.log(devState);
-    return doSwitch(devState.getIn(shouldSwitchPath)).log();
+    devices.forEach(dev => {
+      if (devState.getIn([dev, 'isSwitching']))
+        doSwitch(dev, devState.getIn(shouldSwitchPath(dev)))
+                  .onValue(() => {})
+        ; //.log();
+    });
   });
 
 };

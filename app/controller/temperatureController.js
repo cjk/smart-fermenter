@@ -7,11 +7,11 @@ function temperatureController(envStream) {
     const temperature = state.getIn(['env', 'temperature']);
 
     if (temperature > heatUpperLimit) {
-      console.log('[controller]: too hot - heater should NOT be running');
+      console.log('[temp-controller]: too hot - heater should NOT be running');
       return state.updateIn(['devices', 'heater', 'shouldSwitchTo'], v => 'off');
 
     } else if (temperature < heatLowerLimit) {
-      console.log('[controller]: too cold - heater should be running');
+      console.log('[temp-controller]: too cold - heater should be running');
       return state.updateIn(['devices', 'heater', 'shouldSwitchTo'], v => 'on');
     }
     return state;
