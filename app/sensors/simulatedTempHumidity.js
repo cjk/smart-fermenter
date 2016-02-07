@@ -1,10 +1,10 @@
 import Kefir from 'kefir';
 import state, {Env} from '../initialState';
 
-const interval = 1500;
+const interval = 300;
 
 const env = new Env({
-  temperature: 23.0,
+  temperature: 26.0,
   humidity: 49.0,
   createdAt: Date.now(),
   isValid: true,
@@ -33,10 +33,14 @@ const simulatedTempHumStream = Kefir.repeat(n => {
     case 6:
       return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 27)).take(1).toProperty();
     case 8:
-      return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 35)).take(1).toProperty();
+      return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 45)).take(1).toProperty();
+    case 9:
+      return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 45)
+                                                  .setIn(['env', 'humidity'], 60))
+                  .take(1).toProperty();
 
     case 10:
-      console.log('##### ENDING TEST');
+      console.log('##### ENDING TEST ######');
       return false;
 
     default:

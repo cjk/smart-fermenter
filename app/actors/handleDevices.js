@@ -18,9 +18,12 @@ const compareForDevice = (prev, curr) =>  {
     /* TODO Apply destructuring */
     const lastIsOn = prev.getIn(isOnPath(dev));
 
+    /* Avoids switching non-running devices off and running devices on several times */
     const deviceAlreadyOnOff = (dev, shouldSwitchTo) => {
       const isOn = prev.getIn(isOnPath(dev));
       return (isOn && shouldSwitchTo === 'off') || (!isOn && shouldSwitchTo === 'on');
+      /* For security-reasons, also allow otherwise nonsensical switching a device that is supposed to be off */
+      //return (isOn && shouldSwitchTo === 'off') || (!isOn && shouldSwitchTo === 'on') || (isOn && shouldSwitchTo === 'off');
     };
 
     const lastShouldSwitch = prev.getIn(shouldSwitchPath(dev));
@@ -43,7 +46,7 @@ const compareForDevice = (prev, curr) =>  {
                                      .get(dev));
     }
   }, Map());
-  console.log('NEXT:', next);
+  console.log('>>> next state:', next);
   return next;
 };
 
