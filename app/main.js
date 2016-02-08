@@ -1,11 +1,13 @@
 import controlEnvironment from './controller';
 import handleDevices from './actors';
+import handleWatchdogs from './watchdogs';
 import moment from 'moment';
 import server from './server';
 import envStream from './sensors';
 
 const fermenterEnvStream = controlEnvironment(envStream);
-handleDevices(fermenterEnvStream);
+
+handleDevices(handleWatchdogs(fermenterEnvStream));
 
 server(fermenterEnvStream.throttle(8000, {trailing: false}));
 

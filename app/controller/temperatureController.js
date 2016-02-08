@@ -6,6 +6,12 @@ function temperatureController(envStream) {
   return envStream.map(state => {
     const temperature = state.getIn(['env', 'temperature']);
 
+    /* This is an emergency! */
+    if (temperature > (heatUpperLimit + 5)) {
+      console.log(`!!!! Emergency-state for temperature (${temperature}) detected !!!!`);
+      return state.setIn(['env', 'emergency'], true);
+    }
+
     if (temperature > heatUpperLimit) {
       console.log('[temp-controller]: too hot - heater should NOT be running');
       return state.updateIn(['devices', 'heater', 'shouldSwitchTo'], v => 'off');

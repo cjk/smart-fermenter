@@ -7,8 +7,8 @@ const env = new Env({
   temperature: 26.0,
   humidity: 49.0,
   createdAt: Date.now(),
-  isValid: true,
-  errors: 0
+  errors: 0,
+  emergency: false
 });
 
 const initialState = state.set('env', env);
@@ -23,7 +23,7 @@ const simulatedTempHumStream = Kefir.repeat(n => {
   console.log('### TEST-RUN #', n);
   switch (n) {
     case 1:
-      return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 40)
+      return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 29)
                                                   .setIn(['env', 'humidity'], 30))
                   .take(1).toProperty();
     case 2:
@@ -31,12 +31,16 @@ const simulatedTempHumStream = Kefir.repeat(n => {
     case 3:
       return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 22)).take(1).toProperty();
     case 6:
-      return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 27)).take(1).toProperty();
+      return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 27.1)).take(1).toProperty();
+    case 7:
+      return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 0)
+                                                  .setIn(['env', 'humidity'], 0))
+                  .take(1).toProperty();
     case 8:
-      return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 45)).take(1).toProperty();
+      return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 30)).take(1).toProperty();
     case 9:
-      return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 45)
-                                                  .setIn(['env', 'humidity'], 60))
+      return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 30)
+                                                  .setIn(['env', 'humidity'], 57))
                   .take(1).toProperty();
 
     case 10:

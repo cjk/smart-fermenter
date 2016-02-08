@@ -6,6 +6,7 @@ const Env = Record({
   humidity: null,
   isValid: false,
   errors: 0,
+  emergency: false
 });
 
 const Device = Record({

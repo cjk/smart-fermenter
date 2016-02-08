@@ -1,6 +1,7 @@
 import {List, Map} from 'immutable';
 import initialState from '../initialState';
 import Kefir from 'kefir';
+import sendMessage from '../notifications';
 
 /* For switching */
 import switchImpl from './simulatedSwitch';
@@ -28,6 +29,7 @@ const compareForDevice = (prev, curr) =>  {
 
     const lastShouldSwitch = prev.getIn(shouldSwitchPath(dev));
     const shouldSwitch = curr.getIn(shouldSwitchPath(dev));
+    /* Decide whether we actually need to switch a device on or off */
     const isSwitching = shouldSwitch && (lastShouldSwitch !== shouldSwitch) && deviceAlreadyOnOff(dev, shouldSwitch);
 
     //console.log(`#### <${dev}> - setting lastIsOn to: ${lastIsOn}`);
@@ -53,18 +55,31 @@ const compareForDevice = (prev, curr) =>  {
 const needsSwitching = (state) => state.some(dev => dev.get('isSwitching'));
 
 const doSwitch = (dev, onOff) => Kefir.fromCallback(callback => {
-  //console.info(`[## starting switch action for device ${dev} ##]`);
   setTimeout(() => {
     callback(1);
     switcher(dev, onOff);
   }, 100);
 });
 
+const switchOffAllDevices = () => {
+  devices.map(dev => {
+    doSwitch(dev, 'off').log();
+  });
+};
+
 const handleDevices = (envStream) => {
 
   const diff = envStream.map(state => state.get('devices'))
                         .scan(compareForDevice, initialState.get('devices'))
-                        .filter(needsSwitching);
+                        .filter(needsSwitching)
+                        .onError(errState => {
+                          console.log('!!! [devicehandler]: Sending error notification !!!');
+                          /* TODO: Limit possible messages to 1 message/second! */
+                          sendMessage('Warning: your fermenter-closet just signaled an error-state!');
+                          /* TODO: Make use of this here?  */
+                          //switchOffAllDevices();
+                        })
+                        .onEnd(finalState => sendMessage('NOTE: your fermenter-closet shut itself down!'));
 
   diff.onValue(devState => {
     devices.forEach(dev => {
@@ -75,6 +90,7 @@ const handleDevices = (envStream) => {
     });
   });
 
+  return diff;
 };
 
 export default handleDevices;

@@ -11,6 +11,9 @@ const sanitizedTempHumStream = tempHumStream.map(state => {
     return state.setIn(['env', 'isValid'], true)
                 .setIn(['env', 'createdAt'], Date.now());
   return state;
-}).flatMap(state => state.getIn(['env', 'errors']) > 0 ? Kefir.constantError(state.setIn(['env', 'isValid'], false).toJS()) : Kefir.constant(state));
+}).flatMap(state =>
+  (state.getIn(['env', 'errors']) > 0 || !state.getIn(['env', 'isValid'])) ?
+                  Kefir.constantError(state.setIn(['env', 'isValid'], false)) :
+                  Kefir.constant(state));
 
 export default sanitizedTempHumStream;
