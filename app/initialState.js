@@ -12,7 +12,8 @@ const Env = Record({
 const Device = Record({
   isOn: false,
   shouldSwitchTo: null,
-  isSwitching: false
+  isSwitching: false,
+  error: false
 });
 
 const InitialState = Map({

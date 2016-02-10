@@ -1,6 +1,6 @@
 /* PENDING: This is mostly generic code, so heater- and humidifier-controller should be merged! */
 
-const [humUpperLimit, humLowerLimit] = [56, 50];
+const [humUpperLimit, humLowerLimit] = [65, 55];
 
 function humidifierController(envStream) {
   return envStream.map(state => {

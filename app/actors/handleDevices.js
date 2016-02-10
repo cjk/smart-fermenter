@@ -14,7 +14,8 @@ const devices = List.of('heater', 'humidifier');
 const shouldSwitchPath = (dev) => [dev, 'shouldSwitchTo'];
 const isOnPath = (dev) => [dev, 'isOn'];
 
-const compareForDevice = (prev, curr) =>  {
+const switchByDevice = (prev, curr) =>  {
+
   const next = devices.reduce((next, dev) => {
     /* TODO Apply destructuring */
     const lastIsOn = prev.getIn(isOnPath(dev));
@@ -23,18 +24,12 @@ const compareForDevice = (prev, curr) =>  {
     const deviceAlreadyOnOff = (dev, shouldSwitchTo) => {
       const isOn = prev.getIn(isOnPath(dev));
       return (isOn && shouldSwitchTo === 'off') || (!isOn && shouldSwitchTo === 'on');
-      /* For security-reasons, also allow otherwise nonsensical switching a device that is supposed to be off */
-      //return (isOn && shouldSwitchTo === 'off') || (!isOn && shouldSwitchTo === 'on') || (isOn && shouldSwitchTo === 'off');
     };
 
     const lastShouldSwitch = prev.getIn(shouldSwitchPath(dev));
     const shouldSwitch = curr.getIn(shouldSwitchPath(dev));
     /* Decide whether we actually need to switch a device on or off */
     const isSwitching = shouldSwitch && (lastShouldSwitch !== shouldSwitch) && deviceAlreadyOnOff(dev, shouldSwitch);
-
-    //console.log(`#### <${dev}> - setting lastIsOn to: ${lastIsOn}`);
-    //console.log(`#### <${dev}> - lastShouldSwitch: ${lastShouldSwitch}`);
-    //console.log(`#### <${dev}> - shouldSwitch: ${shouldSwitch}`);
 
     if (isSwitching) {
       console.log(`>>> We *switch* ${dev} ${shouldSwitch}!`);
@@ -48,13 +43,16 @@ const compareForDevice = (prev, curr) =>  {
                                      .get(dev));
     }
   }, Map());
+
+  /* DEBUGGING */
   console.log('>>> next state:', next);
+
   return next;
 };
 
 const needsSwitching = (state) => state.some(dev => dev.get('isSwitching'));
 
-const doSwitch = (dev, onOff) => Kefir.fromCallback(callback => {
+const delayedSwitch = (dev, onOff) => Kefir.fromCallback(callback => {
   setTimeout(() => {
     callback(1);
     switcher(dev, onOff);
@@ -63,34 +61,36 @@ const doSwitch = (dev, onOff) => Kefir.fromCallback(callback => {
 
 const switchOffAllDevices = () => {
   devices.map(dev => {
-    doSwitch(dev, 'off').log();
+    delayedSwitch(dev, 'off').log();
   });
 };
 
 const handleDevices = (envStream) => {
 
-  const diff = envStream.map(state => state.get('devices'))
-                        .scan(compareForDevice, initialState.get('devices'))
-                        .filter(needsSwitching)
-                        .onError(errState => {
-                          console.log('!!! [devicehandler]: Sending error notification !!!');
-                          /* TODO: Limit possible messages to 1 message/second! */
-                          sendMessage('Warning: your fermenter-closet just signaled an error-state!');
-                          /* TODO: Make use of this here?  */
-                          //switchOffAllDevices();
-                        })
-                        .onEnd(finalState => sendMessage('NOTE: your fermenter-closet shut itself down!'));
+  return envStream.filter(state => state.getIn(['env', 'isValid']))
+                  .map(state => state.get('devices'))
+                  .scan(switchByDevice, initialState.get('devices'))
+                  .filter(needsSwitching)
+                  .onError(errState => {
+                    /* TODO: Currently nothing is triggering an error on this stream! */
+                    console.log('!!! [devicehandler]: Sending error notification !!!');
+                    sendMessage('Warning: your fermenter-closet just signaled an error-state!');
 
-  diff.onValue(devState => {
-    devices.forEach(dev => {
-      if (devState.getIn([dev, 'isSwitching']))
-        doSwitch(dev, devState.getIn(shouldSwitchPath(dev)))
-                  .onValue(() => {})
-        ; //.log();
-    });
-  });
-
-  return diff;
+                    /* We're losing device-state here, so switch off
+                       anything to be able to start from a clean slate */
+                    switchOffAllDevices();
+                  })
+                  .onEnd(finalState => {
+                    switchOffAllDevices();
+                    sendMessage('NOTE: your fermenter-closet shut itself down. All devices have been switched off, but please double check and take care of the food in the closet!');
+                  })
+                  .onValue(devState => {
+                    /* TODO: Refactor: */
+                    devices.forEach(dev => {
+                      if (devState.getIn([dev, 'isSwitching']))
+                        delayedSwitch(dev, devState.getIn(shouldSwitchPath(dev))).onValue(() => {});
+                    });
+                  });
 };
 
 export default handleDevices;

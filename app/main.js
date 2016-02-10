@@ -11,12 +11,6 @@ handleDevices(handleWatchdogs(fermenterEnvStream));
 
 server(fermenterEnvStream.throttle(8000, {trailing: false}));
 
-//envStream
-//.onError(error => {
-//console.warn('Env-stream error: ', error);
-//})
-//.log(); //console.log(env.set('createdAt', moment.format(env.get('createdAt'))).toJS())
-
 /* DEBUGGING */
 fermenterEnvStream
   .map(state =>
