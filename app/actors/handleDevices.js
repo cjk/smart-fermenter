@@ -7,7 +7,10 @@ import notify from '../notifications';
 import switchImpl from './simulatedSwitch';
 import remoteSwitch from './remoteSwitch';
 
+/* To send notifications */
 const messenger = notify();
+
+/* What switching implementation shall we use? Simulated or real: */
 const switcher = remoteSwitch(switchImpl);
 
 const devices = List.of('heater', 'humidifier');
@@ -15,7 +18,7 @@ const devices = List.of('heater', 'humidifier');
 const shouldSwitchPath = (dev) => [dev, 'shouldSwitchTo'];
 const isOnPath = (dev) => [dev, 'isOn'];
 
-const switchByDevice = (prev, curr) =>  {
+const maybeSwitchDevices = (prev, curr) =>  {
 
   const next = devices.reduce((next, dev) => {
     /* TODO Apply destructuring */
@@ -30,16 +33,17 @@ const switchByDevice = (prev, curr) =>  {
     const lastShouldSwitch = prev.getIn(shouldSwitchPath(dev));
     const shouldSwitch = curr.getIn(shouldSwitchPath(dev));
     /* Decide whether we actually need to switch a device on or off */
-    const isSwitching = shouldSwitch && (lastShouldSwitch !== shouldSwitch) && deviceAlreadyOnOff(dev, shouldSwitch);
+    const
+    willSwitch = shouldSwitch && (lastShouldSwitch !== shouldSwitch) && deviceAlreadyOnOff(dev, shouldSwitch);
 
-    if (isSwitching) {
+    if (willSwitch) {
       console.log(`>>> We *switch* ${dev} ${shouldSwitch}!`);
       return next.mergeIn([dev], curr.setIn([dev, 'isOn'], shouldSwitch === 'on' ? true : false)
-                                     .setIn([dev, 'isSwitching'], true)
+                                     .setIn([dev, 'willSwitch'], true)
                                      .get(dev));
     } else {
-      console.log(`Not switching ${dev}`);
-      return next.mergeIn([dev], curr.setIn([dev, 'isSwitching'], false)
+      console.log(`Not switching ${shouldSwitch === 'on' ? 'already running' : 'not running'} ${dev}`);
+      return next.mergeIn([dev], curr.setIn([dev, 'willSwitch'], false)
                                      .setIn([dev, 'isOn'], lastIsOn)
                                      .get(dev));
     }
@@ -51,7 +55,7 @@ const switchByDevice = (prev, curr) =>  {
   return next;
 };
 
-const needsSwitching = (state) => state.some(dev => dev.get('isSwitching'));
+const needsSwitching = (state) => state.some(dev => dev.get('willSwitch'));
 
 const delayedSwitch = (dev, onOff) => Kefir.fromCallback(callback => {
   setTimeout(() => {
@@ -70,12 +74,11 @@ const handleDevices = (envStream) => {
 
   return envStream.filter(state => state.getIn(['env', 'isValid']))
                   .map(state => state.get('devices'))
-                  .scan(switchByDevice, initialState.get('devices'))
+                  .scan(maybeSwitchDevices, initialState.get('devices'))
                   .filter(needsSwitching)
                   .onError(errState => {
                     /* TODO: Currently nothing is triggering an error on this stream! */
-                    console.log('!!! [devicehandler]: Sending error notification !!!');
-                    //sendMessage.emit('Warning: your fermenter-closet just signaled an error-state!');
+                    messenger.emit('Warning: your fermenter-closet just signaled an error-state!');
 
                     /* We're losing device-state here, so switch off
                        anything to be able to start from a clean slate */
@@ -89,7 +92,7 @@ const handleDevices = (envStream) => {
                   .onValue(devState => {
                     /* TODO: Refactor: */
                     devices.forEach(dev => {
-                      if (devState.getIn([dev, 'isSwitching']))
+                      if (devState.getIn([dev, 'willSwitch']))
                         delayedSwitch(dev, devState.getIn(shouldSwitchPath(dev))).onValue(() => {});
                     });
                   });
