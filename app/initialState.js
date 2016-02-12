@@ -1,4 +1,4 @@
-import {Record, Map} from 'immutable';
+import {Record, Map, Seq} from 'immutable';
 
 const Env = Record({
   createdAt: null,
@@ -12,8 +12,18 @@ const Env = Record({
 const Device = Record({
   isOn: false,
   shouldSwitchTo: null,
-  willSwitch: false,
-  error: false
+  willSwitch: false
+});
+
+const SwitchOp = Record({
+  device: '',
+  to: null,
+  at: undefined
+});
+
+const History = Record({
+  switchOps: [],
+  emergencies: []
 });
 
 const InitialState = Map({
@@ -21,8 +31,9 @@ const InitialState = Map({
   devices: Map({
     heater: new Device(),
     humidifier: new Device()
-  })
+  }),
+  history: new History()
 });
 
-export {Env, Device};
+export {Env, Device, History, SwitchOp};
 export default InitialState;
