@@ -4,10 +4,11 @@ const [humUpperLimit, humLowerLimit] = [65, 55];
 
 function humidifierController(envStream) {
   return envStream.map(state => {
-    const humidity = state.getIn(['env', 'humidity']);
+    const humidity = state.getIn(['env', 'humidity']),
+          isValid = state.getIn(['env', 'isValid']);
 
-    /* This is an emergency! */
-    if (humidity > (humUpperLimit + 10)) {
+    /* If the reading can be trusted, this is an emergency! */
+    if (humidity > (humUpperLimit + 10) && isValid) {
       console.log(`!!!! Emergency-state for humidity (${humidity}) detected !!!!`);
       return state.setIn(['env', 'emergency'], true);
     }

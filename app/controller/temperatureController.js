@@ -4,10 +4,11 @@ const [heatUpperLimit, heatLowerLimit] = [31, 28];
 
 function temperatureController(envStream) {
   return envStream.map(state => {
-    const temperature = state.getIn(['env', 'temperature']);
+    const temperature = state.getIn(['env', 'temperature']),
+          isValid = state.getIn(['env', 'isValid']);
 
-    /* This is an emergency! */
-    if (temperature > (heatUpperLimit + 5)) {
+    /* If the reading can be trusted, this is an emergency! */
+    if (temperature > (heatUpperLimit + 5) && isValid) {
       console.log(`!!!! Emergency-state for temperature (${temperature}) detected !!!!`);
       return state.setIn(['env', 'emergency'], true);
     }

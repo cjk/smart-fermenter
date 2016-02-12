@@ -8,7 +8,8 @@ const env = new Env({
   humidity: 49.0,
   createdAt: Date.now(),
   errors: 0,
-  emergency: false
+  emergency: false,
+  isValid: true
 });
 
 const initialState = state.set('env', env);
@@ -30,10 +31,11 @@ const simulatedTempHumStream = Kefir.repeat(n => {
       return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 23)).take(1).toProperty();
     case 3:
       return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 22)).take(1).toProperty();
-      //case 4:
-      ///* Cause an emergency */
-      ////return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 99)).take(1).toProperty();
-      //return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 99)).take(1).toProperty();
+    case 4:
+      /* Cause a false alarm emergency */
+      return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 99)
+                                                  .setIn(['env', 'isValid'], false))
+                  .take(1).toProperty();
     case 6:
       return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 32.1)).take(1).toProperty();
     case 7:
