@@ -1,6 +1,6 @@
 /* PENDING: This is mostly generic code, so heater- and humidifier-controller should be merged! */
 
-const [heatUpperLimit, heatLowerLimit] = [32, 28];
+const [heatUpperLimit, heatLowerLimit] = [31, 28];
 
 function temperatureController(envStream) {
   return envStream.map(state => {
