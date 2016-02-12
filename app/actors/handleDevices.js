@@ -33,8 +33,7 @@ const maybeSwitchDevices = (prev, curr) =>  {
     const lastShouldSwitch = prev.getIn(shouldSwitchPath(dev));
     const shouldSwitch = curr.getIn(shouldSwitchPath(dev));
     /* Decide whether we actually need to switch a device on or off */
-    const
-    willSwitch = shouldSwitch && (lastShouldSwitch !== shouldSwitch) && deviceAlreadyOnOff(dev, shouldSwitch);
+    const willSwitch = shouldSwitch && (lastShouldSwitch !== shouldSwitch) && deviceAlreadyOnOff(dev, shouldSwitch);
 
     if (willSwitch) {
       console.log(`>>> We *switch* ${dev} ${shouldSwitch}!`);
@@ -42,7 +41,7 @@ const maybeSwitchDevices = (prev, curr) =>  {
                                      .setIn([dev, 'willSwitch'], true)
                                      .get(dev));
     } else {
-      console.log(`Not switching ${shouldSwitch === 'on' ? 'already running' : 'not running'} ${dev}`);
+      console.log(`Not switching ${lastIsOn ? 'already running' : 'not running'} ${dev}`);
       return next.mergeIn([dev], curr.setIn([dev, 'willSwitch'], false)
                                      .setIn([dev, 'isOn'], lastIsOn)
                                      .get(dev));
