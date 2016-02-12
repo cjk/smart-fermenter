@@ -7,7 +7,7 @@ function humidifierController(envStream) {
     const humidity = state.getIn(['env', 'humidity']);
 
     /* This is an emergency! */
-    if (humidity > (humUpperLimit + 5)) {
+    if (humidity > (humUpperLimit + 10)) {
       console.log(`!!!! Emergency-state for humidity (${humidity}) detected !!!!`);
       return state.setIn(['env', 'emergency'], true);
     }
