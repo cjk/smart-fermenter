@@ -16,7 +16,9 @@ function readSensor() {
 
   return state
     .updateIn(['env', 'temperature'], temp => env.temperature.toFixed(1))
-    .updateIn(['env', 'humidity'], hum => env.humidity.toFixed(1));
+    .updateIn(['env', 'humidity'], hum => env.humidity.toFixed(1))
+    .setIn(['env', 'isValid'], env.isValid)
+    .setIn(['env', 'errors'], env.errors);
 }
 
 const sensorStream = sensor.initialize() ?
