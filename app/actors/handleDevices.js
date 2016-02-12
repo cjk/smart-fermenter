@@ -16,7 +16,7 @@ const switcher = remoteSwitch(switchImpl);
 
 const devices = List.of('heater', 'humidifier');
 
-const needsSwitching = (state) => state.some(dev => state.getIn('devices', dev, 'willSwitch'));
+const needsSwitching = (state) => state.get('devices').some(dev => dev.get('willSwitch'));
 
 const delayedSwitch = (dev, onOff) => Kefir.fromCallback(callback => {
   setTimeout(() => {
@@ -33,31 +33,33 @@ const switchOffAllDevices = () => {
 
 const handleDevices = (envStream) => {
 
-  return envStream.filter(state => state.getIn(['env', 'isValid']))
-                  .scan(maybeSwitchDevices, initialState)
-                  .filter(needsSwitching)
-                  .onError(errState => {
-                    /* TODO: Currently nothing is triggering an error on this stream! */
-                    messenger.emit('Warning: your fermenter-closet just signaled an error-state!');
+  return envStream
+    .filter(state => state.getIn(['env', 'isValid']))
+    .scan(maybeSwitchDevices, initialState)
+    .log()
+    .onError(errState => {
+      /* TODO: Currently nothing is triggering an error on this stream! */
+      messenger.emit('Warning: your fermenter-closet just signaled an error-state!');
 
-                    /* We're losing device-state here, so switch off
-                       anything to be able to start from a clean slate */
-                    switchOffAllDevices();
-                  })
-                  .onEnd(finalState => {
-                    switchOffAllDevices();
+      /* We're losing device-state here, so switch off
+         anything to be able to start from a clean slate */
+      switchOffAllDevices();
+    })
+    .onEnd(finalState => {
+      switchOffAllDevices();
 
-                    messenger.emit('WARNING: your fermenter-closet just shut itself down.\nAll devices have been switched off, but please double check this and take care of the food in the closet!');
-                  })
-                  .onValue(state => {
-                    devices.forEach(dev => {
-                      const device = state.getIn(['devices', dev]);
-                      const {willSwitch, shouldSwitchTo} = device;
+      messenger.emit('WARNING: your fermenter-closet just shut itself down.\nAll devices have been switched off, but please double check this and take care of the food in the closet!');
+    })
+    .filter(needsSwitching)/* from here on we only get if at least one device must be switched on/off!! */
+    .onValue(state => {
+      devices.forEach(dev => {
+        const device = state.getIn(['devices', dev]);
+        const {willSwitch, shouldSwitchTo} = device;
 
-                      if (willSwitch)
-                        delayedSwitch(dev, shouldSwitchTo).onValue(() => {});
-                    });
-                  });
+        if (willSwitch)
+          delayedSwitch(dev, shouldSwitchTo).onValue(() => {});
+      });
+    });
 };
 
 export default handleDevices;
