@@ -1,11 +1,13 @@
+import Kefir from 'kefir';
 import request from 'request';
 
 const slackURL = 'https://hooks.slack.com/services/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';
 
-const sendToSlackChannel = (text) => {
-  const payload = {text: text, channel: '#smarthome', username: 'fermenter-closet'};
+const sendThrottledMessage = (text) => {
 
-  const postToSlack = () => {
+  const postToSlack = (text) => {
+    const payload = {text: text, channel: '#smarthome', username: 'fermenter-closet'};
+
     request.post(slackURL, {body: payload, json: true}, (error, response, body) => {
       if (!error && response.statusCode === 200) {
         console.log(`[notification-response]: ${body}`);
@@ -15,16 +17,26 @@ const sendToSlackChannel = (text) => {
     });
   };
 
-  const simLater = (cb => {
-    setTimeout(() => console.log(`~~~~ ${text}~~~~`), 1000);
+  let emitter;
+
+  const stream = Kefir.stream((_emitter) => {
+    emitter = _emitter;
+    return () => {
+      emitter = undefined;
+    };
   });
 
-  const postLater = (cb => {
-    setTimeout(() => postToSlack(), 1000);
-  });
+  stream.emit = (text) => {
+    emitter && emitter.emit(text);
+    return this;
+  };
 
-  console.log('~~~~~~~~~~~ NOTIFICATION RECEIVED ~~~~~~~~~~');
-  return simLater();
+  stream.throttle(3000)
+        .onValue((text) => {
+          console.log('~~~~~~~~~~~ SENDING NOTIFICATION: ', text);
+          //postToSlack(text);
+        });
+  return stream;
 };
 
-export default sendToSlackChannel;
+export default sendThrottledMessage;

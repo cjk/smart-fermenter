@@ -1,12 +1,13 @@
 import {List, Map} from 'immutable';
 import initialState from '../initialState';
 import Kefir from 'kefir';
-import sendMessage from '../notifications';
+import notify from '../notifications';
 
 /* For switching */
 import switchImpl from './simulatedSwitch';
 import remoteSwitch from './remoteSwitch';
 
+const messenger = notify();
 const switcher = remoteSwitch(switchImpl);
 
 const devices = List.of('heater', 'humidifier');
@@ -74,7 +75,7 @@ const handleDevices = (envStream) => {
                   .onError(errState => {
                     /* TODO: Currently nothing is triggering an error on this stream! */
                     console.log('!!! [devicehandler]: Sending error notification !!!');
-                    sendMessage('Warning: your fermenter-closet just signaled an error-state!');
+                    //sendMessage.emit('Warning: your fermenter-closet just signaled an error-state!');
 
                     /* We're losing device-state here, so switch off
                        anything to be able to start from a clean slate */
@@ -82,7 +83,8 @@ const handleDevices = (envStream) => {
                   })
                   .onEnd(finalState => {
                     switchOffAllDevices();
-                    sendMessage('NOTE: your fermenter-closet shut itself down. All devices have been switched off, but please double check and take care of the food in the closet!');
+
+                    messenger.emit('NOTE: your fermenter-closet shut itself down. All devices have been switched off, but please double check and take care of the food in the closet!');
                   })
                   .onValue(devState => {
                     /* TODO: Refactor: */
