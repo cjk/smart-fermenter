@@ -34,7 +34,7 @@ const sendThrottledMessage = (text) => {
   stream.throttle(3000)
         .onValue((text) => {
           console.log('~~~~~~~~~~~ SENDING NOTIFICATION: ', text);
-          postToSlack(text);
+          //postToSlack(text);
         });
   return stream;
 };

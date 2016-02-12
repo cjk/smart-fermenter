@@ -16,7 +16,7 @@ fermenterEnvStream
   .map(state =>
     state.updateIn(['env', 'createdAt'], (v) => moment(v).format())
       //.toJS()
-  )
-  .log();
+  );
+  //.log();
 
 console.log('----------------------------------------------------------------------');
