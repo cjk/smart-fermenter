@@ -1,4 +1,4 @@
-import {Record, Map, Seq} from 'immutable';
+import {Record, Map} from 'immutable';
 
 const Env = Record({
   createdAt: null,
@@ -22,7 +22,7 @@ const SwitchOp = Record({
 });
 
 const History = Record({
-  switchOps: [],
+  switchOps: null, /* Seq */
   emergencies: []
 });
 

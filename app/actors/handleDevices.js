@@ -7,6 +7,7 @@ import notify from '../notifications';
 import switchImpl from './simulatedSwitch';
 import remoteSwitch from './remoteSwitch';
 import maybeSwitchDevices from '../controller/switchController';
+import recordSwitchingOps from '../controller/history';
 
 /* To send notifications */
 const messenger = notify();
@@ -59,7 +60,13 @@ const handleDevices = (envStream) => {
         if (willSwitch)
           delayedSwitch(dev, shouldSwitchTo).onValue(() => {});
       });
-    });
+
+    })
+    /* WIP!!! */
+    //.map(recordSwitchingOps)/* WIP: Split here and buffer only history or ? */
+    //.bufferWithCount(3)
+    //.log()
+    ;
 };
 
 export default handleDevices;
