@@ -39,8 +39,8 @@ const simulatedTempHumStream = Kefir.repeat(n => {
     case 6:
       return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 32.1)).take(1).toProperty();
     case 7:
-      return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 0)
-                                                  .setIn(['env', 'humidity'], 0))
+      return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], '0')
+                                                  .setIn(['env', 'humidity'], '0'))
                   .take(1).toProperty();
     case 8:
       return Kefir.interval(interval, initialState.setIn(['env', 'humidity'], 65.1)).take(1).toProperty();

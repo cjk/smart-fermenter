@@ -15,6 +15,7 @@ function readSensor() {
   const env = sensor.read();
 
   return state
+     /* PENDING: Possible dupe - move this conversion to our general validity-check in './index.js' ?! */
     .updateIn(['env', 'temperature'], temp => env.temperature.toFixed(1))
     .updateIn(['env', 'humidity'], hum => env.humidity.toFixed(1))
     .setIn(['env', 'isValid'], env.isValid)
