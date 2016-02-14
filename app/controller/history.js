@@ -1,22 +1,18 @@
-import {List} from 'immutable';
+import {List, Seq} from 'immutable';
 import {SwitchOp} from '../initialState';
 
 const histSwOpsPath = ['history', 'switchOps'];
 
 const createSwitchOps = (devices) => {
   return devices.filter(dev => dev.willSwitch)
-                .reduce((ops, dev, name) => ops.push(SwitchOp({device: name, to: dev.shouldSwitchTo, at: Date.now()})), List());
+                .reduce((ops, dev, name) => ops.push(new SwitchOp({device: name, to: dev.shouldSwitchTo, at: Date.now()})), List());
 };
 
-const historyController = (state) => {
-  const ops = createSwitchOps(state.get('devices'));
-  console.log('~~~~~~~~~~~~~~~~~~~', ops);
-  const history = state.getIn(histSwOpsPath);
+const historyController = (prev, curr) => {
+  const ops = createSwitchOps(curr.get('devices'));
+  const history = Seq(prev.getIn(histSwOpsPath)).concat(ops.toSeq());
 
-  return ops.toSeq();
-  //return history ?
-  //state.getIn(histSwOpsPath).push(ops) :
-  //state.setIn(histSwOpsPath, ops);
+  return curr.setIn(histSwOpsPath, history);
 };
 
 export default historyController;

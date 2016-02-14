@@ -17,8 +17,6 @@ const switcher = remoteSwitch(switchImpl);
 
 const devices = List.of('heater', 'humidifier');
 
-const needsSwitching = (state) => state.get('devices').some(dev => dev.get('willSwitch'));
-
 const delayedSwitch = (dev, onOff) => Kefir.fromCallback(callback => {
   setTimeout(() => {
     callback(1);
@@ -51,7 +49,7 @@ const handleDevices = (envStream) => {
 
       messenger.emit('WARNING: your fermenter-closet just shut itself down.\nAll devices have been switched off, but please double check this and take care of the food in the closet!');
     })
-    .filter(needsSwitching)/* from here on we only get if at least one device must be switched on/off!! */
+    //.filter(needsSwitching)/* from here on we only get if at least one device must be switched on/off!! */
     .onValue(state => {
       devices.forEach(dev => {
         const device = state.getIn(['devices', dev]);
@@ -62,10 +60,10 @@ const handleDevices = (envStream) => {
       });
 
     })
-    /* WIP!!! */
-    //.map(recordSwitchingOps)/* WIP: Split here and buffer only history or ? */
-    //.bufferWithCount(3)
-    //.log()
+    /* Collects (switching-) history here: */
+    .scan(recordSwitchingOps)
+    /* Evaluate history here?! */
+    .log()
     ;
 };
 
