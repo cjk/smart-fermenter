@@ -21,9 +21,14 @@ const SwitchOp = Record({
   at: undefined
 });
 
+const Emergency = Record({
+  device: '',
+  at: undefined
+});
+
 const History = Record({
   switchOps: null, /* Seq */
-  emergencies: []
+  emergencies: null /* Seq */
 });
 
 const InitialState = Map({
@@ -35,5 +40,5 @@ const InitialState = Map({
   history: new History()
 });
 
-export {Env, Device, History, SwitchOp};
+export {Env, Device, History, SwitchOp, Emergency};
 export default InitialState;

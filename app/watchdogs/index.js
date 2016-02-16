@@ -1,5 +1,5 @@
-import emergency from './emergency';
+import emergencyHalt from './emergency';
 
-const activateWatchdogs = (fermenterState) => emergency(fermenterState);
-
-export default activateWatchdogs;
+export default {
+  emergencyHalt
+};

@@ -1,13 +1,21 @@
 import {List} from 'immutable';
 import initialState from '../initialState';
 import Kefir from 'kefir';
+import moment from 'moment';
+
 import notify from '../notifications';
 
 /* For switching */
 import switchImpl from './simulatedSwitch';
 import remoteSwitch from './remoteSwitch';
-import maybeSwitchDevices from '../controller/switchController';
-import recordSwitchingOps from '../controller/history';
+import makeSwitchingDecisions from '../controller/switchingController';
+
+/* History */
+import {switchOps} from '../history';
+import {emergencies} from '../history';
+
+/* Watchdogs */
+import {emergencyHalt} from '../watchdogs';
 
 /* To send notifications */
 const messenger = notify();
@@ -30,40 +38,49 @@ const switchOffAllDevices = () => {
   });
 };
 
+const maybeSwitchDevices = (state) => {
+  devices.forEach(dev => {
+    const device = state.getIn(['devices', dev]);
+    const {willSwitch, shouldSwitchTo} = device;
+
+    if (willSwitch)
+      delayedSwitch(dev, shouldSwitchTo).onValue(() => {});
+  });
+};
+
 const handleDevices = (envStream) => {
 
   return envStream
     .filter(state => state.getIn(['env', 'isValid']))
-    .scan(maybeSwitchDevices, initialState)
-    .log()
+    .scan(makeSwitchingDecisions, initialState)
+    //.filter(needsSwitching)/* from here on we only get if at least one device must be switched on/off!! */
+    /* Collects (switching-) history here: */
+    .scan(switchOps)
+    /* Collects (emergency-) history here: */
+    .scan(emergencies)
+    /* Evaluate (emergency-) history: */
+    //.flatMap(emergencyHalt)
     .onError(errState => {
-      /* TODO: Currently nothing is triggering an error on this stream! */
-      messenger.emit('Warning: your fermenter-closet just signaled an error-state!');
-
       /* We're losing device-state here, so switch off
          anything to be able to start from a clean slate */
       switchOffAllDevices();
+      messenger.emit('Warning: your fermenter-closet just signaled an error-state!');
     })
     .onEnd(finalState => {
       switchOffAllDevices();
-
       messenger.emit('WARNING: your fermenter-closet just shut itself down.\nAll devices have been switched off, but please double check this and take care of the food in the closet!');
     })
-    //.filter(needsSwitching)/* from here on we only get if at least one device must be switched on/off!! */
-    .onValue(state => {
-      devices.forEach(dev => {
-        const device = state.getIn(['devices', dev]);
-        const {willSwitch, shouldSwitchTo} = device;
-
-        if (willSwitch)
-          delayedSwitch(dev, shouldSwitchTo).onValue(() => {});
-      });
-
-    })
-    /* Collects (switching-) history here: */
-    .scan(recordSwitchingOps)
-    /* Evaluate history here?! */
-    .log()
+    /* Evaluate history and stop stream before switching in case of emergencies */
+    .takeWhile(emergencyHalt)
+    /* Perform actual switches here - depending on current state and if we
+       actually got this far in the stream */
+    .onValue(maybeSwitchDevices)
+    /* Make log prettier by providing readable timestamps */
+    .map(state =>
+      state.updateIn(['env', 'createdAt'], (v) => moment(v).format())
+    )
+    /* (DEBUG-) logger */
+    .log('Logger')
     ;
 };
 

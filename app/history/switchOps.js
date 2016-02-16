@@ -8,11 +8,11 @@ const createSwitchOps = (devices) => {
                 .reduce((ops, dev, name) => ops.push(new SwitchOp({device: name, to: dev.shouldSwitchTo, at: Date.now()})), List());
 };
 
-const historyController = (prev, curr) => {
+const switchOps = (prev, curr) => {
   const ops = createSwitchOps(curr.get('devices'));
   const history = Seq(prev.getIn(histSwOpsPath)).concat(ops.toSeq());
 
   return curr.setIn(histSwOpsPath, history);
 };
 
-export default historyController;
+export default switchOps;

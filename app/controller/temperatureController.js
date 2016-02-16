@@ -9,16 +9,16 @@ function temperatureController(envStream) {
 
     /* If the reading can be trusted, this is an emergency! */
     if (temperature > (heatUpperLimit + 5) && isValid) {
-      console.log(`!!!! Emergency-state for temperature (${temperature}) detected !!!!`);
+      console.error(`[temp-controller] Emergency-state for temperature (${temperature}) detected!`);
       return state.setIn(['env', 'emergency'], true);
     }
 
     if (temperature > heatUpperLimit) {
-      console.log('[temp-controller]: too hot - heater should NOT be running');
+      console.info('[temp-controller]: too hot - heater should NOT be running');
       return state.updateIn(['devices', 'heater', 'shouldSwitchTo'], v => 'off');
 
     } else if (temperature < heatLowerLimit) {
-      console.log('[temp-controller]: too cold - heater should be running');
+      console.info('[temp-controller]: too cold - heater should be running');
       return state.updateIn(['devices', 'heater', 'shouldSwitchTo'], v => 'on');
     }
     return state;

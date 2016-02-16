@@ -1,8 +1,8 @@
-const switchController = (prev, curr) =>  {
+const switchingController = (prev, curr) =>  {
 
   const devices = curr.get('devices').keySeq();
 
-  const next = devices.reduce((next, dev) => {
+  return devices.reduce((next, dev) => {
 
     const devPath = ['devices', dev];
     const [cDev, pDev] = [curr.getIn(devPath), prev.getIn(devPath)];
@@ -21,24 +21,19 @@ const switchController = (prev, curr) =>  {
     const willSwitch = shouldSwitchTo && (lastShouldSwitchTo !== shouldSwitchTo) && deviceAlreadyOnOff(dev, shouldSwitchTo);
 
     if (willSwitch) {
-      console.log(`>>> We *switch* ${dev} ${shouldSwitchTo}!`);
+      console.log(`>>> We *intend* to switch ${dev} ${shouldSwitchTo}!`);
       return next.mergeIn(['devices', dev],
                           curr.setIn(['devices', dev, 'isOn'], shouldSwitchTo === 'on' ? true : false)
                               .setIn(['devices', dev, 'willSwitch'], true)
                               .getIn(['devices', dev]));
     } else {
-      console.log(`Not switching ${lastIsOn ? 'already running' : 'not running'} ${dev}`);
+      console.log(`*No* intend switching ${lastIsOn ? 'already running' : 'not running'} ${dev}`);
       return next.mergeIn(['devices', dev],
                           curr.setIn(['devices', dev, 'willSwitch'], false)
                               .setIn(['devices', dev, 'isOn'], lastIsOn)
                               .getIn(['devices', dev]));
     }
   }, curr);
-
-  /* DEBUGGING */
-  //console.log('$ next state:', next);
-
-  return next;
 };
 
-export default switchController;
+export default switchingController;
