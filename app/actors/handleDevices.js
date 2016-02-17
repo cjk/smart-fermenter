@@ -53,24 +53,23 @@ const handleDevices = (envStream) => {
   return envStream
     .filter(state => state.getIn(['env', 'isValid']))
     .scan(makeSwitchingDecisions, initialState)
-    //.filter(needsSwitching)/* from here on we only get if at least one device must be switched on/off!! */
     /* Collects (switching-) history here: */
     .scan(switchOps)
     /* Collects (emergency-) history here: */
     .scan(emergencies)
-    /* Evaluate (emergency-) history: */
-    //.flatMap(emergencyHalt)
     .onError(errState => {
+      /* NOTE: Unused for now - no error-conditions are generated at this time! */
+
       /* We're losing device-state here, so switch off
          anything to be able to start from a clean slate */
       switchOffAllDevices();
-      messenger.emit('Warning: your fermenter-closet just signaled an error-state!');
+      messenger.emit('WARNING: your fermenter-closet just signaled an error-state!');
     })
     .onEnd(finalState => {
       switchOffAllDevices();
-      messenger.emit('WARNING: your fermenter-closet just shut itself down.\nAll devices have been switched off, but please double check this and take care of the food in the closet!');
+      messenger.emit('WARNING: your fermenter-closet just shut itself down.\nAll devices have been switched off, but please double check this and take care any remaining content in the closet!');
     })
-    /* Evaluate history and stop stream before switching in case of emergencies */
+    /* Evaluate history and stop stream (before devices being switched) in case of emergencies */
     .takeWhile(emergencyHalt)
     /* Perform actual switches here - depending on current state and if we
        actually got this far in the stream */
