@@ -1,4 +1,4 @@
-import {Record, Map} from 'immutable';
+import {Record, Map, Seq} from 'immutable';
 
 const Env = Record({
   createdAt: null,
@@ -6,7 +6,6 @@ const Env = Record({
   humidity: null,
   isValid: false,
   errors: 0,
-  emergency: false
 });
 
 const Device = Record({
@@ -22,13 +21,14 @@ const SwitchOp = Record({
 });
 
 const Emergency = Record({
-  device: '',
+  device: null,
+  sensor: null,
   at: undefined
 });
 
 const History = Record({
-  switchOps: null, /* Seq */
-  emergencies: null /* Seq */
+  switchOps: Seq(),
+  emergencies: Seq()
 });
 
 const InitialState = Map({

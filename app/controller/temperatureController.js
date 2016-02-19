@@ -1,4 +1,6 @@
-/* PENDING: This is mostly generic code, so heater- and humidifier-controller should be merged! */
+/* PENDING: This is mostly generic code, so heater- and humidifier-controller
+   should be merged! */
+import {addEmergency} from '../history';
 
 const [heatUpperLimit, heatLowerLimit] = [31, 28];
 
@@ -10,7 +12,7 @@ function temperatureController(envStream) {
     /* If the reading can be trusted, this is an emergency! */
     if (temperature > (heatUpperLimit + 5) && isValid) {
       console.error(`[temp-controller] Emergency-state for temperature (${temperature}) detected!`);
-      return state.setIn(['env', 'emergency'], true);
+      return addEmergency(state, {at: Date.now(), sensor: 'temperature', device: 'heater'});
     }
 
     if (temperature > heatUpperLimit) {

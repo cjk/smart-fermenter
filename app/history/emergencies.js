@@ -1,17 +1,19 @@
-import {List, Seq} from 'immutable';
 import {Emergency} from '../initialState';
+import {Record} from 'immutable';
 
 const histEmergencyPath = ['history', 'emergencies'];
 
-const emergencies = (prev, curr) => {
-  const history = prev.getIn(histEmergencyPath) || Seq();
+const carryoverEmergencies = (prev, curr) => {
+  const [prevEms, currEms] = [prev.getIn(histEmergencyPath), curr.getIn(histEmergencyPath)];
 
-  if (!prev.getIn(['env', 'emergency']))
-    return curr.setIn(histEmergencyPath, history);
-
-  const e = new Emergency({device: 'unknown', at: Date.now()});
-
-  return curr.setIn(histEmergencyPath, List(history).push(e));
+  return curr.setIn(histEmergencyPath, prevEms.concat(currEms));
 };
 
-export default emergencies;
+const addEmergency = (state, e) => {
+  const history = state.getIn(histEmergencyPath),
+        emergency = new Record({[e.at]: new Emergency(e)})();
+
+  return state.setIn(histEmergencyPath, history.concat(emergency));
+};
+
+export {addEmergency, carryoverEmergencies};

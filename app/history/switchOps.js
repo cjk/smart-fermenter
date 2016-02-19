@@ -15,4 +15,13 @@ const switchOps = (prev, curr) => {
   return curr.setIn(histSwOpsPath, history);
 };
 
+const addSwitchOp = (state, o) => {
+  const history = state.getIn(histSwOpsPath),
+        op = new SwitchOp(o);
+
+  return state.setIn(histSwOpsPath, history.concat(op));
+};
+
+export {addSwitchOp};
+
 export default switchOps;

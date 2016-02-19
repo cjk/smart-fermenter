@@ -12,7 +12,7 @@ import makeSwitchingDecisions from '../controller/switchingController';
 
 /* History */
 import {switchOps} from '../history';
-import {emergencies} from '../history';
+import {carryoverEmergencies} from '../history';
 
 /* Watchdogs */
 import {emergencyHalt} from '../watchdogs';
@@ -56,7 +56,7 @@ const handleDevices = (envStream) => {
     /* Collects (switching-) history here: */
     .scan(switchOps)
     /* Collects (emergency-) history here: */
-    .scan(emergencies)
+    .scan(carryoverEmergencies)
     .onError(errState => {
       /* NOTE: Unused for now - no error-conditions are generated at this time! */
 
