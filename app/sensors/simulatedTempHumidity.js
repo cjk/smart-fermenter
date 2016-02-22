@@ -14,10 +14,6 @@ const env = new Env({
 
 const initialState = state.set('env', env);
 
-//const simulatedTempHumStream = Kefir.interval(interval, initialState).toProperty();
-
-  /*                      Kefir.constantError('Failed to initialize temp-/humidity-sensor.'); */
-
 const simulatedTempHumStream = Kefir.repeat(n => {
   n += 1;
 
@@ -34,8 +30,8 @@ const simulatedTempHumStream = Kefir.repeat(n => {
     case 4:
       /* Cause a false alarm emergency */
       return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 99)
-                                                  .setIn(['env', 'isValid'], false))
-                  .take(1).toProperty();
+                                                  .setIn(['env', 'isValid'], true))
+                  .take(1).toProperty();/* NOTE that currently three emergencies are needed to trigger halt, so this won't */
     case 6:
       return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 32.1)).take(1).toProperty();
     case 7:

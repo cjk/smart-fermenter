@@ -6,7 +6,6 @@ const Env = Record({
   humidity: null,
   isValid: false,
   errors: 0,
-  emergency: false
 });
 
 const Device = Record({
@@ -21,9 +20,15 @@ const SwitchOp = Record({
   at: undefined
 });
 
+const Emergency = Record({
+  device: null,
+  sensor: null,
+  at: undefined
+});
+
 const History = Record({
-  switchOps: [],
-  emergencies: []
+  switchOps: Seq(),
+  emergencies: Seq()
 });
 
 const InitialState = Map({
@@ -35,5 +40,5 @@ const InitialState = Map({
   history: new History()
 });
 
-export {Env, Device, History, SwitchOp};
+export {Env, Device, History, SwitchOp, Emergency};
 export default InitialState;
