@@ -3,7 +3,7 @@ import request from 'request';
 
 const slackURL = 'https://hooks.slack.com/services/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';
 
-const sendThrottledMessage = (text) => {
+const sendThrottledMessage = text => {
 
   const postToSlack = (text) => {
     const payload = {text: text, channel: '#smarthome', username: 'fermenter-closet'};
