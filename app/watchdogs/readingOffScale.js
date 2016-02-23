@@ -2,11 +2,13 @@
    false) when limit is reached. */
 import notify from '../notifications';
 
+const maxOffScaleReadingsAllowed = 2;
+
 /* To send notifications */
 const messenger = notify();
 const histEmergencyPath = ['history', 'emergencies'];
 
-const emergencyHalt = (state) => {
+const readingOffScale = (state) => {
   const emHist = state.getIn(histEmergencyPath);
 
   const now = Date.now();
@@ -18,7 +20,7 @@ const emergencyHalt = (state) => {
   //});
 
   /* Return 'halt'-signal when two or more *recent* emergency-states occured */
-  if (recentEms.count() < 2)
+  if (recentEms.count() < maxOffScaleReadingsAllowed)
     return true;
 
   messenger.emit('WARNING: Stopped fermenter-closet on too many Emergency conditions.\nPlease check the devices in the closet and switch them off if necessary.');
@@ -26,4 +28,4 @@ const emergencyHalt = (state) => {
   return false;
 };
 
-export default emergencyHalt;
+export default readingOffScale;

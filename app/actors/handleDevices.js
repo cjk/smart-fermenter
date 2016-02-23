@@ -15,7 +15,7 @@ import {switchOps} from '../history';
 import {carryoverEmergencies} from '../history';
 
 /* Watchdogs */
-import {emergencyHalt} from '../watchdogs';
+import {readingOffScale, deviceRunningTooLong} from '../watchdogs';
 
 /* To send notifications */
 const messenger = notify();
@@ -67,10 +67,12 @@ const handleDevices = (envStream) => {
     })
     .onEnd(finalState => {
       switchOffAllDevices();
-      messenger.emit('WARNING: your fermenter-closet just shut itself down.\nAll devices have been switched off, but please double check this and take care any remaining content in the closet!');
+      messenger.emit('NOTE: your fermenter-closet just shut itself down cleanly.\nAll devices have been switched off, but please double check this and take care any remaining content in the closet!');
     })
     /* Evaluate history and stop stream (before devices being switched) in case of emergencies */
-    .takeWhile(emergencyHalt)
+    .takeWhile(readingOffScale)
+    /* ... also stop stream if any devices exceeds running over a period of time */
+    .takeWhile(deviceRunningTooLong)
     /* Perform actual switches here - depending on current state and if we
        actually got this far in the stream */
     .onValue(maybeSwitchDevices)

@@ -1,5 +1,7 @@
-import emergencyHalt from './emergency';
+import readingOffScale from './readingOffScale';
+import deviceRunningTooLong from './deviceRunningTooLong';
 
 export default {
-  emergencyHalt
+  readingOffScale,
+  deviceRunningTooLong
 };
