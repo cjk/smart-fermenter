@@ -57,23 +57,21 @@ const handleDevices = (envStream) => {
     .scan(switchOps)
     /* Collects (emergency-) history here: */
     .scan(carryoverEmergencies)
-    .onEnd(finalState => {
-      switchOffAllDevices();
-      messenger.emit('NOTE: your fermenter-closet just shut itself down cleanly.\nAll devices have been switched off, but please double check this and take care any remaining content in the closet!');
-    })
+    /* Perform actual switches here - depending on current state and if we
+       actually got this far in the stream */
+    .onValue(maybeSwitchDevices)
     /* Evaluate history and stop stream (before devices being switched) in case of emergencies */
     .takeWhile(readingOffScale)
     /* ... also stop stream if any devices exceeds running over a period of time */
     .takeWhile(deviceRunningTooLong)
-    /* Perform actual switches here - depending on current state and if we
-       actually got this far in the stream */
-    .onValue(maybeSwitchDevices)
     /* Make log prettier by providing readable timestamps */
     .map(state =>
       state.updateIn(['env', 'createdAt'], (v) => moment(v).format())
     )
-    /* (DEBUG-) logger */
-    .log('Logger')
+    .onEnd(finalState => {
+      switchOffAllDevices();
+      messenger.emit('NOTE: your fermenter-closet just shut itself down cleanly.\nAll devices have been switched off, but please double check this and take care any remaining content in the closet!');
+    })
     .onError(errState => {
       /* NOTE: Unused for now - no error-conditions are generated at this time! */
 
@@ -82,6 +80,8 @@ const handleDevices = (envStream) => {
       switchOffAllDevices();
       messenger.emit('WARNING: your fermenter-closet just signaled an error-state!');
     })
+    /* (DEBUG-) logger */
+    .log('Logger')
     ;
 };
 
