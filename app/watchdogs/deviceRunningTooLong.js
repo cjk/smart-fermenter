@@ -2,7 +2,7 @@
    in a bad state. */
 import notify from '../notifications';
 
-const durationLimit = 10000 * 60; /* Ten minutes */
+const durationLimit = 15000 * 60; /* allow devices to run at most fifteen minutes */
 
 /* To send notifications */
 const messenger = notify();
