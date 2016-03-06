@@ -7,6 +7,6 @@ const fermenterEnvStream = controlEnvironment(envStream);
 
 handleDevices(fermenterEnvStream);
 
-server(fermenterEnvStream.throttle(4000, {trailing: false}));
+server(fermenterEnvStream.throttle(5000, {trailing: false}));
 
 console.log('----------------------------------------------------------------------');
