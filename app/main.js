@@ -5,8 +5,6 @@ import envStream from './sensors';
 
 const fermenterEnvStream = controlEnvironment(envStream);
 
-handleDevices(fermenterEnvStream);
-
-server(fermenterEnvStream.throttle(5000, {trailing: false}));
+server(handleDevices(fermenterEnvStream).throttle(5000, {trailing: false}));
 
 console.log('----------------------------------------------------------------------');
