@@ -1,39 +1,40 @@
 import {Record, Map, Seq} from 'immutable';
 
-const Env = Record({
+const Env = new Record({
   createdAt: null,
   temperature: null,
   humidity: null,
   isValid: false,
   errors: 0,
+  iterations: 0,
 });
 
-const Device = Record({
+const Device = new Record({
   isOn: false,
   shouldSwitchTo: null,
   willSwitch: false
 });
 
-const SwitchOp = Record({
+const SwitchOp = new Record({
   device: '',
   to: null,
   at: undefined
 });
 
-const Emergency = Record({
+const Emergency = new Record({
   device: null,
   sensor: null,
   at: undefined
 });
 
-const History = Record({
-  switchOps: Seq(),
-  emergencies: Seq()
+const History = new Record({
+  switchOps: new Seq(),
+  emergencies: new Seq()
 });
 
-const InitialState = Map({
+const InitialState = new Map({
   env: new Env,
-  devices: Map({
+  devices: new Map({
     heater: new Device(),
     humidifier: new Device()
   }),
