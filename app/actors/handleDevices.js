@@ -17,6 +17,9 @@ import {carryoverEmergencies} from '../history';
 /* Watchdogs */
 import {readingOffScale, deviceRunningTooLong} from '../watchdogs';
 
+/* Logging */
+import logState from '../stateLogger';
+
 /* To send notifications */
 const messenger = notify();
 
@@ -33,9 +36,7 @@ const delayedSwitch = (dev, onOff) => Kefir.fromCallback(callback => {
 });
 
 const switchOffAllDevices = () => {
-  devices.map(dev => {
-    delayedSwitch(dev, 'off').log();
-  });
+  devices.map(dev => delayedSwitch(dev, 'off').log());
 };
 
 const maybeSwitchDevices = (state) => {
@@ -43,15 +44,19 @@ const maybeSwitchDevices = (state) => {
     const device = state.getIn(['devices', dev]);
     const {willSwitch, shouldSwitchTo} = device;
 
-    if (willSwitch)
+    if (willSwitch) {
       delayedSwitch(dev, shouldSwitchTo).onValue(() => {});
+    }
   });
 };
 
-const handleDevices = (envStream) => {
+const readableTimestamps = state => state.updateIn(['env', 'createdAt'], (v) => moment(v).format());
 
+const handleDevices = (envStream) => {
   return envStream
+    /* Don't do anything when environment-readings are invalid */
     .filter(state => state.getIn(['env', 'isValid']))
+    /* Decide whether devices should be switched or not */
     .scan(makeSwitchingDecisions, initialState)
     /* Collects (switching-) history here: */
     .scan(switchOps)
@@ -76,12 +81,12 @@ const handleDevices = (envStream) => {
       switchOffAllDevices();
       messenger.emit('WARNING: your fermenter-closet just signaled an error-state!');
     })
+    /* Terse log current state */
+    .onValue(logState)
     /* Make log prettier by providing readable timestamps */
-    .map(state =>
-      state.updateIn(['env', 'createdAt'], (v) => moment(v).format())
-    )
+    .map(readableTimestamps)
     /* (DEBUG-) logger */
-    .log('Logger')
+    /*     .log('Logger') */
     ;
 };
 

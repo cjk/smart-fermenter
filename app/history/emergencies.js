@@ -10,8 +10,8 @@ const carryoverEmergencies = (prev, curr) => {
 };
 
 const addEmergency = (state, e) => {
-  const history = state.getIn(histEmergencyPath),
-        emergency = new Record({[e.at]: new Emergency(e)})();
+  const history = state.getIn(histEmergencyPath);
+  const emergency = new Record({[e.at]: new Emergency(e)})();
 
   return state.setIn(histEmergencyPath, history.concat(emergency));
 };

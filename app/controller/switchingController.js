@@ -17,13 +17,13 @@ const switchingController = (prev, curr) => {
     const willSwitch = shouldSwitchTo && (lastShouldSwitchTo !== shouldSwitchTo) && deviceAlreadyOnOff(dev, shouldSwitchTo);
 
     if (willSwitch) {
-      console.log(`>>> We *intend* to switch ${dev} ${shouldSwitchTo}!`);
+      // console.log(`>>> We *intend* to switch ${dev} ${shouldSwitchTo}!`);
       return next.mergeIn(['devices', dev],
-                          curr.setIn(['devices', dev, 'isOn'], shouldSwitchTo === 'on' ? true : false)
+                          curr.setIn(['devices', dev, 'isOn'], shouldSwitchTo === 'on')
                               .setIn(['devices', dev, 'willSwitch'], true)
                               .getIn(['devices', dev]));
     }
-    console.log(`*No* intend switching ${lastIsOn ? 'already running' : 'not running'} ${dev}`);
+    // console.log(`*No intend* switching ${lastIsOn ? 'already running' : 'not running'} ${dev}`);
     return next.mergeIn(['devices', dev],
                         curr.setIn(['devices', dev, 'willSwitch'], false)
                             .setIn(['devices', dev, 'isOn'], lastIsOn)

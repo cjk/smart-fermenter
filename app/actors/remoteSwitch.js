@@ -8,28 +8,28 @@ const swTransport = {
 
 function remoteSwitch(switchLib) {
   return (switchName, state) => {
-    const sw = new SwitchData(swList.get(switchName)).set('transport', swTransport);
+    const swtch = new SwitchData(swList.get(switchName)).set('transport', swTransport);
 
-    const prepareSwitch = (sw) =>  {
+    const prepareSwitch = (sw) => {
       switchLib.enableTransmit(sw.transport.pin);
     };
 
     const switchOn = (sw) => {
-      console.log(`[Controller] About to switch ${sw.desc} on <${sw.systemCode}#${sw.unitCode}> ON:`);
+      // console.log(`[Controller] About to switch ${sw.desc} on <${sw.systemCode}#${sw.unitCode}> ON:`);
       prepareSwitch(sw);
       switchLib.switchOn(sw.systemCode, sw.unitCode);
     };
 
     const switchOff = (sw) => {
-      console.log(`[Controller]: About to switch ${sw.desc} on <${sw.systemCode}#${sw.unitCode}> OFF.`);
+      // console.log(`[Controller]: About to switch ${sw.desc} on <${sw.systemCode}#${sw.unitCode}> OFF.`);
       prepareSwitch(sw);
       switchLib.switchOff(sw.systemCode, sw.unitCode);
     };
 
     if (state === 'on') {
-      switchOn(sw);
+      switchOn(swtch);
     } else {
-      switchOff(sw);
+      switchOff(swtch);
     }
   };
 }

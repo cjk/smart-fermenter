@@ -1,4 +1,5 @@
 const enableTransmit = (pin) => {
+  /* NOOP here */
 };
 
 const switchOn = (systemCode, unitCode) => {
@@ -10,7 +11,7 @@ const switchOff = (systemCode, unitCode) => {
 };
 
 export default {
-  enableTransmit: enableTransmit,
-  switchOn: switchOn,
-  switchOff: switchOff
+  enableTransmit,
+  switchOn,
+  switchOff
 };

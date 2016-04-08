@@ -1,7 +1,9 @@
+/* eslint no-console: "off", max-len: "off" */
+
 import Kefir from 'kefir';
 import state, {Env} from '../initialState';
 
-const interval = 300;
+const interval = 2000;
 
 const env = new Env({
   temperature: 26.0,
@@ -14,11 +16,21 @@ const env = new Env({
 
 const initialState = state.set('env', env);
 
-const simulatedTempHumStream = Kefir.repeat(n => {
-  n += 1;
+// Returns a random integer between min (included) and max (excluded)
+// Using Math.round() will give you a non-uniform distribution!
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
 
-  console.log('### TEST-RUN #', n);
-  switch (n) {
+function randomizeEnvironment(s) {
+  return s.setIn(['env', 'temperature'], getRandomInt(25, 35)).setIn(['env', 'humidity'], getRandomInt(40, 80));
+}
+
+const simulatedTempHumStream = Kefir.repeat(n => {
+  const run = n + 1;
+
+  // console.log('### TEST-RUN #', run);
+  switch (run) {
     case 1:
       return Kefir.interval(interval, initialState.setIn(['env', 'temperature'], 29)
                                                   .setIn(['env', 'humidity'], 30))
@@ -45,14 +57,13 @@ const simulatedTempHumStream = Kefir.repeat(n => {
                                                   .setIn(['env', 'humidity'], 57))
                   .take(1).toProperty();
 
-    case 10:
-      console.log('##### ENDING TEST ######');
-      return false;
+      // case 10:
+      // console.log('##### ENDING TEST ######');
+      // return false;
 
     default:
-      return Kefir.interval(interval, initialState).take(1).toProperty();
+      return Kefir.interval(interval, initialState).map(randomizeEnvironment).take(1).toProperty();
   }
-  return false;
 });
 
 export default simulatedTempHumStream;
