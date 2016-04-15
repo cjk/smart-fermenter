@@ -23,7 +23,7 @@ function getRandomInt(min, max) {
 }
 
 function randomizeEnvironment(s) {
-  return s.setIn(['env', 'temperature'], getRandomInt(25, 35)).setIn(['env', 'humidity'], getRandomInt(40, 80));
+  return s.setIn(['env', 'temperature'], getRandomInt(25, 35)).setIn(['env', 'humidity'], getRandomInt(45, 75));
 }
 
 const simulatedTempHumStream = Kefir.repeat(n => {
