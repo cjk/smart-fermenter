@@ -50,7 +50,13 @@ const maybeSwitchDevices = (state) => {
   });
 };
 
-const readableTimestamps = state => state.updateIn(['env', 'createdAt'], (v) => moment(v).format());
+const readableTimestamps = state =>
+  state.updateIn(['env', 'createdAt'],
+                 /* We *may* receive an invalid date here before streams are
+                 properly initialized, so check for it as 'moment' otherwise
+                 spills a warning */
+                 (v) => (moment(v).isValid() ? moment(v).format() : undefined)
+  );
 
 const handleDevices = (envStream) => {
   return envStream
