@@ -11,8 +11,7 @@ import remoteSwitch from './remoteSwitch';
 import makeSwitchingDecisions from '../controller/switchingController';
 
 /* History */
-import {switchOps} from '../history';
-import {carryoverEmergencies} from '../history';
+import {switchOps, carryoverEmergencies} from '../history';
 
 /* Watchdogs */
 import {readingOffScale, deviceRunningTooLong} from '../watchdogs';

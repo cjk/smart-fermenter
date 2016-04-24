@@ -2,7 +2,7 @@
    should be merged! */
 import {addEmergency} from '../history';
 
-const [humUpperLimit, humLowerLimit] = [65, 55];
+const [humUpperLimit, humLowerLimit] = [63, 55];
 
 function humidifierController(envStream) {
   return envStream.map(state => {
@@ -10,7 +10,7 @@ function humidifierController(envStream) {
     const isValid = state.getIn(['env', 'isValid']);
 
     /* If the reading can be trusted, this is an emergency! */
-    if (humidity > (humUpperLimit + 10) && isValid) {
+    if (humidity > (humUpperLimit + 20) && isValid) {
       console.error(`[hum-controller] Emergency-state for humidity (${humidity}) detected!`);
       return addEmergency(state, {at: Date.now(), sensor: 'humidity', device: 'humidifier'});
     }
