@@ -88,7 +88,8 @@ const handleDevices = (envStream) => {
     })
     /* Terse log current state */
     .onValue(logState)
-    /* Make log prettier by providing readable timestamps */
+    /* Make log prettier by providing readable timestamps; DEPRECATED: use
+       #logState above */
     .map(readableTimestamps)
     /* (DEBUG-) logger */
     /*     .log('Logger') */

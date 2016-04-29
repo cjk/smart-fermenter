@@ -33,6 +33,7 @@ const History = new Record({
 });
 
 const InitialState = new Map({
+  status: 'starting',
   env: new Env,
   devices: new Map({
     heater: new Device(),
