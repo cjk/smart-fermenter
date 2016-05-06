@@ -1,6 +1,7 @@
 /* eslint no-console: "off" */
 import io from 'socket.io-client';
 import R from 'ramda';
+import handleRemoteCommands from './handleCommands';
 
 const config = {
   host: 'localhost', /* NOTE: zircon.local is not available on HOME-LAN! :( */
@@ -35,6 +36,7 @@ function startClient(stateStream) {
   .on('connect', () => {
     console.log(`Connected to smart-home-backend on <${config.host}:${config.port}>`);
     startStreaming(stateStream);
+    handleRemoteCommands(socket);
   })
   .on('disconnect', stopStreaming(stateStream));
 }
