@@ -4,7 +4,7 @@ import {Map} from 'immutable';
 import moment from 'moment';
 
 function logState(state) {
-  const status = state.get('status');
+  const rts = state.get('rts');
   const env = key => state.getIn(['env'].concat(key));
   const heater = key => state.getIn(['devices', 'heater'].concat(key));
   const humidifier = key => state.getIn(['devices', 'humidifier'].concat(key));
@@ -19,7 +19,7 @@ function logState(state) {
   const log = {
     count: env('iterations'),
     ts,
-    status,
+    rts,
     temp: env('temperature'),
     hum: env('humidity'),
     heaterIsOn: heater('isOn'),
@@ -33,13 +33,13 @@ function logState(state) {
   };
 
   console.log(`-> #${log.count} ${log.ts} \
-[${log.status}] \
+[${log.rts.status}] \
 temp/hum: [${log.temp}/${log.hum}] \
 heater: [${log.heaterIsOn}|${log.heaterShouldSwitch}|${log.heaterWillSwitch}] \
 humidifier: [${log.humidifierIsOn}|${log.humidifierShouldSwitch}|${log.humidifierWillSwitch}] \
 switchOps: #${switchOps} \
 Emergencies: #${log.heaterEmergencies || 0}|${log.humidifierEmergencies || 0} \
-  `);
+ <--${log.rts.currentCmd}`);
 }
 
 export default logState;

@@ -32,9 +32,14 @@ const History = new Record({
   emergencies: new Seq()
 });
 
+const RunTimeState = new Record({
+  status: 'initializing',
+  currentCmd: null
+});
+
 const InitialState = new Map({
-  status: 'starting',
-  env: new Env,
+  rts: new RunTimeState(),
+  env: new Env(),
   devices: new Map({
     heater: new Device(),
     humidifier: new Device()

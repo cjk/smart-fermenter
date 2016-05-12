@@ -1,10 +1,10 @@
 import controlEnvironment from './controller';
 import handleDevices from './actors';
-import startClient from './client';
+import createClient from './client';
 import envStream from './sensors';
 
-const handler = handleDevices(controlEnvironment(envStream));
+const stateStream = createClient(controlEnvironment(envStream));
 
-startClient(handler.throttle(5000, {trailing: false}));
+handleDevices(stateStream);
 
 console.log('----------------------------------------------------------------------');
