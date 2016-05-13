@@ -4,18 +4,16 @@ import Kefir from 'kefir';
 import moment from 'moment';
 
 import notify from '../notifications';
-
 /* For switching */
 import switchImpl from './simulatedSwitch';
 import remoteSwitch from './remoteSwitch';
 import makeSwitchingDecisions from '../controller/switchingController';
-
 /* History */
 import {switchOps, carryoverEmergencies} from '../history';
-
 /* Watchdogs */
-import {readingOffScale, deviceRunningTooLong} from '../watchdogs';
-
+import {detectEnvEmergency, deviceRunningTooLong} from '../watchdogs';
+/* Messaging + notifications */
+import maybeSendNotifcations from './messenger';
 /* Logging */
 import logState from '../stateLogger';
 
@@ -67,10 +65,11 @@ const handleDevices = (envStream) => {
     .scan(switchOps)
     /* Collects (emergency-) history here: */
     .scan(carryoverEmergencies)
-    /* Evaluate history and stop stream (before devices being switched) in case of emergencies */
-    .takeWhile(readingOffScale)
-    /* ... also stop stream if any devices exceeds running over a period of time */
-    .takeWhile(deviceRunningTooLong)
+    /* Evaluate emergency-history and set an active environmental emergency under certain conditions */
+    .scan(detectEnvEmergency)
+    /* ... also signal malfunctioning devices, if any device exceeds running over a period of time */
+    .scan(deviceRunningTooLong)
+    .onValue(maybeSendNotifcations)
     /* Perform actual switches here - depending on current state and if we
        actually got this far in the stream */
     .onValue(maybeSwitchDevices)

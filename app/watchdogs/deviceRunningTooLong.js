@@ -1,15 +1,11 @@
 /* Checks for devices running for too long and thus might be out-of-control or
    in a bad state. */
-import notify from '../notifications';
-
 const durationLimit = 15000 * 60; /* allow devices to run at most fifteen minutes */
-
-/* To send notifications */
-const messenger = notify();
 const deviceHistPath = ['history', 'switchOps'];
+const rtsDeviceMalfunction = ['rts', 'hasDeviceMalfunction'];
 
-const deviceRunningTooLong = (state) => {
-  const switchHist = state.getIn(deviceHistPath);
+const deviceRunningTooLong = (prev, curr) => {
+  const switchHist = curr.getIn(deviceHistPath);
   const now = Date.now();
   let noticeTemplate = '';
 
@@ -18,15 +14,12 @@ const deviceRunningTooLong = (state) => {
                            .filter((v, k, i) => v.maxBy((c) => c.at).to === 'on')/* throw away all that wasn't switched on most recently */
                            .map((v, k) => v.maxBy(sw => sw.at).update(e => now - e.at))/* replace log-info with simple running-duration in ms  */
                            .filter(d => d > durationLimit)/* go further only if breaking our running-limitation */
-                           .forEach((d, dev) => {/* side-effect: build error-message */
+                           /* TODO: Template-functionality currently not used */
+                           .forEach((d, dev) => { /* side-effect: build error-message */
                              noticeTemplate += `Device <${dev}> has been running for more than ${(durationLimit / 1000 / 60).toFixed(1)} minutes.\n`;
                            });
-  if (maxDurations === 0)
-    return true;
 
-  const errorMsg = `ERROR: Stopped fermenter-closet on the following failure-condition:\n ${noticeTemplate} - Please check the devices in the closet ASAP!`;
-  messenger.emit(errorMsg);
-  return false;
+  return curr.setIn(rtsDeviceMalfunction, (maxDurations > 0));
 };
 
 export default deviceRunningTooLong;

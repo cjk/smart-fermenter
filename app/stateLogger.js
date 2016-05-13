@@ -1,5 +1,4 @@
 /* eslint no-console: "off", max-len: "off" */
-
 import {Map} from 'immutable';
 import moment from 'moment';
 
@@ -12,8 +11,12 @@ function logState(state) {
                          .groupBy(v => v.device)
                          .reduce((count, dev) => dev.size, 0);
   const emergencies = state.getIn(['history', 'emergencies'])
-                           .groupBy(v => v.device)
-                           .reduce((ems, dev, name) => (ems.has(name) ? ems.set(name, ems.get(name) + 1) : ems.set(name, 1)), new Map());
+                               .groupBy(v => v.device)
+                               .reduce((ems, dev, name) => ems.set(name, dev.size),
+                                       new Map());
+  const hasEnvEmergency = rts.hasEnvEmergency ? '!' : '#';
+  /* TODO: Malfunctioning devices (i.e. running too long) not yet being logged */
+  //   const hasDeviceMalfunction = rts.hasDeviceMalfunction ? '!' : '#';
 
   const ts = moment(state.getIn(['env', 'createdAt'])).format();
   const log = {
@@ -38,7 +41,7 @@ temp/hum: [${log.temp}/${log.hum}] \
 heater: [${log.heaterIsOn}|${log.heaterShouldSwitch}|${log.heaterWillSwitch}] \
 humidifier: [${log.humidifierIsOn}|${log.humidifierShouldSwitch}|${log.humidifierWillSwitch}] \
 switchOps: #${switchOps} \
-Emergencies: #${log.heaterEmergencies || 0}|${log.humidifierEmergencies || 0} \
+Emergencies: ${hasEnvEmergency}${log.heaterEmergencies || 0}|${log.humidifierEmergencies || 0} \
  <--${log.rts.currentCmd}`);
 }
 

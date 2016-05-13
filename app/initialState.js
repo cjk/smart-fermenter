@@ -34,6 +34,8 @@ const History = new Record({
 
 const RunTimeState = new Record({
   status: 'initializing',
+  hasEnvEmergency: false,
+  hasDeviceMalfunction: false,
   currentCmd: null
 });
 

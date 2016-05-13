@@ -1,7 +1,7 @@
-import readingOffScale from './readingOffScale';
+import detectEnvEmergency from './detectEnvEmergency';
 import deviceRunningTooLong from './deviceRunningTooLong';
 
 export default {
-  readingOffScale,
+  detectEnvEmergency,
   deviceRunningTooLong
 };
