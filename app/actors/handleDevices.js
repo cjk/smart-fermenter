@@ -1,9 +1,9 @@
 import {List} from 'immutable';
 import initialState from '../initialState';
-import Kefir from 'kefir';
-import moment from 'moment';
+import K from 'kefir';
 
 import notify from '../notifications';
+import {prettifyTimestamp} from '../lib/datetime';
 /* For switching */
 import switchImpl from './simulatedSwitch';
 import remoteSwitch from './remoteSwitch';
@@ -25,7 +25,7 @@ const switcher = remoteSwitch(switchImpl);
 
 const devices = List.of('heater', 'humidifier');
 
-const delayedSwitch = (dev, onOff) => Kefir.fromCallback(callback => {
+const delayedSwitch = (dev, onOff) => K.fromCallback(callback => {
   setTimeout(() => {
     callback(1);
     switcher(dev, onOff);
@@ -52,7 +52,7 @@ const readableTimestamps = state =>
                  /* We *may* receive an invalid date here before streams are
                  properly initialized, so check for it as 'moment' otherwise
                  spills a warning */
-                 (v) => (moment(v).isValid() ? moment(v).format() : undefined)
+                 (v) => prettifyTimestamp(v)
   );
 
 const handleDevices = (envStream) => {
@@ -65,19 +65,21 @@ const handleDevices = (envStream) => {
     .scan(switchOps)
     /* Collects (emergency-) history here: */
     .scan(carryoverEmergencies)
-    /* Evaluate emergency-history and set an active environmental emergency under certain conditions */
+    /* Evaluate emergency-history and set an active environmental emergency
+       under certain conditions */
     .scan(detectEnvEmergency)
-    /* ... also signal malfunctioning devices, if any device exceeds running over a period of time */
+    /* ... also signal malfunctioning devices, if any device exceeds running
+       over a period of time */
     .scan(deviceRunningTooLong)
     .onValue(maybeSendNotifcations)
     /* Perform actual switches here - depending on current state and if we
        actually got this far in the stream */
     .onValue(maybeSwitchDevices)
-    .onEnd(finalState => {
+    .onEnd(() => {
       switchOffAllDevices();
       messenger.emit('NOTE: your fermenter-closet just shut itself down cleanly.\nAll devices have been switched off, but please double check this and take care any remaining content in the closet!');
     })
-    .onError(errState => {
+    .onError(() => {
       /* NOTE: Unused for now - no error-conditions are generated at this time! */
 
       /* We're losing device-state here, so switch off

@@ -1,6 +1,6 @@
 /* eslint no-console: "off", max-len: "off" */
 import {Map} from 'immutable';
-import moment from 'moment';
+import {prettifyTimestamp} from './lib/datetime';
 
 function logState(state) {
   const rts = state.get('rts');
@@ -18,7 +18,7 @@ function logState(state) {
   /* TODO: Malfunctioning devices (i.e. running too long) not yet being logged */
   //   const hasDeviceMalfunction = rts.hasDeviceMalfunction ? '!' : '#';
 
-  const ts = moment(state.getIn(['env', 'createdAt'])).format();
+  const ts = prettifyTimestamp(state.getIn(['env', 'createdAt']));
   const log = {
     count: env('iterations'),
     ts,
