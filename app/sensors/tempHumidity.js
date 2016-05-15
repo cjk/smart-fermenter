@@ -3,19 +3,16 @@ import sensorLib from 'node-dht-sensor';
 import state from '../initialState';
 
 const sensor = {
-  initialize: () => {
-    return sensorLib.initialize(22, 4);
-  },
-  read: () => {
-    return sensorLib.read();
-  }
+  initialize: () => sensorLib.initialize(22, 4),
+  read: () => sensorLib.read()
 };
 
 function readSensor() {
   const env = sensor.read();
 
   return state
-     /* PENDING: Possible dupe - move this conversion to our general validity-check in './index.js' ?! */
+  /* PENDING: Possible dupe - move this conversion to our general validity-check
+     in './index.js' ?! */
     .updateIn(['env', 'temperature'], temp => env.temperature.toFixed(1))
     .updateIn(['env', 'humidity'], hum => env.humidity.toFixed(1))
     .setIn(['env', 'isValid'], env.isValid)
@@ -24,9 +21,9 @@ function readSensor() {
 
 const sensorStream = sensor.initialize() ?
                      (
-                       Kefir.
-                             fromPoll(2000, readSensor).
-                             toProperty()
+                       Kefir
+                         .fromPoll(2000, readSensor)
+                         .toProperty()
                      ) :
                      Kefir.constantError('Failed to initialize temp-/humidity-sensor.');
 

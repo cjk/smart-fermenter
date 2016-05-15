@@ -1,51 +1,21 @@
-import {List} from 'immutable';
-import initialState from '../initialState';
-import K from 'kefir';
+import {maybeSwitchDevices, switchOffAllDevices} from '../lib/device';
+import InitialState from '../initialState';
 
 import notify from '../notifications';
 import {prettifyTimestamp} from '../lib/datetime';
-/* For switching */
-import switchImpl from './simulatedSwitch';
-import remoteSwitch from './remoteSwitch';
+
 import makeSwitchingDecisions from '../controller/switchingController';
 /* History */
 import {switchOps, carryoverEmergencies} from '../history';
 /* Watchdogs */
 import {detectEnvEmergency, deviceRunningTooLong} from '../watchdogs';
 /* Messaging + notifications */
-import maybeSendNotifcations from './messenger';
+import handleEmergencyNotifications from './messenger';
 /* Logging */
 import logState from '../stateLogger';
 
 /* To send notifications */
 const messenger = notify();
-
-/* What switching implementation shall we use? Simulated or real: */
-const switcher = remoteSwitch(switchImpl);
-
-const devices = List.of('heater', 'humidifier');
-
-const delayedSwitch = (dev, onOff) => K.fromCallback(callback => {
-  setTimeout(() => {
-    callback(1);
-    switcher(dev, onOff);
-  }, 100);
-});
-
-const switchOffAllDevices = () => {
-  devices.map(dev => delayedSwitch(dev, 'off').log());
-};
-
-const maybeSwitchDevices = (state) => {
-  devices.forEach(dev => {
-    const device = state.getIn(['devices', dev]);
-    const {willSwitch, shouldSwitchTo} = device;
-
-    if (willSwitch) {
-      delayedSwitch(dev, shouldSwitchTo).onValue(() => {});
-    }
-  });
-};
 
 const readableTimestamps = state =>
   state.updateIn(['env', 'createdAt'],
@@ -55,12 +25,15 @@ const readableTimestamps = state =>
                  (v) => prettifyTimestamp(v)
   );
 
+/* Filter out devices from whole state */
+const switchDevices = (state) => maybeSwitchDevices(state.get('devices'));
+
 const handleDevices = (envStream) => {
   return envStream
     /* Don't do anything when environment-readings are invalid */
     .filter(state => state.getIn(['env', 'isValid']))
     /* Decide whether devices should be switched or not */
-    .scan(makeSwitchingDecisions, initialState)
+    .scan(makeSwitchingDecisions, InitialState)
     /* Collects (switching-) history here: */
     .scan(switchOps)
     /* Collects (emergency-) history here: */
@@ -71,10 +44,10 @@ const handleDevices = (envStream) => {
     /* ... also signal malfunctioning devices, if any device exceeds running
        over a period of time */
     .scan(deviceRunningTooLong)
-    .onValue(maybeSendNotifcations)
+    .onValue(handleEmergencyNotifications)
     /* Perform actual switches here - depending on current state and if we
        actually got this far in the stream */
-    .onValue(maybeSwitchDevices)
+    .onValue(switchDevices)
     .onEnd(() => {
       switchOffAllDevices();
       messenger.emit('NOTE: your fermenter-closet just shut itself down cleanly.\nAll devices have been switched off, but please double check this and take care any remaining content in the closet!');

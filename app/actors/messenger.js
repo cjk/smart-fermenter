@@ -5,7 +5,7 @@ const messenger = notify();
 const rtsEnvEmergencyPath = ['rts', 'hasEnvEmergency'];
 const rtsDeviceMalfunction = ['rts', 'hasDeviceMalfunction'];
 
-function maybeSendNotifcations(state) {
+function handleEmergencyNotifications(state) {
   const hasEnvEmergency = state.getIn(rtsEnvEmergencyPath);
   const hasDeviceMalfunction = state.getIn(rtsDeviceMalfunction);
 
@@ -16,4 +16,4 @@ function maybeSendNotifcations(state) {
     messenger.emit('Device emergency detected in fermenter-closet, please check if heater and/or humidifier are working as expected or are in need of maintenance!');
 }
 
-export default maybeSendNotifcations;
+export default handleEmergencyNotifications;
