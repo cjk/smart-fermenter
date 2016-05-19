@@ -35,7 +35,7 @@ function logState(state) {
     humidifierEmergencies: emergencies.get('humidifier'),
   };
 
-  console.log(`-> #${log.count} ${log.ts} \
+  console.log(`${rts.active ? '=' : '-'}> #${log.count} ${log.ts} \
 [${log.rts.status}] \
 temp/hum: [${log.temp}/${log.hum}] \
 heater: [${log.heaterIsOn}|${log.heaterShouldSwitch}|${log.heaterWillSwitch}] \

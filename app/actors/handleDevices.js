@@ -9,8 +9,11 @@ import makeSwitchingDecisions from '../controller/switchingController';
 import {switchOps, carryoverEmergencies} from '../history';
 /* Watchdogs */
 import {detectEnvEmergency, deviceRunningTooLong} from '../watchdogs';
-/* Messaging + notifications */
-import handleEmergencyNotifications from './messenger';
+/* Update global state (like switching-decisions) based on current / previous
+   runtime state */
+import handleRuntimeState from './handleRuntimeState.js';
+/* Handle runtime-state, like emergencies, notifications, on/off */
+import handleRuntimeSideEffects from './runtimeSideEffectHandler';
 /* Logging */
 import logState from '../stateLogger';
 
@@ -25,14 +28,17 @@ const readableTimestamps = state =>
                  (v) => prettifyTimestamp(v)
   );
 
-/* Filter out devices from whole state */
+/* Filter out devices from state and pass them on for conditional switching */
 const switchDevices = (state) => maybeSwitchDevices(state.get('devices'));
 
 const handleDevices = (envStream) => {
   return envStream
     /* Don't do anything when environment-readings are invalid */
     .filter(state => state.getIn(['env', 'isValid']))
-    /* Decide whether devices should be switched or not */
+    /* Bootstraps runtime-state, like toggling fermenter active-state on/off.
+       Thus, must occur *before* switching devices */
+    .scan(handleRuntimeState)
+    /* Decide whether devices should be switched off/on based on environmental data */
     .scan(makeSwitchingDecisions, InitialState)
     /* Collects (switching-) history here: */
     .scan(switchOps)
@@ -44,14 +50,18 @@ const handleDevices = (envStream) => {
     /* ... also signal malfunctioning devices, if any device exceeds running
        over a period of time */
     .scan(deviceRunningTooLong)
-    .onValue(handleEmergencyNotifications)
+    /* Analyse runtime-state and carry out resulting side-effect, like sending
+       notifications etc. */
+    .onValue(handleRuntimeSideEffects)
     /* Perform actual switches here - depending on current state and if we
        actually got this far in the stream */
     .onValue(switchDevices)
+    /* TODO: Turn into named function and/or externalize */
     .onEnd(() => {
       switchOffAllDevices();
       messenger.emit('NOTE: your fermenter-closet just shut itself down cleanly.\nAll devices have been switched off, but please double check this and take care any remaining content in the closet!');
     })
+    /* TODO: Turn into named function and/or externalize */
     .onError(() => {
       /* NOTE: Unused for now - no error-conditions are generated at this time! */
 
