@@ -1,5 +1,4 @@
-const switchingController = (prev, curr) => {
-
+function switchingController(prev, curr) {
   /* Do nothing if fermenter is off */
   if (!curr.get('rts').active) {
     return curr;
@@ -38,6 +37,6 @@ const switchingController = (prev, curr) => {
                             .setIn(['devices', dev, 'isOn'], lastIsOn)
                             .getIn(['devices', dev]));
   }, curr);
-};
+}
 
 export default switchingController;
