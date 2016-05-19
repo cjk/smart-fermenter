@@ -10,7 +10,7 @@ function _update(rts, props) {
   });
 }
 
-function handleRuntimeState(prev, curr) {
+function bootstrapRuntimeState(prev, curr) {
   const prevRts = prev.get('rts');
 
   /* Carry over current fermenter-is-active state from previous state */
@@ -44,4 +44,4 @@ function handleRuntimeState(prev, curr) {
   return curr.set('rts', newRts);
 }
 
-export default handleRuntimeState;
+export default bootstrapRuntimeState;

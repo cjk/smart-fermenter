@@ -11,7 +11,7 @@ import {switchOps, carryoverEmergencies} from '../history';
 import {detectEnvEmergency, deviceRunningTooLong} from '../watchdogs';
 /* Update global state (like switching-decisions) based on current / previous
    runtime state */
-import handleRuntimeState from './handleRuntimeState.js';
+import bootstrapRuntimeState from './bootstrapRuntimeState.js';
 /* Handle runtime-state, like emergencies, notifications, on/off */
 import handleRuntimeSideEffects from './runtimeSideEffectHandler';
 /* Logging */
@@ -37,7 +37,7 @@ const handleDevices = (envStream) => {
     .filter(state => state.getIn(['env', 'isValid']))
     /* Bootstraps runtime-state, like toggling fermenter active-state on/off.
        Thus, must occur *before* switching devices */
-    .scan(handleRuntimeState)
+    .scan(bootstrapRuntimeState)
     /* Decide whether devices should be switched off/on based on environmental data */
     .scan(makeSwitchingDecisions, InitialState)
     /* Collects (switching-) history here: */
