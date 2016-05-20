@@ -5,9 +5,15 @@ function fermenterIsActive(rts) {
 }
 
 function _update(rts, props) {
-  return rts.withMutations(newRts => {
-    return R.map(R.apply(newRts.set.bind(newRts)), R.toPairs(props));
-  });
+  return rts.withMutations(newRts =>
+    R.map(R.apply(newRts.set.bind(newRts)), R.toPairs(props))
+  );
+}
+
+function updateDevice(dev, props) {
+  return dev.withMutations(newDevState =>
+    R.map(R.apply(newDevState.set.bind(newDevState)), R.toPairs(props))
+  );
 }
 
 function bootstrapRuntimeState(prev, curr) {
@@ -23,6 +29,7 @@ function bootstrapRuntimeState(prev, curr) {
   const updateRts = R.partial(_update, [rts]);
 
   let newRts = rts;
+  let devices = curr.get('devices');
 
   switch (rts.currentCmd) {
     case 'fermenterStart': {
@@ -34,6 +41,11 @@ function bootstrapRuntimeState(prev, curr) {
     case 'fermenterStop': {
       if (fermenterIsRunning) {
         newRts = updateRts({active: false, status: 'off', currentCmd: null});
+        /* IMPORTANT: Make sure we switch all devices off as well as the fermenter-closet! */
+        devices = devices.map((dev) => updateDevice(
+          dev,
+          {shouldSwitchTo: 'off', willSwitch: true, isOn: false})
+        );
       }
       break;
     }
@@ -41,7 +53,7 @@ function bootstrapRuntimeState(prev, curr) {
       return curr;
   }
 
-  return curr.set('rts', newRts);
+  return curr.set('rts', newRts).set('devices', devices);
 }
 
 export default bootstrapRuntimeState;
