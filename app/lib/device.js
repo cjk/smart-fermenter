@@ -1,9 +1,10 @@
 import {List} from 'immutable';
+import {getRandomInt} from './random';
 import InitialState from '../initialState';
 import K from 'kefir';
 /* For switching */
-import switchImpl from './simulatedSwitch';
 import remoteSwitch from './remoteSwitch';
+import switchImpl from './simulatedSwitch';
 
 /* What switching implementation shall we use? Simulated or real: */
 const switcher = remoteSwitch(switchImpl);
@@ -12,11 +13,13 @@ const switcher = remoteSwitch(switchImpl);
 const devices = new List(InitialState.get('devices').keys());
 
 function delayedSwitch(dev, onOff) {
+  const randomDelay = getRandomInt(10, 100);
+
   return K.fromCallback(callback => {
     setTimeout(() => {
       callback(1);
       switcher(dev, onOff);
-    }, 100);
+    }, randomDelay);
   });
 }
 
