@@ -31,6 +31,12 @@ const readableTimestamps = state =>
 /* Filter out devices from state and pass them on for conditional switching */
 const switchDevices = (state) => maybeSwitchDevices(state.get('devices'));
 
+/* Preliminary onEnd-callback */
+function handleEndOfStream() {
+  switchOffAllDevices();
+  messenger.emit('NOTE: your fermenter-closet just shut itself down cleanly.\nAll devices have been switched off, but please double check this and take care any remaining content in the closet!');
+}
+
 const handleDevices = (envStream) => {
   return envStream
     /* Don't do anything when environment-readings are invalid */
@@ -56,20 +62,8 @@ const handleDevices = (envStream) => {
     /* Perform actual switches here - depending on current state and if we
        actually got this far in the stream */
     .onValue(switchDevices)
-    /* TODO: Turn into named function and/or externalize */
-    .onEnd(() => {
-      switchOffAllDevices();
-      messenger.emit('NOTE: your fermenter-closet just shut itself down cleanly.\nAll devices have been switched off, but please double check this and take care any remaining content in the closet!');
-    })
-    /* TODO: Turn into named function and/or externalize */
-    .onError(() => {
-      /* NOTE: Unused for now - no error-conditions are generated at this time! */
-
-      /* We're losing device-state here, so switch off
-         anything to be able to start from a clean slate */
-      switchOffAllDevices();
-      messenger.emit('WARNING: your fermenter-closet just signaled an error-state!');
-    })
+    /* PENDING: As of now stream is never supposed to end so this is never executed */
+    .onEnd(handleEndOfStream)
     /* Terse log current state */
     .onValue(logState)
     /* Make log prettier by providing readable timestamps; DEPRECATED: use
