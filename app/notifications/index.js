@@ -1,42 +1,35 @@
-import Kefir from 'kefir';
-import request from 'request';
+import buildEmergencyNotifications from './buildEmergencyNotifications';
+import createMessageEmitter from './messageStream';
+import {Record} from 'immutable';
+import R from 'ramda';
 
-const slackURL = 'https://hooks.slack.com/services/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';
+const Message = Record({
+  level: 'notice',
+  msg: 'Some notification-message'
+});
 
-const sendThrottledMessage = text => {
+function messageIsEmpty(message) {
+  return !(message instanceof Message) || R.isNil(message.msg) || R.isEmpty(message.msg);
+}
 
-  const postToSlack = (text) => {
-    const payload = {text: text, channel: '#smarthome', username: 'fermenter-closet'};
+function queueMessage(runtimeState, message) {
+  /* Do nothing on empty messages */
+  if (messageIsEmpty(message)) {
+    return runtimeState;
+  }
 
-    request.post(slackURL, {body: payload, json: true}, (error, response, body) => {
-      if (!error && response.statusCode === 200) {
-        console.log(`[notification-response]: ${body}`);
-      } else {
-        console.log(`[notification-response] - ERROR - code: ${response.statusCode} - `, body);
-      };
-    });
-  };
+  return runtimeState.update('notifications', (msgLst) => msgLst.unshift(message));
+}
 
-  let emitter;
+function buildMessage(msg, level = 'notify') {
+  return new Message({level, msg});
+}
 
-  const stream = Kefir.stream((_emitter) => {
-    emitter = _emitter;
-    return () => {
-      emitter = undefined;
-    };
-  });
+const createNotifier = R.curry(queueMessage);
 
-  stream.emit = (text) => {
-    emitter && emitter.emit(text);
-    return this;
-  };
-
-  stream.throttle(3000)
-        .onValue((text) => {
-          console.log('~~~~~~~~~~~ SENDING NOTIFICATION: ', text);
-          postToSlack(text);
-        });
-  return stream;
+export default {
+  createNotifier,
+  buildMessage,
+  createMessageEmitter,
+  buildEmergencyNotifications
 };
-
-export default sendThrottledMessage;

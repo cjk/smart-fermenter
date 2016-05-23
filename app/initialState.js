@@ -1,4 +1,4 @@
-import {Record, Map, Seq} from 'immutable';
+import {Record, Map, Seq, List} from 'immutable';
 
 const Env = new Record({
   createdAt: null,
@@ -37,7 +37,8 @@ const RunTimeState = new Record({
   status: 'initializing',
   hasEnvEmergency: false,
   hasDeviceMalfunction: false,
-  currentCmd: null
+  currentCmd: null,
+  notifications: new List()
 });
 
 const InitialState = new Map({

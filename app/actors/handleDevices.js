@@ -1,7 +1,6 @@
 import {maybeSwitchDevices, switchOffAllDevices} from '../lib/device';
 import InitialState from '../initialState';
 
-import notify from '../notifications';
 import {prettifyTimestamp} from '../lib/datetime';
 
 import makeSwitchingDecisions from '../controller/switchingController';
@@ -17,9 +16,6 @@ import handleRuntimeSideEffects from './runtimeSideEffectHandler';
 /* Logging */
 import logState from '../stateLogger';
 
-/* To send notifications */
-const messenger = notify();
-
 const readableTimestamps = state =>
   state.updateIn(['env', 'createdAt'],
                  /* We *may* receive an invalid date here before streams are
@@ -34,11 +30,11 @@ const switchDevices = (state) => maybeSwitchDevices(state.get('devices'));
 /* Preliminary onEnd-callback */
 function handleEndOfStream() {
   switchOffAllDevices();
-  messenger.emit('NOTE: your fermenter-closet just shut itself down cleanly.\nAll devices have been switched off, but please double check this and take care any remaining content in the closet!');
+  //   messenger.emit('NOTE: your fermenter-closet just shut itself down cleanly.\nAll devices have been switched off, but please double check this and take care any remaining content in the closet!');
 }
 
-const handleDevices = (envStream) => {
-  return envStream
+const handleDevices = (envStream) =>
+  envStream
     /* Don't do anything when environment-readings are invalid */
     .filter(state => state.getIn(['env', 'isValid']))
     /* Bootstraps runtime-state, like toggling fermenter active-state on/off.
@@ -70,8 +66,7 @@ const handleDevices = (envStream) => {
        #logState above */
     .map(readableTimestamps)
     /* (DEBUG-) logger */
-    /*     .log('Logger') */
-    ;
-};
+    // .log()
+;
 
 export default handleDevices;

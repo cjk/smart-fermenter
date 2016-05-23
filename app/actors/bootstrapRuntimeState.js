@@ -1,3 +1,4 @@
+import {createNotifier, buildMessage} from '../notifications';
 import R from 'ramda';
 
 function fermenterIsActive(rts) {
@@ -30,11 +31,13 @@ function bootstrapRuntimeState(prev, curr) {
 
   let newRts = rts;
   let devices = curr.get('devices');
+  let message = null;
 
   switch (rts.currentCmd) {
     case 'fermenterStart': {
       if (!fermenterIsRunning) {
         newRts = updateRts({active: true, status: 'running', currentCmd: null});
+        message = buildMessage('Fermenter was started.');
       }
       break;
     }
@@ -46,14 +49,19 @@ function bootstrapRuntimeState(prev, curr) {
           dev,
           {shouldSwitchTo: 'off', willSwitch: true, isOn: false})
         );
+        message = buildMessage('Fermenter was stopped.');
       }
       break;
     }
     default:
-      return curr;
+      return newRts;
   }
 
-  return curr.set('rts', newRts).set('devices', devices);
+  const queueMessage = createNotifier(newRts);
+
+  return curr
+    .set('rts', queueMessage(message))
+    .set('devices', devices);
 }
 
 export default bootstrapRuntimeState;

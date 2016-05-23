@@ -1,5 +1,5 @@
-/* Checks for consecutive occuring emergency-signals and stops (i.e. return
-   false) when limit is reached. */
+/* Checks for consecutive occuring emergency-signals and signals a
+   runtime-emergency when a certain limit is reached. */
 const maxOffScaleReadingsAllowed = 2;
 
 const histEmergencyPath = ['history', 'emergencies'];
