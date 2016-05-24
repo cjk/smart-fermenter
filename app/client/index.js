@@ -14,14 +14,14 @@ const socket = io.connect(`http://${config.host}:${config.port}/${config.namespa
 const emitFermenterState = (state) =>
   socket.emit('fermenterState', state.toJS());
 
-function startStreaming(stateStream) {
-  console.log('Starting streaming to smart-home-backend.');
-  stateStream.onValue(emitFermenterState);
+function startStreaming(stream) {
+  console.log(`Connected to smart-home-backend on <${config.host}:${config.port}> - starting streaming...`);
+  stream.onValue(emitFermenterState);
 }
 
-function stopStreaming(stateStream) {
+function stopStreaming(stream) {
   console.log('Disconnected from smart-home-backend - stopping streaming...');
-  stateStream.offValue(emitFermenterState);
+  stream.offValue(emitFermenterState);
 }
 
 function createClient(stateStream) {
@@ -38,20 +38,23 @@ function createClient(stateStream) {
     return state.set('rts', newRts);
   });
 
+  function start(stream) {
+    socket.on('connect', () => {
+      socket.on('disconnect', stopStreaming(stream));
+
+      /* TODO: Should we throttle our outgoing stream to save network bandwidth,
+         like so: statestream.throttle(5000, {trailing: false}) */
+      startStreaming(stream);
+    });
+  }
+
   socket
     .on('connect_error', () =>
       console.log(`ERROR connecting to smart-home-backend on <${config.host}:${config.port}>`))
     .on('connect_timeout', () =>
-      console.log(`TIMEOUT connecting to smart-home-backend on <${config.host}:${config.port}>!`))
-    .on('connect', () => {
-      console.log(`Connected to smart-home-backend on <${config.host}:${config.port}> - starting streaming...`);
-      /* TODO: Should we throttle our outgoing stream to save network bandwidth,
-         like so: statestream.throttle(5000, {trailing: false}) */
-      startStreaming(runtimeStream);
-    })
-    .on('disconnect', stopStreaming(runtimeStream));
+      console.log(`TIMEOUT connecting to smart-home-backend on <${config.host}:${config.port}>!`));
 
-  return runtimeStream;
+  return {runtimeStream, start};
 }
 
 export default createClient;
