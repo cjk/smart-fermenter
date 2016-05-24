@@ -1,13 +1,17 @@
 import {List, Seq} from 'immutable';
 import {SwitchOp} from '../initialState';
 
+const maxSwitchOpsEntries = 1000;
+
 const histSwOpsPath = ['history', 'switchOps'];
 
 const createSwitchOps = (devices) =>
   devices.filter(dev => dev.willSwitch)
          .reduce((ops, dev, name) =>
            ops.push(
-             new SwitchOp({device: name, to: dev.shouldSwitchTo, at: Date.now()})), new List()
+             new SwitchOp(
+               {device: name, to: dev.shouldSwitchTo, at: Date.now()}
+             )), new List()
          );
 
 const switchOps = (prev, curr) => {
@@ -18,10 +22,12 @@ const switchOps = (prev, curr) => {
 };
 
 const addSwitchOp = (state, o) => {
-  const history = state.getIn(histSwOpsPath),
-        op = new SwitchOp(o);
+  const history = state.getIn(histSwOpsPath);
+  const op = new SwitchOp(o);
 
-  return state.setIn(histSwOpsPath, history.concat(op));
+  /* Save a limited number of switching operations to our history-state */
+  return state.setIn(histSwOpsPath,
+                     history.concat(op).takeLast(maxSwitchOpsEntries));
 };
 
 export {addSwitchOp};

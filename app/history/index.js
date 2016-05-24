@@ -1,6 +1,5 @@
-import switchOps from './switchOps';
 import {addEmergency, carryoverEmergencies} from './emergencies';
-import {addSwitchOp} from './switchOps';
+import switchOps, {addSwitchOp} from './switchOps';
 
 export default {
   switchOps,
