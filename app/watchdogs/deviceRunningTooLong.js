@@ -16,7 +16,6 @@ const deviceRunningTooLong = (prev, curr) => {
                            .filter((v, k, i) => v.maxBy((c) => c.at).to === 'on')/* throw away all that wasn't switched on most recently */
                            .map((v, k) => v.maxBy(sw => sw.at).update(e => now - e.at))/* replace log-info with simple running-duration in ms  */
                            .filter(d => d > durationLimit)/* go further only if breaking our running-limitation */
-                           /* TODO: Template-functionality currently not used */
                            .forEach((d, dev) => { /* side-effect: build error-message */
                              noticeTemplate += `Device <${dev}> has been running for more than ${(durationLimit / 1000 / 60).toFixed(1)} minutes.\n`;
                            });

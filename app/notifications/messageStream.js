@@ -1,3 +1,5 @@
+/* eslint no-console: "off" */
+
 import Kefir from 'kefir';
 import request from 'request';
 
@@ -30,7 +32,9 @@ function createMessageEmitter() {
     return this;
   };
 
-  stream.throttle(1000)
+  /* Send notifications via console / messenger (e.g. Slack). Never send more
+     than one message in five seconds to avoid spamming. */
+  stream.throttle(5000)
         .onValue((notification) => {
           console.log(`~~~~~~~ SENDING NOTIFICATION [${notification.level}]: ${notification.msg}`);
           //postToSlack(text);
