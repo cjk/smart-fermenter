@@ -6,7 +6,9 @@
     "object-curly-spacing": ["error", "never"],
     "space-before-function-paren": ["error", "never"],
     "comma-dangle": ["error", "only-multiline"],
-    "no-underscore-dangle": "off"
+    "no-underscore-dangle": "off",
+    "max-len": ["error", 90, 2, {"ignoreTrailingComments": true}],
+    "no-cond-assign": ["error", "except-parens"]
   },
   "extends": "airbnb"
 }
