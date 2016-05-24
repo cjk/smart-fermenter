@@ -3,8 +3,9 @@ import handleDevices from './actors';
 import createClient from './client';
 import envStream from './sensors';
 
-const stateStream = createClient(controlEnvironment(envStream));
+const runtimeStream = createClient(controlEnvironment(envStream));
 
-handleDevices(stateStream);
+const stateStream = handleDevices(runtimeStream);
+stateStream.log();/* DEBUGGING only */
 
 console.log('----------------------------------------------------------------------');

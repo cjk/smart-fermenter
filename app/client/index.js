@@ -1,11 +1,10 @@
 /* eslint no-console: "off" */
 import io from 'socket.io-client';
-import R from 'ramda';
 import createCommandStream from './createCommandStream';
 
 const config = {
   host: 'localhost', /* NOTE: zircon.local is not available on HOME-LAN! :( */
-  //host: '192.168.0.28', /* NOTE: zircon.local is not available on HOME-LAN! :( */
+  // host: '192.168.0.28', /* NOTE: zircon.local is not available on HOME-LAN! :( */
   port: 4001,
   namespace: 'fermenter'
 };
@@ -20,14 +19,12 @@ function startStreaming(stateStream) {
   stateStream.onValue(emitFermenterState);
 }
 
-function _stopStreaming(stateStream, socket) {
+function stopStreaming(stateStream) {
   console.log('Disconnected from smart-home-backend - stopping streaming...');
   stateStream.offValue(emitFermenterState);
 }
 
 function createClient(stateStream) {
-  const stopStreaming = R.curry(_stopStreaming);
-
   const cmdStream = createCommandStream(socket);
 
   /* DEBUGGING */

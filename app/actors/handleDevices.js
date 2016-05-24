@@ -1,8 +1,6 @@
 import {maybeSwitchDevices, switchOffAllDevices} from '../lib/device';
 import InitialState from '../initialState';
 
-import {prettifyTimestamp} from '../lib/datetime';
-
 import makeSwitchingDecisions from '../controller/switchingController';
 /* History */
 import {switchOps, carryoverEmergencies} from '../history';
@@ -16,14 +14,6 @@ import handleRuntimeSideEffects from './runtimeSideEffectHandler';
 /* Logging */
 import logState from '../stateLogger';
 
-const readableTimestamps = state =>
-  state.updateIn(['env', 'createdAt'],
-                 /* We *may* receive an invalid date here before streams are
-                 properly initialized, so check for it as 'moment' otherwise
-                 spills a warning */
-                 (v) => prettifyTimestamp(v)
-  );
-
 /* Filter out devices from state and pass them on for conditional switching */
 const switchDevices = (state) => maybeSwitchDevices(state.get('devices'));
 
@@ -33,8 +23,8 @@ function handleEndOfStream() {
   //   messenger.emit('NOTE: your fermenter-closet just shut itself down cleanly.\nAll devices have been switched off, but please double check this and take care any remaining content in the closet!');
 }
 
-const handleDevices = (envStream) =>
-  envStream
+const handleDevices = (stateStream) =>
+  stateStream
     /* Don't do anything when environment-readings are invalid */
     .filter(state => state.getIn(['env', 'isValid']))
     /* Bootstraps runtime-state, like toggling fermenter active-state on/off.
@@ -62,11 +52,6 @@ const handleDevices = (envStream) =>
     .onEnd(handleEndOfStream)
     /* Terse log current state */
     .onValue(logState)
-    /* Make log prettier by providing readable timestamps; DEPRECATED: use
-       #logState above */
-    .map(readableTimestamps)
-    /* (DEBUG-) logger */
-    // .log()
 ;
 
 export default handleDevices;
