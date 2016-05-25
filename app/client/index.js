@@ -1,13 +1,7 @@
 /* eslint no-console: "off" */
-import io from 'socket.io-client';
+import config from './config';
 import createCommandStream from './createCommandStream';
-
-const config = {
-  host: 'localhost', /* NOTE: zircon.local is not available on HOME-LAN! :( */
-  // host: '192.168.0.28', /* NOTE: zircon.local is not available on HOME-LAN! :( */
-  port: 4001,
-  namespace: 'fermenter'
-};
+import io from 'socket.io-client';
 
 const socket = io.connect(`http://${config.host}:${config.port}/${config.namespace}`);
 
