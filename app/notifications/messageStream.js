@@ -1,4 +1,5 @@
 /* eslint no-console: "off" */
+/* eslint max-len: ["error", 90, 2, {"ignoreUrls": true}] */
 
 import Kefir from 'kefir';
 import request from 'request';
@@ -39,7 +40,7 @@ function createMessageEmitter() {
   stream.throttle(5000)
         .onValue((notification) => {
           console.log(`~~~~~~~ SENDING NOTIFICATION [${notification.level}]: ${notification.msg}`);
-          // postToSlack(notification.msg);
+          postToSlack(notification.msg);
         });
   return stream;
 }
