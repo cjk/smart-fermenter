@@ -6,8 +6,10 @@ import request from 'request';
 const slackURL = 'https://hooks.slack.com/services/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';
 
 function createMessageEmitter() {
+  /* Sends a notification-text via Slack as an incoming webhook (see
+     https://api.slack.com/incoming-webhooks) */
   const postToSlack = (text) => {
-    const payload = {text, channel: '#smarthome', username: 'fermenter-closet'};
+    const payload = {text, icon_emoji: ':koala:', channel: '#smarthome', username: 'fermenter-closet'};
 
     request.post(slackURL, {body: payload, json: true}, (error, response, body) => {
       if (!error && response.statusCode === 200) {
@@ -37,7 +39,7 @@ function createMessageEmitter() {
   stream.throttle(5000)
         .onValue((notification) => {
           console.log(`~~~~~~~ SENDING NOTIFICATION [${notification.level}]: ${notification.msg}`);
-          postToSlack(text);
+          // postToSlack(notification.msg);
         });
   return stream;
 }
