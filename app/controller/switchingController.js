@@ -17,12 +17,10 @@ function switchingController(prev, curr) {
     const deviceAlreadyOnOff = (_dev_, shouldSwitchTo) =>
       ((lastIsOn && shouldSwitchTo === 'off') || (!lastIsOn && shouldSwitchTo === 'on'));
 
-    const lastShouldSwitchTo = pDev.get('shouldSwitchTo');
     const shouldSwitchTo = cDev.get('shouldSwitchTo');
     /* Decide whether we actually need to switch a device on or off */
     const willSwitch = shouldSwitchTo                           /* 1. Someone indicated a switch is necessary */
-                    && (lastShouldSwitchTo !== shouldSwitchTo)  /* 2. Is new desired switch-state different from last one? */
-                    && deviceAlreadyOnOff(dev, shouldSwitchTo); /* 3. Isn't the device already in desired switch-state? */
+                    && deviceAlreadyOnOff(dev, shouldSwitchTo); /* 2. Isn't the device already in desired switch-state? */
 
     if (willSwitch) {
       // console.log(`>>> We *intend* to switch ${dev} ${shouldSwitchTo}!`);
