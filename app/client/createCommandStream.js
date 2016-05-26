@@ -3,6 +3,8 @@ import K from 'kefir';
 
 function handleCommands(fermenterSocket) {
   function disconnectHndlr() {
+    /* PENDING: Disconnects are happening, thus do something useful here, like
+       emitting an error?! */
     console.log('[CommandHdlr] Disconnected - stopped listening to fermenter-commands.');
   }
 
