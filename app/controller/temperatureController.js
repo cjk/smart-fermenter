@@ -2,7 +2,7 @@
    should be merged! */
 import {addEmergency} from '../history';
 
-const [heatUpperLimit, heatLowerLimit] = [31, 28];
+const [heatUpperLimit, heatLowerLimit] = [33, 30];
 
 function temperatureController(envStream) {
   return envStream.map(state => {
@@ -10,7 +10,7 @@ function temperatureController(envStream) {
     const isValid = state.getIn(['env', 'isValid']);
 
     /* If the reading can be trusted, this is an emergency! */
-    if (temperature > (heatUpperLimit + 5) && isValid) {
+    if (temperature > (heatUpperLimit + 3) && isValid) {
       console.error(`[temp-controller] Emergency-state for temperature (${temperature}) detected!`);
       return addEmergency(state, {at: Date.now(), sensor: 'temperature', device: 'heater'});
     }
