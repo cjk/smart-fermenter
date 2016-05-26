@@ -54,7 +54,6 @@ function bootstrapRuntimeState(prev, curr) {
       break;
     }
     default:
-      return newRts;
   }
 
   const queueMessage = createNotifier(newRts);
