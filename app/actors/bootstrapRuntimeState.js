@@ -56,6 +56,10 @@ function bootstrapRuntimeState(prev, curr) {
     default:
   }
 
+  if (rts.status === 'initializing') {
+    newRts = newRts.set('status', fermenterIsRunning ? 'running' : 'off');
+  }
+
   const queueMessage = createNotifier(newRts);
 
   return curr
