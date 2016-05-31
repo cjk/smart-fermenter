@@ -20,12 +20,6 @@ function stopStreaming(stream) {
 
 function createClient(stateStream) {
   const cmdStream = createCommandStream(socket);
-
-  /* DEBUGGING */
-  // cmdStream.onValue((v) => {
-  // console.log(`[Command-Stream] Got value: ${JSON.stringify(v)}`);
-  // });
-
   const runtimeStream = stateStream.combine(cmdStream, (state, cmd) => {
     /* Merge fermenter-command into state structure, under run-time-status, currentCmd: */
     const newRts = state.get('rts').set('currentCmd', cmd.fermenterCmd);

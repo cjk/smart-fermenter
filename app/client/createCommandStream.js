@@ -1,6 +1,8 @@
 /* eslint no-console: "off" */
 import K from 'kefir';
 
+const fermenterStartCmd = {fermenterCmd: 'fermenterStart'};
+
 function handleCommands(fermenterSocket) {
   function disconnectHndlr() {
     /* PENDING: Disconnects are happening, thus do something useful here, like
@@ -26,7 +28,7 @@ function handleCommands(fermenterSocket) {
       fermenterSocket.removeListener('disconnect', disconnectHndlr);
     };
   });
-  return stream;
+  return stream.toProperty(() => fermenterStartCmd);
 }
 
 export default handleCommands;
