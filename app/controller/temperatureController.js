@@ -12,7 +12,7 @@ function temperatureController(envStream) {
     /* If the reading can be trusted, this is an emergency! */
     if (temperature > (heatUpperLimit + 3) && isValid) {
       console.error(`[temp-controller] Emergency-state for temperature (${temperature}) detected!`);
-      return addEmergency(state, {at: Date.now(), sensor: 'temperature', device: 'heater'});
+      addEmergency(state, {at: Date.now(), sensor: 'temperature', device: 'heater'});
     }
 
     if (temperature > heatUpperLimit) {

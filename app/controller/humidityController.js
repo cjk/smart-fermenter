@@ -12,7 +12,7 @@ function humidifierController(envStream) {
     /* If the reading can be trusted, this is an emergency! */
     if (humidity > (humUpperLimit + 25) && isValid) {
       console.error(`[hum-controller] Emergency-state for humidity (${humidity}) detected!`);
-      return addEmergency(state, {at: Date.now(), sensor: 'humidity', device: 'humidifier'});
+      addEmergency(state, {at: Date.now(), sensor: 'humidity', device: 'humidifier'});
     }
 
     if (humidity > humUpperLimit) {
