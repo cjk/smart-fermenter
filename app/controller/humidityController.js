@@ -2,7 +2,7 @@
    should be merged! */
 import {addEmergency} from '../history';
 
-const [humUpperLimit, humLowerLimit] = [66, 60];
+const [humUpperLimit, humLowerLimit] = [68, 62];
 
 function humidifierController(envStream) {
   return envStream.map(state => {

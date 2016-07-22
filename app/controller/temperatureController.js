@@ -2,7 +2,7 @@
    should be merged! */
 import {addEmergency} from '../history';
 
-const [heatUpperLimit, heatLowerLimit] = [33, 30];
+const [heatUpperLimit, heatLowerLimit] = [36, 33];
 
 function temperatureController(envStream) {
   return envStream.map(state => {
