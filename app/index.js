@@ -1,3 +1,4 @@
+require('longjohn');
 require('babel-register');
 
 function enablePiping(env) {

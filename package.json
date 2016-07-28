@@ -33,6 +33,7 @@
     "gulp-eslint": "latest",
     "gulp-nodemon": "latest",
     "gulp-util": "latest",
+    "longjohn": "^0.2.11",
     "nodemon": "latest",
     "piping": "latest",
     "tape": "latest"
