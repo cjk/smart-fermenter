@@ -1,18 +1,22 @@
 import gulp from 'gulp';
-import gutil from 'gulp-util';
-import nodemon from 'gulp-nodemon';
+import babel from 'gulp-babel';
+import watch from 'gulp-watch';
+import preprocess from 'gulp-preprocess';
 
-function serverWatch() {
-  gutil.log('-> Watching Server...');
-
-  nodemon({
-    script: 'app/index.js',
-    ext: 'js jsx',
-    ignore: ['gulpfile.babel.js', 'dist/*', 'node_modules/*'],
-    watch: ['app/*']
-  });
+function build() {
+  gulp.src(['./src/**/*.js'])
+      .pipe(preprocess())
+      .pipe(babel({
+        presets: ['es2015-node5', 'stage-1'],
+        plugins: ['transform-runtime', 'add-module-exports']
+      }))
+      .pipe(gulp.dest('app'));
 }
 
-gulp.task('serverwatch', serverWatch);
+gulp.task('build', build);
 
-gulp.task('default', ['serverwatch']);
+gulp.task('hotupdate', () =>
+  watch('src/**/*.js', build, {ignoreInitial: false})
+);
+
+gulp.task('default', ['build', 'hotupdate']);

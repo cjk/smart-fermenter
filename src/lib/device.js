@@ -4,7 +4,13 @@ import InitialState from '../initialState';
 import K from 'kefir';
 /* For switching */
 import remoteSwitch from './remoteSwitch';
+
+// @if NODE_ENV='development'
 import switchImpl from './simulatedSwitch';
+// @endif
+// @if NODE_ENV='production'
+import switchImpl from 'rcswitch'; /* eslint no-redeclare: "off" */
+// @endif
 
 /* What switching implementation shall we use? Simulated or real: */
 const switcher = remoteSwitch(switchImpl);

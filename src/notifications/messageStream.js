@@ -40,7 +40,10 @@ function createMessageEmitter() {
   stream.throttle(5000)
         .onValue((notification) => {
           console.log(`~~~~~~~ SENDING NOTIFICATION [${notification.level}]: ${notification.msg}`);
+          // @if NODE_ENV='production'
+          /* Only notify to Slack in production */
           postToSlack(notification.msg);
+          // @endif
         });
   return stream;
 }

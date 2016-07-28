@@ -1,0 +1,2 @@
+require('longjohn');
+require('./main');
