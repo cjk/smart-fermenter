@@ -1,5 +1,6 @@
 import SwitchData from './switch';
 import swList from './switchList';
+import secureSwitching from './secureSwitching';
 
 const swTransport = {
   type: 'radio-433mhz',
@@ -17,13 +18,15 @@ function remoteSwitch(switchLib) {
     const switchOn = (sw) => {
       // console.log(`[Controller] About to switch ${sw.desc} on <${sw.systemCode}#${sw.unitCode}> ON:`);
       prepareSwitch(sw);
-      switchLib.switchOn(sw.systemCode, sw.unitCode);
+      const switchFn = switchLib.switchOn.bind(this, sw.systemCode, sw.unitCode);
+      secureSwitching(switchFn);
     };
 
     const switchOff = (sw) => {
       // console.log(`[Controller]: About to switch ${sw.desc} on <${sw.systemCode}#${sw.unitCode}> OFF.`);
       prepareSwitch(sw);
-      switchLib.switchOff(sw.systemCode, sw.unitCode);
+      const switchFn = switchLib.switchOff.bind(this, sw.systemCode, sw.unitCode);
+      secureSwitching(switchFn);
     };
 
     if (state === 'on') {
