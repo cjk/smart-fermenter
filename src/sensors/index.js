@@ -1,5 +1,5 @@
-// import tempHumStream from './tempHumidity';
-import tempHumStream from './simulatedTempHumidity';
+import tempHumStream from './tempHumidity';
+// import tempHumStream from './simulatedTempHumidity';
 
 const isNumeric = n => !isNaN(parseFloat(n)) && isFinite(n);
 
