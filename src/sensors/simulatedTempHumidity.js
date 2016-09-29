@@ -21,7 +21,7 @@ function randomizeEnvironment(s) {
   return s.setIn(['env', 'temperature'], getRandomInt(25, 35)).setIn(['env', 'humidity'], getRandomInt(45, 75));
 }
 
-const simulatedTempHumStream = K.repeat(n => {
+const simulatedTempHumStream = K.repeat((n) => {
   const run = n + 1;
 
   // console.log('### TEST-RUN #', run);

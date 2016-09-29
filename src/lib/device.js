@@ -21,7 +21,7 @@ function switchOffAllDevices() {
 }
 
 function maybeSwitchDevices(deviceState) {
-  devices.forEach(dev => {
+  devices.forEach((dev) => {
     const device = deviceState.get(dev);
     const {willSwitch, shouldSwitchTo} = device;
 

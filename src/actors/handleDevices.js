@@ -15,7 +15,7 @@ import handleRuntimeSideEffects from './runtimeSideEffectHandler';
 import logState from '../stateLogger';
 
 /* Filter out devices from state and pass them on for conditional switching */
-const switchDevices = (state) => maybeSwitchDevices(state.get('devices'));
+const switchDevices = state => maybeSwitchDevices(state.get('devices'));
 
 /* Preliminary onEnd-callback */
 function handleEndOfStream() {
@@ -23,7 +23,7 @@ function handleEndOfStream() {
   //   messenger.emit('NOTE: your fermenter-closet just shut itself down cleanly.\nAll devices have been switched off, but please double check this and take care any remaining content in the closet!');
 }
 
-const handleDevices = (stateStream) =>
+const handleDevices = stateStream =>
   stateStream
     /* Don't do anything when environment-readings are invalid */
     .filter(state => state.getIn(['env', 'isValid']))

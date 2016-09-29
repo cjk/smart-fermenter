@@ -10,7 +10,7 @@ function handleCommands(fermenterSocket) {
     console.log('[CommandHdlr] Disconnected - stopped listening to fermenter-commands.');
   }
 
-  const stream = K.stream(emitter => {
+  const stream = K.stream((emitter) => {
     function emitCommand(cmd) {
       /* DEBUGGING */
       // console.log(`[Fermenter-Cmd-Stream] Emitting fermenter command we just received: <${JSON.stringify(cmd)}>`);

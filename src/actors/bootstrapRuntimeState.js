@@ -1,5 +1,5 @@
-import {createNotifier, buildMessage} from '../notifications';
 import R from 'ramda';
+import {createNotifier, buildMessage} from '../notifications';
 
 function fermenterIsActive(rts) {
   return rts.get('active');
@@ -45,7 +45,7 @@ function bootstrapRuntimeState(prev, curr) {
       if (fermenterIsRunning) {
         newRts = updateRts({active: false, status: 'off', currentCmd: null});
         /* IMPORTANT: Make sure we switch all devices off as well as the fermenter-closet! */
-        devices = devices.map((dev) => updateDevice(
+        devices = devices.map(dev => updateDevice(
           dev,
           {shouldSwitchTo: 'off', willSwitch: true, isOn: false})
         );

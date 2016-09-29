@@ -5,7 +5,7 @@ import io from 'socket.io-client';
 
 const socket = io.connect(`http://${config.host}:${config.port}/${config.namespace}`);
 
-const emitFermenterState = (state) =>
+const emitFermenterState = state =>
   socket.emit('fermenterState', state.toJS());
 
 function startStreaming(stream) {
