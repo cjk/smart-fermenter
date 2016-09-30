@@ -22,7 +22,7 @@ function readSensor() {
 const sensorStream = sensor.initialize() ?
                      (
                        Kefir
-                         .fromPoll(2000, readSensor)
+                         .fromPoll(10000, readSensor)/* emit a new sensor-reading every 10 seconds */
                          .toProperty()
                      ) :
                      Kefir.constantError('Failed to initialize temp-/humidity-sensor.');
