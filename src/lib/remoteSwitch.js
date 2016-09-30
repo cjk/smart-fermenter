@@ -18,14 +18,14 @@ function remoteSwitch(switchLib) {
     const switchOn = (sw) => {
       // console.log(`[Controller] About to switch ${sw.desc} on <${sw.systemCode}#${sw.unitCode}> ON:`);
       prepareSwitch(sw);
-      const switchFn = switchLib.switchOn.bind(this, sw.systemCode, sw.unitCode);
+      const switchFn = switchLib.switchOn.bind(switchLib, sw.systemCode, sw.unitCode);
       secureSwitching(switchFn);
     };
 
     const switchOff = (sw) => {
       // console.log(`[Controller]: About to switch ${sw.desc} on <${sw.systemCode}#${sw.unitCode}> OFF.`);
       prepareSwitch(sw);
-      const switchFn = switchLib.switchOff.bind(this, sw.systemCode, sw.unitCode);
+      const switchFn = switchLib.switchOff.bind(switchLib, sw.systemCode, sw.unitCode);
       secureSwitching(switchFn);
     };
 
