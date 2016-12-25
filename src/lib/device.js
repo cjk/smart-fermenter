@@ -1,13 +1,13 @@
 import {List} from 'immutable';
 import InitialState from '../initialState';
 /* For switching */
-import remoteSwitch from './remoteSwitch';
+import relaisSwitch from './relaisSwitch';
 
 // @if NODE_ENV='development'
 import switchImpl from './simulatedSwitch';
 // @endif
 // @if NODE_ENV='production'
-import switchImpl from 'rcswitch'; /* eslint no-redeclare: "off" */
+import switchImpl from 'rpio'; /* eslint no-redeclare: "off" */
 // @endif
 
 /* What switching implementation shall we use? Simulated or real: */
