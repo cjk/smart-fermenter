@@ -1,0 +1,12 @@
+[ignore]
+; Ignore unexpected extra "@providesModule"
+.*/node_modules/.*/node_modules/fbjs/.*
+
+[include]
+
+[libs]
+
+[options]
+module.system=haste
+experimental.strict_type_args=true
+munge_underscores=true

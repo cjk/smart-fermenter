@@ -1,17 +1,17 @@
 import {List} from 'immutable';
 import InitialState from '../initialState';
 /* For switching */
-import remoteSwitch from './remoteSwitch';
+import relaisSwitch from './relais/relaisSwitch';
 
 // @if NODE_ENV='development'
 import switchImpl from './simulatedSwitch';
 // @endif
 // @if NODE_ENV='production'
-import switchImpl from 'rcswitch'; /* eslint no-redeclare: "off" */
+import switchImpl from 'rpio'; /* eslint no-redeclare: "off" */
 // @endif
 
 /* What switching implementation shall we use? Simulated or real: */
-const switcher = remoteSwitch(switchImpl);
+const switcher = relaisSwitch(switchImpl);
 
 // dynamic version of: new List.of('heater', 'humidifier');
 const devices = new List(InitialState.get('devices').keys());
