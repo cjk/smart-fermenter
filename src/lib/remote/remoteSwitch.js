@@ -1,15 +1,35 @@
-import SwitchData from './switch';
-import swList from './switchList';
+/* @flow */
+
+/* Implementation for switching wireless outlets on/off, using a switch-lib like e.g. rcswitch.
+ * NOTE: This implementation isn't used anymore (after switching to relays) - thus handle with care.
+ * */
+import type {RemoteSwitch, Transport} from './types';
+import R from 'ramda';
 import secureSwitching from './secureSwitching';
 
-const swTransport = {
+const swTransport: Transport = {
   type: 'radio-433mhz',
   pin: 16
 };
 
-function remoteSwitch(switchLib) {
-  return (switchName, state) => {
-    const swtch = new SwitchData(swList.get(switchName)).set('transport', swTransport);
+const switches: RemoteSwitch = {
+  heater: {
+    desc: 'Fermenter Closet heater',
+    systemCode: '10011', /* identifier used for remote switching only  */
+    unitCode: 2, /* used for remote switching only */
+    transport: null
+  },
+  humidifier: {
+    desc: 'Fermenter Closet humidifier',
+    systemCode: '10011', /* identifier used for remote switching only  */
+    unitCode: 3, /* used for remote switching only */
+    transport: null
+  }
+};
+
+function remoteSwitch(switchLib: any) {
+  return (switchName: string, state: string) => {
+    const swtch = R.assoc('transport', swTransport, switches.switchName);
 
     const prepareSwitch = (sw) => {
       switchLib.enableTransmit(sw.transport.pin);

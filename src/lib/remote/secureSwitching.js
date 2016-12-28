@@ -1,5 +1,5 @@
 import K from 'kefir';
-import {getRandomInt} from './random';
+import {getRandomInt} from '../random';
 
 const intervalSwitch = () => {
   let switchCount = 0;

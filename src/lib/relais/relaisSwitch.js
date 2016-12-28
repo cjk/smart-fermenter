@@ -1,26 +1,37 @@
-import SwitchData from './switch';
-import swList from './switchList';
+/* @flow */
+import type RelaisSwitch from './types';
 
-function relaisSwitch(switchLib) {
-  return (switchName, state) => {
-    const swtch = new SwitchData(swList.get(switchName)).set('transport', swTransport);
+const switches: RelaisSwitch = {
+  heater: {
+    desc: 'Fermenter Closet heater',
+    pin: 2, /* GPIO-PIN - see https://github.com/kvalle/rpi-gpio-fun/blob/master/gpio-cheat-sheet.md */
+    transport: 'relais'
+  },
+  humidifier: {
+    desc: 'Fermenter Closet humidifier',
+    pin: 3, /* GPIO-PIN - see https://github.com/kvalle/rpi-gpio-fun/blob/master/gpio-cheat-sheet.md */
+    transport: 'relais'
+  }
+};
+
+function relaisSwitch(switchLib: any) {
+  return (switchName: string, state: string) => {
+    const swtch = switches.switchName;
 
     const prepareSwitch = (sw) => {
-      switchLib.enableTransmit(sw.transport.pin);
+      switchLib.open(sw.pin, switchLib.OUTPUT, switchLib.HIGH);
     };
 
     const switchOn = (sw) => {
-      // console.log(`[Controller] About to switch ${sw.desc} on <${sw.systemCode}#${sw.unitCode}> ON:`);
+      console.log(`[Controller] About to switch ${sw.desc} on <${sw.pin}> ON:`);
       prepareSwitch(sw);
-      const switchFn = switchLib.switchOn.bind(switchLib, sw.systemCode, sw.unitCode);
-      secureSwitching(switchFn);
+      switchLib.write(sw.pin, switchLib.LOW);
     };
 
     const switchOff = (sw) => {
-      // console.log(`[Controller]: About to switch ${sw.desc} on <${sw.systemCode}#${sw.unitCode}> OFF.`);
+      console.log(`[Controller] About to switch ${sw.desc} on <${sw.pin}> OFF:`);
       prepareSwitch(sw);
-      const switchFn = switchLib.switchOff.bind(switchLib, sw.systemCode, sw.unitCode);
-      secureSwitching(switchFn);
+      switchLib.write(sw.pin, switchLib.HIGH);
     };
 
     if (state === 'on') {

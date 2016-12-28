@@ -8,7 +8,8 @@
     "url": "git+https://github.com/cjk/smart-fermenter.git"
   },
   "scripts": {
-    "start": "PORT=8000 ./node_modules/.bin/nodemon --delay 2 ./app/index.js"
+    "start": "PORT=8000 ./node_modules/.bin/nodemon --delay 2 ./app/index.js",
+    "flow": "flow; test $? -eq 0 -o $? -eq 2"
   },
   "engines": {
     "node": ">=0.12"
@@ -19,16 +20,15 @@
     "babel": "latest",
     "babel-core": "latest",
     "babel-eslint": "*",
-    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-transform-flow-strip-types": "^6.21.0",
     "babel-plugin-transform-runtime": "^6.4.0",
-    "babel-preset-es2015": "latest",
-    "babel-preset-es2015-node5": "latest",
-    "babel-preset-stage-0": "latest",
+    "babel-preset-env": "^1.1.4",
     "del": "^2.2.1",
     "eslint-config-airbnb": "*",
     "eslint-plugin-babel": "*",
     "eslint-plugin-import": "*",
     "eslint-plugin-standard": "*",
+    "flow-bin": "^0.37.4",
     "gulp": "latest",
     "gulp-babel": "latest",
     "gulp-changed": "^1.3.1",
