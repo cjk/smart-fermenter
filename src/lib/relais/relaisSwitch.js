@@ -4,12 +4,12 @@ import type RelaisSwitch from './types';
 const switches: RelaisSwitch = {
   heater: {
     desc: 'Fermenter Closet heater',
-    pin: 2, /* GPIO-PIN - see https://github.com/kvalle/rpi-gpio-fun/blob/master/gpio-cheat-sheet.md */
+    pin: 3, /* GPIO-PIN - see https://github.com/kvalle/rpi-gpio-fun/blob/master/gpio-cheat-sheet.md */
     transport: 'relais'
   },
   humidifier: {
     desc: 'Fermenter Closet humidifier',
-    pin: 3, /* GPIO-PIN - see https://github.com/kvalle/rpi-gpio-fun/blob/master/gpio-cheat-sheet.md */
+    pin: 5, /* GPIO-PIN - see https://github.com/kvalle/rpi-gpio-fun/blob/master/gpio-cheat-sheet.md */
     transport: 'relais'
   }
 };
@@ -23,13 +23,13 @@ function relaisSwitch(switchLib: any) {
     };
 
     const switchOn = (sw) => {
-      console.log(`[Controller] About to switch ${sw.desc} on <${sw.pin}> ON:`);
+      console.log(`[Controller] About to switch ${sw.desc} on pin <${sw.pin}> ON:`);
       prepareSwitch(sw);
       switchLib.write(sw.pin, switchLib.LOW);
     };
 
     const switchOff = (sw) => {
-      console.log(`[Controller] About to switch ${sw.desc} on <${sw.pin}> OFF:`);
+      console.log(`[Controller] About to switch ${sw.desc} on pin <${sw.pin}> OFF:`);
       prepareSwitch(sw);
       switchLib.write(sw.pin, switchLib.HIGH);
     };
