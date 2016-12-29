@@ -15,7 +15,7 @@ function build() {
       .pipe(sourcemaps.init())
       .pipe(preprocess())
       .pipe(babel({
-        presets: ['latest'],
+        presets: ['env'],
         plugins: ['transform-flow-strip-types', 'transform-runtime']
       }))
       .pipe(sourcemaps.write())

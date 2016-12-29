@@ -28,8 +28,8 @@ const simulatedTempHumStream = K.repeat((n) => {
   switch (run) {
     case 1:
       return K.interval(interval, initialState.setIn(['env', 'temperature'], 29)
-                                                  .setIn(['env', 'humidity'], 30))
-                  .take(1).toProperty();
+                                              .setIn(['env', 'humidity'], 30))
+              .take(1).toProperty();
     case 2:
       return K.interval(interval, initialState.setIn(['env', 'temperature'], 23)).take(1).toProperty();
     case 3:
@@ -37,20 +37,20 @@ const simulatedTempHumStream = K.repeat((n) => {
     case 4:
       /* Cause a false alarm emergency */
       return K.interval(interval, initialState.setIn(['env', 'temperature'], 99)
-                                                  .setIn(['env', 'isValid'], true))
-                  .take(1).toProperty();/* NOTE that currently three emergencies are needed to trigger halt, so this won't */
+                                              .setIn(['env', 'isValid'], true))
+              .take(1).toProperty();/* NOTE that currently three emergencies are needed to trigger halt, so this won't */
     case 6:
       return K.interval(interval, initialState.setIn(['env', 'temperature'], 32.1)).take(1).toProperty();
     case 7:
       return K.interval(interval, initialState.setIn(['env', 'temperature'], '0')
-                                                  .setIn(['env', 'humidity'], '0'))
-                  .take(1).toProperty();
+                                              .setIn(['env', 'humidity'], '0'))
+              .take(1).toProperty();
     case 8:
       return K.interval(interval, initialState.setIn(['env', 'humidity'], 65.1)).take(1).toProperty();
     case 9:
       return K.interval(interval, initialState.setIn(['env', 'temperature'], 30)
-                                                  .setIn(['env', 'humidity'], 57))
-                  .take(1).toProperty();
+                                              .setIn(['env', 'humidity'], 57))
+              .take(1).toProperty();
 
       // case 10:
       // console.log('##### ENDING TEST ######');

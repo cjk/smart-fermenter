@@ -16,7 +16,7 @@ function queueMessage(runtimeState, message) {
     return runtimeState;
   }
 
-  return runtimeState.update('notifications', (msgLst) => msgLst.unshift(message));
+  return runtimeState.update('notifications', msgLst => msgLst.unshift(message));
 }
 
 function buildMessage(msg, level = 'notify') {
@@ -25,4 +25,4 @@ function buildMessage(msg, level = 'notify') {
 
 const createNotifier = R.curry(queueMessage);
 
-export default {buildMessage, createNotifier};
+export {buildMessage, createNotifier};

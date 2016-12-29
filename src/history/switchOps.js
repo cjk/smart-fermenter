@@ -5,7 +5,7 @@ const maxSwitchOpsEntries = 1000;
 
 const histSwOpsPath = ['history', 'switchOps'];
 
-const createSwitchOps = (devices) =>
+const createSwitchOps = devices =>
   devices.filter(dev => dev.willSwitch)
          .reduce((ops, dev, name) =>
            ops.push(

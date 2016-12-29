@@ -13,7 +13,7 @@ const switchOff = (systemCode, unitCode) => {
   console.log(`Mock switching <${systemCode}#${unitCode}> OFF!`);
 };
 
-export default {
+export {
   enableTransmit,
   switchOn,
   switchOff
