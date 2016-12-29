@@ -15,8 +15,8 @@ function build() {
       .pipe(sourcemaps.init())
       .pipe(preprocess())
       .pipe(babel({
-        presets: ['es2015-node5', 'stage-1'],
-        plugins: ['transform-runtime', 'add-module-exports']
+        presets: ['env'],
+        plugins: ['transform-flow-strip-types', 'transform-runtime']
       }))
       .pipe(sourcemaps.write())
       .pipe(gulp.dest(DEST));
