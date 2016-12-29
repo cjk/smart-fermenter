@@ -5,7 +5,7 @@ const config = {
   host: 'localhost',
   // @endif
   // @if NODE_ENV='production'
-  host: '192.168.0.28',  /* eslint no-dupe-keys: "off" */
+  host: '192.168.1.28',  /* eslint no-dupe-keys: "off" */
   // @endif
   port: 4001,
   namespace: 'fermenter'

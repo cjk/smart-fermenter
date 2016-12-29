@@ -29,6 +29,8 @@
     "eslint-plugin-babel": "*",
     "eslint-plugin-import": "*",
     "eslint-plugin-standard": "*",
+    "eslint-plugin-flowtype": "^2.25.0",
+    "eslint-plugin-fp": "^2.2.0",
     "flow-bin": "^0.37.4",
     "gulp": "latest",
     "gulp-babel": "latest",

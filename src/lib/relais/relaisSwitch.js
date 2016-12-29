@@ -19,6 +19,7 @@ function relaisSwitch(switchLib: any) {
     const swtch = switches[switchName];
 
     const prepareSwitch = (sw) => {
+      console.log(`[Controller] Opening GPIO-output for <${sw.desc}> on pin <${sw.pin}> and pull-up HIGH:`);
       switchLib.open(sw.pin, switchLib.OUTPUT, switchLib.HIGH);
     };
 

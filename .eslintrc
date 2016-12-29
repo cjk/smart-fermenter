@@ -3,12 +3,24 @@
     "node": true
   },
   "parser"  : "babel-eslint",
-  "extends" : ["airbnb"],
+  "extends" : [
+    "airbnb",
+    "plugin:flowtype/recommended"
+  ],
+  "plugins": [
+    "flowtype",
+    "fp",
+    "react-native"
+  ],
   "rules": {
     "object-curly-spacing": ["error", "never"],
     "space-before-function-paren": ["error", "never"],
     "comma-dangle": ["error", "only-multiline"],
     "no-underscore-dangle": "off",
-    "no-cond-assign": ["error", "except-parens"]
+    "no-cond-assign": ["error", "except-parens"],
+    "import/first": 0, // We sort by atom/sort-lines natural order.
+    "max-len": ["error", 120],
+    // Rules for functional programming. We do not need Object.freeze.
+    "fp/no-mutating-assign": 2
   }
 }
