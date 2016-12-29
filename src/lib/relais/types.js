@@ -5,3 +5,12 @@ export type RelaisSwitch = {
     transport: string,
   },
 };
+
+/* see https://github.com/jperkin/node-rpio/blob/master/lib/rpio.js */
+export type RpioSwitchLib = {
+  init: Function,
+  open: Function,
+  read: Function,
+  write: Function,
+  close: Function,
+};

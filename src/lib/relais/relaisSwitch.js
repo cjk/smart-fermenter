@@ -1,5 +1,6 @@
 /* @flow */
-import type RelaisSwitch from './types';
+import type {RelaisSwitch, RpioSwitchLib} from './types';
+import R from 'ramda';
 
 const switches: RelaisSwitch = {
   heater: {
@@ -14,24 +15,39 @@ const switches: RelaisSwitch = {
   }
 };
 
-function relaisSwitch(switchLib: any) {
+const prepareSwitch = switchLib => (
+  R.map((sw) => {
+    console.log(`[Controller] Opening GPIO-output for <${sw.desc}> on pin <${sw.pin}> and pull-up to HIGH:`);
+    return switchLib.open(sw.pin, switchLib.OUTPUT, switchLib.HIGH);
+  }, switches)
+);
+
+const setupCleanupHandler = (switchLib) => {
+  process.on('SIGINT', () => {
+    console.log('Received SIGINT. Cleaning up and exiting...');
+    R.map(sw => (
+      switchLib.close(sw.pin)
+    ), switches);
+    process.exit();
+  });
+};
+
+function relaisSwitch(switchLib: RpioSwitchLib) {
+  /* Must configure GPIO-pins *before* any switching is done */
+  prepareSwitch(switchLib);
+  /* Also make sure we reset GPIOs on exit  */
+  setupCleanupHandler(switchLib);
+
   return (switchName: string, state: string) => {
     const swtch = switches[switchName];
 
-    const prepareSwitch = (sw) => {
-      console.log(`[Controller] Opening GPIO-output for <${sw.desc}> on pin <${sw.pin}> and pull-up HIGH:`);
-      switchLib.open(sw.pin, switchLib.OUTPUT, switchLib.HIGH);
-    };
-
     const switchOn = (sw) => {
       console.log(`[Controller] About to switch ${sw.desc} on pin <${sw.pin}> ON:`);
-      prepareSwitch(sw);
       switchLib.write(sw.pin, switchLib.LOW);
     };
 
     const switchOff = (sw) => {
       console.log(`[Controller] About to switch ${sw.desc} on pin <${sw.pin}> OFF:`);
-      prepareSwitch(sw);
       switchLib.write(sw.pin, switchLib.HIGH);
     };
 
