@@ -23,6 +23,7 @@
     "babel-plugin-transform-flow-strip-types": "^6.21.0",
     "babel-plugin-transform-runtime": "^6.4.0",
     "babel-preset-env": "^1.1.4",
+    "babel-preset-latest": "^6.16.0",
     "del": "^2.2.1",
     "eslint-config-airbnb": "*",
     "eslint-plugin-babel": "*",
