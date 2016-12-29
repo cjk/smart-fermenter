@@ -8,7 +8,7 @@ import {switchOps, carryoverEmergencies} from '../history';
 import {detectEnvEmergency, deviceRunningTooLong} from '../watchdogs';
 /* Update global state (like switching-decisions) based on current / previous
    runtime state */
-import bootstrapRuntimeState from './bootstrapRuntimeState.js';
+import bootstrapRuntimeState from './bootstrapRuntimeState';
 /* Handle runtime-state, like emergencies, notifications, on/off */
 import handleRuntimeSideEffects from './runtimeSideEffectHandler';
 /* Logging */

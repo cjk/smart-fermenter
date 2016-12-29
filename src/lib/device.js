@@ -31,4 +31,4 @@ function maybeSwitchDevices(deviceState) {
   });
 }
 
-export default {switchOffAllDevices, maybeSwitchDevices};
+export {switchOffAllDevices, maybeSwitchDevices};

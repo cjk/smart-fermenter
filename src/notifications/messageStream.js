@@ -1,5 +1,5 @@
 /* eslint no-console: "off" */
-/* eslint max-len: ["error", 90, 2, {"ignoreUrls": true}] */
+/* eslint max-len: ["error", 105, 2, {"ignoreUrls": true}] */
 
 import Kefir from 'kefir';
 import request from 'request';

@@ -16,7 +16,7 @@ const switches: RelaisSwitch = {
 
 function relaisSwitch(switchLib: any) {
   return (switchName: string, state: string) => {
-    const swtch = switches.switchName;
+    const swtch = switches[switchName];
 
     const prepareSwitch = (sw) => {
       switchLib.open(sw.pin, switchLib.OUTPUT, switchLib.HIGH);
