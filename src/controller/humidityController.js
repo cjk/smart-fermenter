@@ -5,7 +5,7 @@ import {addEmergency} from '../history';
 const [humUpperLimit, humLowerLimit] = [68, 62];
 
 function humidifierController(envStream) {
-  return envStream.map(state => {
+  return envStream.map((state) => {
     const humidity = state.getIn(['env', 'humidity']);
     const isValid = state.getIn(['env', 'isValid']);
 

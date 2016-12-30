@@ -5,7 +5,7 @@ import {addEmergency} from '../history';
 const [heatUpperLimit, heatLowerLimit] = [36, 33];
 
 function temperatureController(envStream) {
-  return envStream.map(state => {
+  return envStream.map((state) => {
     const temperature = state.getIn(['env', 'temperature']);
     const isValid = state.getIn(['env', 'isValid']);
 
