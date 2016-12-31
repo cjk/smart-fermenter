@@ -8,7 +8,8 @@
     "url": "git+https://github.com/cjk/smart-fermenter.git"
   },
   "scripts": {
-    "start": "PORT=8000 ./node_modules/.bin/nodemon --delay 2 ./app/index.js",
+    "start": "node ./app/index.js",
+    "start_dev": "PORT=8000 ./node_modules/.bin/nodemon --delay 2 ./app/index.js",
     "flow": "flow; test $? -eq 0 -o $? -eq 2"
   },
   "engines": {
