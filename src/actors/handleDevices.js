@@ -39,7 +39,7 @@ const handleDevices = stateStream =>
     /* Evaluate emergency-history and set an active environmental emergency
        under certain conditions */
     .scan(detectEnvEmergency)
-    /* ... also signal malfunctioning devices, if any device exceeds running
+    /* also signal malfunctioning switches / devices, if any device exceeds running
        over a period of time */
     .scan(deviceRunningTooLong)
     /* Analyse runtime-state and carry out resulting side-effect, like sending
