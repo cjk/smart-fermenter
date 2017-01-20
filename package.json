@@ -38,22 +38,22 @@
     "gulp-changed": "^1.3.1",
     "gulp-eslint": "latest",
     "gulp-preprocess": "^2.0.0",
-    "gulp-sourcemaps": "^1.6.0",
+    "gulp-sourcemaps": "^2.4.0",
     "gulp-watch": "^4.3.9",
     "longjohn": "^0.2.11",
     "nodemon": "latest"
   },
   "dependencies": {
+    "deepstream.io-client-js": "^2.1.1",
     "hapi": "*",
     "immutable": "latest",
     "inert": "latest",
     "kefir": "*",
     "moment": "*",
-    "node-dht-sensor": "^0.0.12",
+    "node-dht-sensor": "^0.0.32",
     "ramda": "latest",
     "redis": "latest",
     "request": "^2.74.0",
-    "rpio": "^0.9.13",
-    "socket.io-client": "latest"
+    "rpio": "^0.9.13"
   }
 }

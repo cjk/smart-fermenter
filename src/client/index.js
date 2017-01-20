@@ -1,48 +1,77 @@
 /* eslint no-console: "off" */
 import config from './config';
 import createCommandStream from './createCommandStream';
-import io from 'socket.io-client';
+import deepstream from 'deepstream.io-client-js';
+import K from 'kefir';
+import R from 'ramda';
 
-const socket = io.connect(`http://${config.host}:${config.port}/${config.namespace}`);
+const login$ = K.fromPromise(
+  new Promise((resolve, reject) => {
+    const client = deepstream(`${config.host}:${config.port}`).login({username: config.namespace}, (success) => {
+      if (success) {
+        resolve(client);
+      } else {
+        /* login or connection failed - see https:deepstream.io/docs/client-js/client/ how to handle this situation more
+           gracefully than now. */
+        reject();
+      }
+    });
+  }));
 
-const emitFermenterState = state =>
-  socket.emit('fermenterState', state.toJS());
 
-function startStreaming(stream) {
-  console.log(`Connected to smart-home-backend on <${config.host}:${config.port}> - starting streaming...`);
-  stream.onValue(emitFermenterState);
-}
-
-function stopStreaming(stream) {
-  console.log('Disconnected from smart-home-backend - stopping streaming...');
-  stream.offValue(emitFermenterState);
-}
-
-function createClient(stateStream) {
-  const cmdStream = createCommandStream(socket);
-  const runtimeStream = stateStream.combine(cmdStream, (state, cmd) => {
-    /* Merge fermenter-command into state structure, under run-time-status, currentCmd: */
-    const newRts = state.get('rts').set('currentCmd', cmd.fermenterCmd);
-    return state.set('rts', newRts);
+const putFermenterState = newState =>
+  login$.onValue((client) => {
+    client.record.getRecord('fermenter/state').whenReady((rs) => {
+      rs.set(newState.toJS());
+    });
   });
 
-  function start(stream) {
-    socket.on('connect', () => {
-      socket.on('disconnect', stopStreaming(stream));
+function createClient() {
+  const client = {
+    dsClient: null,
+    subscription: null,
+    init() {
+      login$.observe({
+        value(dsClient) {
+          this.dsClient = dsClient;
+        },
+        err(error) {
+          console.error('Failed to connect to deepstream-server!');
+          console.error(error);
+        },
+      });
+      return this;
+    },
+    mergeCommandStream(stream$) {
+      return login$.flatMap((dsClient) => {
+        const cmdStream = createCommandStream(dsClient);
+        return stream$.combine(cmdStream, (state, cmd) =>
+          /* Merge fermenter-command into state structure, under run-time-status, currentCmd: */
+          state.set(
+            'rts',
+            state.get('rts').set('currentCmd', cmd.fermenterCmd))
+        );
+      });
+    },
+    start(runtimeStream$) {
+      this.subscription = runtimeStream$.observe({
+        value(newState) {
+          putFermenterState(newState);
+        },
+        error(error) {
+          console.error(`[fermenterClient] An error occured: ${error}`);
+        },
+        end() {
+          console.log('[fermenterClient] Fermenter-client connection ended.');
+        }
+      });
+    },
+    stop() {
+      this.subscription.unsubscribe();
+    }
+  };
 
-      /* TODO: Should we throttle our outgoing stream to save network bandwidth,
-         like so: statestream.throttle(5000, {trailing: false}) */
-      startStreaming(stream);
-    });
-  }
-
-  socket
-    .on('connect_error', () =>
-      console.log(`ERROR connecting to smart-home-backend on <${config.host}:${config.port}>`))
-    .on('connect_timeout', () =>
-      console.log(`TIMEOUT connecting to smart-home-backend on <${config.host}:${config.port}>!`));
-
-  return {runtimeStream, start};
+  return Object.create(client).init();
 }
 
 export default createClient;
