@@ -49,7 +49,7 @@ function createClient() {
           /* Merge fermenter-command into state structure, under run-time-status, currentCmd: */
           state.set(
             'rts',
-            state.get('rts').set('currentCmd', cmd.fermenterCmd))
+            state.get('rts').set('currentCmd', cmd['fermenter/command']))
         );
       });
     },

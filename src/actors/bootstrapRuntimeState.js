@@ -53,7 +53,9 @@ function bootstrapRuntimeState(prev, curr) {
       }
       break;
     }
-    default:
+    default: {
+      console.warn(`[WARNING] Received unknown command <${rts.currentCmd}> - ignoring.`);
+    }
   }
 
   if (rts.status === 'initializing') {
@@ -64,7 +66,9 @@ function bootstrapRuntimeState(prev, curr) {
 
   return curr
     .set('rts', queueMessage(message))
-    .set('devices', devices);
+    .set('devices', devices)
+    .set('rts', newRts)
+  ;
 }
 
 export default bootstrapRuntimeState;
