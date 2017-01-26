@@ -1,5 +1,9 @@
-import tempHumStream from './tempHumidity';
-// import tempHumStream from './simulatedTempHumidity';
+// @if NODE_ENV='development'
+import tempHumStream from './simulatedTempHumidity';
+// @endif
+// @if NODE_ENV='production'
+import tempHumStream from './tempHumidity'; /* eslint no-redeclare: "off" */
+// @endif
 
 const isNumeric = n => !isNaN(parseFloat(n)) && isFinite(n);
 
