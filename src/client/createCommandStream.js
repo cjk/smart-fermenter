@@ -1,7 +1,7 @@
 /* eslint no-console: "off" */
 import K from 'kefir';
 
-const fermenterStartCmd = {fermenterCmd: 'fermenterStart'};
+const fermenterStartCmd = {'fermenter/command': 'none'};
 
 function handleCommands(client) {
   const remoteCommand = client.record.getRecord('fermenter/command');

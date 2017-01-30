@@ -34,14 +34,18 @@ function bootstrapRuntimeState(prev, curr) {
   let message = null;
 
   switch (rts.currentCmd) {
-    case 'fermenterStart': {
+    case 'none': {
+      /* Do nothing if no command has been received */
+      break;
+    }
+    case 'start': {
       if (!fermenterIsRunning) {
         newRts = updateRts({active: true, status: 'running', currentCmd: null});
         message = buildMessage('Fermenter was started.');
       }
       break;
     }
-    case 'fermenterStop': {
+    case 'stop': {
       if (fermenterIsRunning) {
         newRts = updateRts({active: false, status: 'off', currentCmd: null});
         /* IMPORTANT: Make sure we switch all devices off as well as the fermenter-closet! */

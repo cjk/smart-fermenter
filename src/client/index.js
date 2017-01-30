@@ -3,7 +3,6 @@ import config from './config';
 import createCommandStream from './createCommandStream';
 import deepstream from 'deepstream.io-client-js';
 import K from 'kefir';
-import R from 'ramda';
 
 const login$ = K.fromPromise(
   new Promise((resolve, reject) => {

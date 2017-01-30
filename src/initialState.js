@@ -33,7 +33,7 @@ const History = new Record({
 });
 
 const RunTimeState = new Record({
-  active: true,
+  active: false,
   status: 'initializing',
   hasEnvEmergency: false,
   hasDeviceMalfunction: false,
