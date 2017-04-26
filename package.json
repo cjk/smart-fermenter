@@ -26,7 +26,7 @@
     "babel-preset-env": "^1.1.4",
     "babel-preset-latest": "^6.16.0",
     "del": "^2.2.1",
-    "eslint-config-airbnb": "*",
+    "eslint-config-airbnb-base": "*",
     "eslint-plugin-babel": "*",
     "eslint-plugin-import": "*",
     "eslint-plugin-standard": "*",
@@ -52,7 +52,6 @@
     "moment": "*",
     "node-dht-sensor": "^0.0.32",
     "ramda": "latest",
-    "redis": "latest",
     "request": "^2.74.0",
     "rpio": "^0.9.13"
   }
