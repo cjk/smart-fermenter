@@ -15,10 +15,6 @@ const detectEnvEmergency = (prev, curr) => {
   /* Recent emergencies are those that occured in the last 20 seconds */
   const recentEms = emHist.filter(v => (now - v.at) / 1000 < 20);
 
-  //recentEms.toList().map(v => {
-  //console.log(`~~~ Timing: ${((now - v.at) / 1000)}`);
-  //});
-
   /* Signal active environmental emergency when two or more *recent* emergency-states occured */
   const hasEnvEmergency = recentEms.count() > maxOffScaleReadingsAllowed;
 

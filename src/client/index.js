@@ -12,8 +12,9 @@ const login$ = K.fromPromise(
         if (success) {
           resolve(client);
         } else {
-          /* login or connection failed - see https:deepstream.io/docs/client-js/client/ how to handle this situation more
-           gracefully than now. */
+          /* login or connection failed - see
+             https:deepstream.io/docs/client-js/client/ how to handle this situation more
+             gracefully than now. */
           reject();
         }
       }
@@ -56,8 +57,8 @@ function createClient() {
         );
       });
     },
-    start(runtimeStream$) {
-      this.subscription = runtimeStream$.observe({
+    start(runtime$) {
+      this.subscription = runtime$.observe({
         value(newState) {
           putFermenterState(newState);
         },
