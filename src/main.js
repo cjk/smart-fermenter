@@ -14,6 +14,8 @@ const stateStream$ = handleDevices(rtStream$);
 // const stateStream = handleDevices(runtimeStream);
 // stateStream.log();/* DEBUGGING only */
 
-console.log('----------------------------------------------------------------------');
+console.log(
+  '----------------------------------------------------------------------'
+);
 
 client.start(stateStream$);

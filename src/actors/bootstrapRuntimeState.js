@@ -1,5 +1,5 @@
 import R from 'ramda';
-import {createNotifier, buildMessage} from '../notifications';
+import { createNotifier, buildMessage } from '../notifications';
 
 function fermenterIsActive(rts) {
   return rts.get('active');
@@ -40,25 +40,34 @@ function bootstrapRuntimeState(prev, curr) {
     }
     case 'start': {
       if (!fermenterIsRunning) {
-        newRts = updateRts({active: true, status: 'running', currentCmd: null});
+        newRts = updateRts({
+          active: true,
+          status: 'running',
+          currentCmd: null,
+        });
         message = buildMessage('Fermenter was started.');
       }
       break;
     }
     case 'stop': {
       if (fermenterIsRunning) {
-        newRts = updateRts({active: false, status: 'off', currentCmd: null});
+        newRts = updateRts({ active: false, status: 'off', currentCmd: null });
         /* IMPORTANT: Make sure we switch all devices off as well as the fermenter-closet! */
-        devices = devices.map(dev => updateDevice(
-          dev,
-          {shouldSwitchTo: 'off', willSwitch: true, isOn: false})
+        devices = devices.map(dev =>
+          updateDevice(dev, {
+            shouldSwitchTo: 'off',
+            willSwitch: true,
+            isOn: false,
+          })
         );
         message = buildMessage('Fermenter was stopped.');
       }
       break;
     }
     default: {
-      console.warn(`[WARNING] Received unknown command <${rts.currentCmd}> - ignoring.`);
+      console.warn(
+        `[WARNING] Received unknown command <${rts.currentCmd}> - ignoring.`
+      );
     }
   }
 
@@ -71,8 +80,7 @@ function bootstrapRuntimeState(prev, curr) {
   return curr
     .set('rts', queueMessage(message))
     .set('devices', devices)
-    .set('rts', newRts)
-  ;
+    .set('rts', newRts);
 }
 
 export default bootstrapRuntimeState;

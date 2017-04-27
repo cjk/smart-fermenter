@@ -1,4 +1,4 @@
-import {List} from 'immutable';
+import { List } from 'immutable';
 import InitialState from '../initialState';
 /* For switching */
 import relaisSwitch from './relais/relaisSwitch';
@@ -21,9 +21,9 @@ function switchOffAllDevices() {
 }
 
 function maybeSwitchDevices(deviceState) {
-  devices.forEach((dev) => {
+  devices.forEach(dev => {
     const device = deviceState.get(dev);
-    const {willSwitch, shouldSwitchTo} = device;
+    const { willSwitch, shouldSwitchTo } = device;
 
     if (willSwitch) {
       switcher(dev, shouldSwitchTo);
@@ -31,4 +31,4 @@ function maybeSwitchDevices(deviceState) {
   });
 }
 
-export {switchOffAllDevices, maybeSwitchDevices};
+export { switchOffAllDevices, maybeSwitchDevices };

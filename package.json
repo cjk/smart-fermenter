@@ -9,8 +9,7 @@
   },
   "scripts": {
     "start": "node ./app/index.js",
-    "start_dev": "PORT=8000 ./node_modules/.bin/nodemon --delay 2 ./app/index.js",
-    "flow": "flow; test $? -eq 0 -o $? -eq 2"
+    "start_dev": "PORT=8000 ./node_modules/.bin/nodemon --delay 2 ./app/index.js"
   },
   "engines": {
     "node": ">=0.12"

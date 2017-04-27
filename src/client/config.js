@@ -5,10 +5,10 @@ const config = {
   host: 'localhost',
   // @endif
   // @if NODE_ENV='production'
-  host: '192.168.1.28',  /* eslint no-dupe-keys: "off" */
+  host: '192.168.1.28' /* eslint no-dupe-keys: "off" */,
   // @endif
   port: 6020,
-  namespace: 'fermenter'
+  namespace: 'fermenter',
 };
 
 export default config;

@@ -1,11 +1,11 @@
-import {maybeSwitchDevices, switchOffAllDevices} from '../lib/device';
+import { maybeSwitchDevices, switchOffAllDevices } from '../lib/device';
 import InitialState from '../initialState';
 
 import makeSwitchingDecisions from '../controller/switchingController';
 /* History */
-import {switchOps, carryoverEmergencies} from '../history';
+import { switchOps, carryoverEmergencies } from '../history';
 /* Watchdogs */
-import {detectEnvEmergency, deviceRunningTooLong} from '../watchdogs';
+import { detectEnvEmergency, deviceRunningTooLong } from '../watchdogs';
 /* Update global state (like switching-decisions) based on current / previous
    runtime state */
 import bootstrapRuntimeState from './bootstrapRuntimeState';
@@ -51,7 +51,6 @@ const handleDevices = stateStream =>
     /* PENDING: As of now stream is never supposed to end so this is never executed */
     .onEnd(handleEndOfStream)
     /* Terse log current state */
-    .onValue(logState)
-;
+    .onValue(logState);
 
 export default handleDevices;

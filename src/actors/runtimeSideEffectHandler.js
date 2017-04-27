@@ -1,6 +1,9 @@
 /* Runtime notification handler - sends all collected message-events out as
    notifications */
-import {createMessageEmitter, buildEmergencyNotifications} from '../notifications';
+import {
+  createMessageEmitter,
+  buildEmergencyNotifications,
+} from '../notifications';
 
 const messageEmitter = createMessageEmitter();
 
@@ -17,7 +20,9 @@ function sendNotifications(notLst) {
 
 function handleRuntime(state) {
   const rts = state.get('rts');
-  const notifications = buildEmergencyNotifications(rts).concat(rts.get('notifications'));
+  const notifications = buildEmergencyNotifications(rts).concat(
+    rts.get('notifications')
+  );
   /* Send notifications from queue */
   sendNotifications(notifications);
 }

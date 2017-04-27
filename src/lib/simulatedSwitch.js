@@ -26,7 +26,7 @@ const simulatedSwitch = {
   switchOff(systemCode, unitCode) {
     /* NOOP here */
     console.log(`Mock switching <${systemCode}#${unitCode}> OFF!`);
-  }
+  },
 };
 
 export default simulatedSwitch;
