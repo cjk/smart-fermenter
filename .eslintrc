@@ -12,13 +12,25 @@
     "fp"
   ],
   "rules": {
-    "object-curly-spacing": ["error", "never"],
-    "space-before-function-paren": ["error", "never"],
+    // Soften some rules.
+    "arrow-parens": 0, // Does not work with Flow generic types.
+    "global-require": 0, // Used by webpack isomorphic tools and React Native.
+    "import/first": 0, // Este sorts by atom/sort lines natural order.
+    "import/prefer-default-export": 0, // No. Actions can have just one action.
+    "jsx-a11y/anchor-has-content": 0, // Does not work with new components.
+    "jsx-a11y/html-has-lang": 0, // Can not recognize the Helmet.
+    "no-confusing-arrow": 0, // This rule is confusing.
+    "no-mixed-operators": 0, // Prettier ftw.
+    "no-nested-ternary": 0, // Nice for JSX.
+    "no-param-reassign": 0, // We love param reassignment. Naming is hard.
+    "no-shadow": 0, // Shadowing is a nice language feature. Naming is hard.
+    "indent": 0, // Prettier ftw.
+    // Flow.
+    "flowtype/space-after-type-colon": 0, // Prettier ftw.
+    // misc (CjK)
     "comma-dangle": ["error", "only-multiline"],
-    "no-underscore-dangle": "off",
-    "no-cond-assign": ["error", "except-parens"],
-    "import/first": 0, // We sort by atom/sort-lines natural order.
     "max-len": ["error", 120],
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }], // Allow unused function-args starting with an underscore
     // Rules for functional programming. We do not need Object.freeze.
     "fp/no-mutating-assign": 2
   }

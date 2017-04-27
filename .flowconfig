@@ -1,6 +1,7 @@
 [ignore]
 ; Ignore unexpected extra "@providesModule"
 .*/node_modules/.*/node_modules/fbjs/.*
+.*/app/.*
 
 [include]
 
