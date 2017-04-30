@@ -1,10 +1,10 @@
 /* eslint no-console: "off" */
 import K from 'kefir';
 
-const fermenterStartCmd = { 'fermenter/command': 'none' };
+const fermenterStartCmd = { currentCmd: 'none', tempLimits: [] };
 
-function handleCommands(client) {
-  const remoteCommand = client.record.getRecord('fermenter/command');
+function handleCommands(client: Function) {
+  const remoteCommand = client.record.getRecord('fermenter/commands');
 
   const stream = K.stream(emitter => {
     function emitCommand(cmd) {

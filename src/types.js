@@ -1,4 +1,5 @@
 /* @flow */
+import type { Observable } from 'kefir';
 
 // NOTE: NOT USED YET - need to migrate from immutable to POJOs first!
 // These definitions were originally taken from ./src/common/fermenter/types.js in SmartHomeApp-project
@@ -47,6 +48,8 @@ export type RunTimeState = {
   hasEnvEmergency: boolean,
   hasDeviceMalfunction: boolean,
   currentCmd: ?string,
+  tempLimits: Array<number>,
+  humidityLimits: Array<number>,
   notifications: Array<Notification>,
 };
 
@@ -61,3 +64,6 @@ export type FermenterState = {
   devices: Devices,
   history: History,
 };
+
+/* Derived Stream / Observable-types from Kefir */
+export type FermenterState$ = Observable<FermenterState>;

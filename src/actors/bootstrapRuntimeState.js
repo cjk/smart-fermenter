@@ -1,3 +1,6 @@
+/* @flow */
+import type { FermenterState } from '../types';
+
 import R from 'ramda';
 import { createNotifier, buildMessage } from '../notifications';
 
@@ -17,7 +20,7 @@ function updateDevice(dev, props) {
   );
 }
 
-function bootstrapRuntimeState(prev, curr) {
+function bootstrapRuntimeState(prev: FermenterState, curr: FermenterState) {
   const prevRts = prev.get('rts');
 
   /* Carry over current fermenter-is-active state from previous state */

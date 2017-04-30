@@ -38,7 +38,8 @@ const RunTimeState = new Record({
   hasEnvEmergency: false,
   hasDeviceMalfunction: false,
   currentCmd: null,
-  tempLimits: [29.5, 31.5],
+  tempLimits: [29, 31],
+  humidityLimits: [62, 68],
   notifications: new List(),
 });
 

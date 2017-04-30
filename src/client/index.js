@@ -45,16 +45,14 @@ function createClient() {
       });
       return this;
     },
-    mergeCommandStream(stream$) {
+    mergeCommandStream(state$) {
       return login$.flatMap(dsClient => {
-        const cmdStream = createCommandStream(dsClient);
-        return stream$.combine(cmdStream, (state, cmd) =>
+        const cmd$ = createCommandStream(dsClient);
+        return state$.combine(cmd$, (state, cmds) => {
           /* Merge fermenter-command into state structure, under run-time-status, currentCmd: */
-          state.set(
-            'rts',
-            state.get('rts').set('currentCmd', cmd['fermenter/command'])
-          )
-        );
+          const newRts = state.get('rts').merge(cmds);
+          return state.set('rts', newRts);
+        });
       });
     },
     start(runtime$) {

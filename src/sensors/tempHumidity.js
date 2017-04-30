@@ -11,7 +11,7 @@ function readSensor() {
   const env = sensor.read();
 
   return (
-    state
+    state /* Initial state's offspring! */
       /* PENDING: Possible dupe - move this conversion to our general validity-check
      in './index.js' ?! */
       .updateIn(['env', 'temperature'], _temp => env.temperature.toFixed(1))

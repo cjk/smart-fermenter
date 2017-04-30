@@ -1,5 +1,6 @@
+import type { FermenterState$ } from '../types';
 import deviceHandler from './handleDevices';
 
-const handleDevices = envStream => deviceHandler(envStream);
+const handleDevices = (state$: FermenterState$) => deviceHandler(state$);
 
 export default handleDevices;

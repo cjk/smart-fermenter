@@ -2,12 +2,12 @@
    should be merged! */
 import { addEmergency } from '../history';
 
-const [humUpperLimit, humLowerLimit] = [68, 62];
-
-function humidifierController(envStream) {
-  return envStream.map(state => {
+/* $FlowFixMe */
+function humidifierController(state$) {
+  return state$.map(state => {
     const humidity = state.getIn(['env', 'humidity']);
     const isValid = state.getIn(['env', 'isValid']);
+    const [humLowerLimit, humUpperLimit] = state.getIn(['rts', 'humidityLimits']);
 
     /* If the reading can be trusted, this is an emergency! */
     if (humidity > humUpperLimit + 25 && isValid) {

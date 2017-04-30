@@ -1,3 +1,4 @@
+import type { FermenterState$ } from '../types';
 import { maybeSwitchDevices, switchOffAllDevices } from '../lib/device';
 import InitialState from '../initialState';
 
@@ -23,8 +24,8 @@ function handleEndOfStream() {
   //   messenger.emit('NOTE: your fermenter-closet just shut itself down cleanly.\nAll devices have been switched off, but please double check this and take care any remaining content in the closet!');
 }
 
-const handleDevices = stateStream =>
-  stateStream
+const handleDevices = (state$: FermenterState$) =>
+  state$
     /* Don't do anything when environment-readings are invalid */
     .filter(state => state.getIn(['env', 'isValid']))
     /* Bootstraps runtime-state, like toggling fermenter active-state on/off.

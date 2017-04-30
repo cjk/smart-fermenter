@@ -3,19 +3,17 @@
 import controlEnvironment from './controller';
 import handleDevices from './actors';
 import createClient from './client';
-import envStream from './sensors';
+import state$ from './sensors';
 
 const client = createClient();
 
-const rtStream$ = client.mergeCommandStream(controlEnvironment(envStream));
-const stateStream$ = handleDevices(rtStream$);
+/* TODO: use Ramda's pipe here... */
+const rtStream$ = client.mergeCommandStream(controlEnvironment(state$));
 
-// const {runtimeStream, start} = createClient(controlEnvironment(envStream));
-// const stateStream = handleDevices(runtimeStream);
 // stateStream.log();/* DEBUGGING only */
 
 console.log(
   '----------------------------------------------------------------------'
 );
 
-client.start(stateStream$);
+client.start(handleDevices(rtStream$));

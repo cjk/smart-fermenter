@@ -2,6 +2,7 @@
    should be merged! */
 import { addEmergency } from '../history';
 
+/* $FlowFixMe */
 function temperatureController(state$) {
   return state$.map(state => {
     const temperature = state.getIn(['env', 'temperature']);
