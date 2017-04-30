@@ -1,4 +1,6 @@
-function switchingController(prev, curr) {
+import type { FermenterState$ } from '../types';
+
+function switchingController(prev: FermenterState$, curr: FermenterState$) {
   /* Do nothing if fermenter is off */
   if (!curr.get('rts').active) {
     return curr;

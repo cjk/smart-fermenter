@@ -7,7 +7,10 @@ function humidifierController(state$) {
   return state$.map(state => {
     const humidity = state.getIn(['env', 'humidity']);
     const isValid = state.getIn(['env', 'isValid']);
-    const [humLowerLimit, humUpperLimit] = state.getIn(['rts', 'humidityLimits']);
+    const [humLowerLimit, humUpperLimit] = state.getIn([
+      'rts',
+      'humidityLimits',
+    ]);
 
     /* If the reading can be trusted, this is an emergency! */
     if (humidity > humUpperLimit + 25 && isValid) {
