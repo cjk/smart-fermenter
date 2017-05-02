@@ -2,7 +2,7 @@
 Node-based temperatur and humidity controller
 
 ## What?
-Eating fermented food is healthy and delicious. Best if you make it yourself, like in jars in a cabinet.
+Eating [fermented food](https://en.wikipedia.org/wiki/List_of_fermented_foods) is [healthy](https://chriskresser.com/heal-your-gut-heal-your-brain/) and delicious. Best if you make it yourself, like in jars in a cabinet.
 For best results, you need to maintain certain temperature and humidity levels. This software helps you maintaining that.
 
 ## How?
