@@ -8,11 +8,11 @@
     "url": "git+https://github.com/cjk/smart-fermenter.git"
   },
   "scripts": {
-    "start": "node ./app/index.js",
-    "start_dev": "PORT=8000 ./node_modules/.bin/nodemon --delay 2 ./app/index.js"
+    "start": "env NODE_ENV=production node ./app/index.js",
+    "start_dev": "env PORT=8000 NODE_ENV=development ./node_modules/.bin/nodemon --delay 2 ./app/index.js"
   },
   "engines": {
-    "node": ">=0.12"
+    "node": ">=6.9.0"
   },
   "author": "Claus Klingberg",
   "license": "GPL-2.0",
