@@ -1,3 +1,4 @@
+// @flow
 import type { FermenterState$ } from '../types';
 
 function switchingController(prev: FermenterState$, curr: FermenterState$) {

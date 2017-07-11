@@ -1,3 +1,5 @@
+// @flow
+
 import type { FermenterState$ } from '../types';
 import { maybeSwitchDevices, switchOffAllDevices } from '../lib/device';
 import InitialState from '../initialState';

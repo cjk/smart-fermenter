@@ -1,3 +1,5 @@
+// @flow
+
 import type { FermenterState$ } from '../types';
 import deviceHandler from './handleDevices';
 

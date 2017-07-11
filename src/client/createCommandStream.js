@@ -1,3 +1,4 @@
+// @flow
 /* eslint no-console: "off" */
 import K from 'kefir';
 
