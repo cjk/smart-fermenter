@@ -48,9 +48,9 @@ function createClient() {
     mergeCommandStream(state$) {
       return login$.flatMap(dsClient => {
         const cmd$ = createCommandStream(dsClient);
-        return state$.combine(cmd$, (state, cmds) => {
-          /* Merge fermenter-command into state structure, under run-time-status, currentCmd: */
-          const newRts = state.get('rts').merge(cmds);
+        return state$.combine(cmd$, (state, cmd) => {
+          /* Update fermenter-command into state structure, under run-time-status, currentCmd: */
+          const newRts = state.get('rts').setIn(['currentCmd'], cmd.currentCmd);
           return state.set('rts', newRts);
         });
       });

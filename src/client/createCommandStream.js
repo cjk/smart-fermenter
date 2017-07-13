@@ -11,7 +11,9 @@ function handleCommands(client: Function) {
     function emitCommand(cmd) {
       /* DEBUGGING */
       console.log(
-        `[Fermenter-Cmd-Stream] Emitting fermenter command we just received: <${JSON.stringify(cmd)}>`
+        `[Fermenter-Cmd-Stream] Emitting fermenter command we just received: <${JSON.stringify(
+          cmd
+        )}>`
       );
       emitter.emit(cmd);
     }
