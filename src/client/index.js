@@ -1,3 +1,5 @@
+// @flow
+
 /* eslint no-console: "off" */
 import K from 'kefir';
 import config from './config';
@@ -49,8 +51,8 @@ function createClient() {
       return login$.flatMap(dsClient => {
         const cmd$ = createCommandStream(dsClient);
         return state$.combine(cmd$, (state, cmd) => {
-          /* Update fermenter-command into state structure, under run-time-status, currentCmd: */
-          const newRts = state.get('rts').setIn(['currentCmd'], cmd.currentCmd);
+          /* Merge fermenter-command / temperature-limits into state structure, under run-time-status, currentCmd: */
+          const newRts = state.get('rts').merge(cmd);
           return state.set('rts', newRts);
         });
       });
