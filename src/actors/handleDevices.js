@@ -44,7 +44,9 @@ const handleDevices = (state$: FermenterState$) =>
     .scan(detectEnvEmergency)
     /* also signal malfunctioning switches / devices, if any device exceeds running
        over a period of time */
-//     .scan(deviceRunningTooLong)
+    // PENDING: Re-enable this for increased security in case switching goes wrong!
+    // This was disabled to prevent benign error-messages when no humidifier was actually connected.
+    //     .scan(deviceRunningTooLong)
     /* Analyse runtime-state and carry out resulting side-effect, like sending
        notifications etc. */
     .onValue(handleRuntimeSideEffects)
