@@ -1,12 +1,6 @@
 const config = {
   /* NOTE for backend-host setting: zircon.local is not available on current HOME-LAN through mobile */
-
-  // @if NODE_ENV='development'
-  host: 'localhost',
-  // @endif
-  // @if NODE_ENV='production'
-  host: '192.168.1.28' /* eslint no-dupe-keys: "off" */,
-  // @endif
+  host: process.env.NODE_ENV === 'development' ? 'localhost' : '192.168.1.28',
   port: 6020,
   namespace: 'fermenter',
 };

@@ -10,12 +10,13 @@ module.exports = {
       kill_timeout: 5000,
       wait_ready: true,
       env: {
-        PORT: 8001,
+        PORT: 8000,
         DEEPSTREAM_ADDR: 'localhost',
         DEEPSTREAM_PORT: 6020,
         DEBUG: 'smt:*,error,debug',
       },
       env_production: {
+        PORT: 8000,
         NODE_ENV: 'production',
         DEEPSTREAM_ADDR: '192.168.1.28',
         DEEPSTREAM_PORT: 6020,
@@ -36,7 +37,7 @@ module.exports = {
       repo: 'git@github.com:cjk/smart-fermenter.git',
       path: '/home/cjk/proj/smarthome-fermenter',
       'post-deploy':
-        'yarn install && gulp build && pm2 reload ecosystem.config.js --env production',
+        'yarn install && yarn run build && pm2 reload ecosystem.config.js --env production',
     },
   },
 };

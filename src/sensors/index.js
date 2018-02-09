@@ -1,11 +1,13 @@
-// @if NODE_ENV='development'
-import tempHumStream from './simulatedTempHumidity';
-// @endif
-// @if NODE_ENV='production'
-import tempHumStream from './tempHumidity'; /* eslint no-redeclare: "off" */
-// @endif
+// @flow
 
 const isNumeric = n => !isNaN(parseFloat(n)) && isFinite(n);
+
+const device =
+  process.env.NODE_ENV === 'development'
+    ? './simulatedTempHumidity'
+    : './tempHumidity';
+
+const tempHumStream = require(device).default;
 
 export default tempHumStream
   .map(state => {
@@ -19,8 +21,8 @@ export default tempHumStream
         map
           .set('createdAt', Date.now())
           .set('temperature', Number.parseFloat(temperature))
-          .set('humidity', Number.parseFloat(humidity))
-      )
+          .set('humidity', Number.parseFloat(humidity)),
+      ),
     );
   })
   .map(state => {
