@@ -3,10 +3,10 @@ import InitialState from '../initialState';
 /* For switching */
 import relaisSwitch from './relais/relaisSwitch';
 
-const switchImplName =
-  process.env.NODE_ENV === 'development' ? './simulatedSwitch' : 'rpio';
-
-const switchImpl = require(switchImplName).default;
+const switchImpl =
+  process.env.NODE_ENV === 'development'
+    ? require('./simulatedSwitch').simulatedSwitch
+    : require('rpio');
 
 /* What switching implementation shall we use? Simulated or real: */
 const switcher = relaisSwitch(switchImpl);
