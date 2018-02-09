@@ -29,4 +29,4 @@ const simulatedSwitch = {
   },
 };
 
-export default simulatedSwitch;
+export { simulatedSwitch };

@@ -3,12 +3,10 @@ import InitialState from '../initialState';
 /* For switching */
 import relaisSwitch from './relais/relaisSwitch';
 
-// @if NODE_ENV='development'
-import switchImpl from './simulatedSwitch';
-// @endif
-// @if NODE_ENV='production'
-import switchImpl from 'rpio'; /* eslint no-redeclare: "off" */
-// @endif
+const switchImpl =
+  process.env.NODE_ENV === 'development'
+    ? require('./simulatedSwitch').simulatedSwitch
+    : require('rpio');
 
 /* What switching implementation shall we use? Simulated or real: */
 const switcher = relaisSwitch(switchImpl);

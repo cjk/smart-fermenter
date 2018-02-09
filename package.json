@@ -1,6 +1,6 @@
 {
   "name": "fermenter",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Automate your fermenter-closet",
   "main": "./app/index.js",
   "repository": {
@@ -8,48 +8,41 @@
     "url": "git+https://github.com/cjk/smart-fermenter.git"
   },
   "scripts": {
-    "prod": "env NODE_ENV=production node ./app/index.js",
-    "dev": "env PORT=8000 NODE_ENV=development ./node_modules/.bin/nodemon --delay 2 ./app/index.js"
+    "build": "babel src --out-dir app",
+    "watch": "babel src --watch --out-dir app",
+    "prod": "env DEBUG='smt:*,error,debug' NODE_ENV=production node ./app/index.js",
+    "dev": "env DEBUG='smt:*,error,debug' PORT=8000 NODE_ENV=development node ./app/index.js"
   },
   "engines": {
-    "node": ">=6.9.0"
+    "node": ">=9.2.0"
   },
   "author": "Claus Klingberg",
   "license": "GPL-2.0",
   "devDependencies": {
-    "babel": "latest",
-    "babel-core": "latest",
-    "babel-eslint": "*",
-    "babel-plugin-transform-flow-strip-types": "^6.21.0",
-    "babel-plugin-transform-runtime": "^6.4.0",
-    "babel-preset-env": "^1.1.4",
-    "babel-preset-latest": "^6.16.0",
-    "del": "^2.2.1",
-    "eslint-config-airbnb-base": "*",
-    "eslint-plugin-babel": "*",
-    "eslint-plugin-flowtype": "^2.25.0",
-    "eslint-plugin-fp": "^2.2.0",
-    "eslint-plugin-import": "*",
-    "eslint-plugin-standard": "*",
-    "flow-bin": "^0.50.0",
-    "gulp": "latest",
-    "gulp-babel": "latest",
-    "gulp-changed": "^1.3.1",
-    "gulp-eslint": "latest",
-    "gulp-preprocess": "^2.0.0",
-    "gulp-sourcemaps": "^2.4.0",
-    "gulp-watch": "^4.3.9",
-    "longjohn": "^0.2.11",
-    "nodemon": "latest"
+    "@babel/cli": "^7.0.0-beta.39",
+    "@babel/core": "^7.0.0-beta.39",
+    "@babel/plugin-transform-async-to-generator": "latest",
+    "@babel/plugin-transform-flow-strip-types": "latest",
+    "@babel/polyfill": "^7.0.0-beta.39",
+    "@babel/preset-env": "^7.0.0-beta.39",
+    "babel-eslint": "8.2.1",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-babel": "4.1.2",
+    "eslint-plugin-flowtype": "^2.42.0",
+    "eslint-plugin-fp": "^2.3.0",
+    "eslint-plugin-prettier": "^2.6.0",
+    "flow-bin": "^0.64.0"
   },
   "dependencies": {
-    "deepstream.io-client-js": "^2.1.1",
-    "immutable": "latest",
-    "kefir": "*",
-    "moment": "*",
-    "node-dht-sensor": "^0.0.32",
-    "ramda": "latest",
-    "request": "^2.74.0",
-    "rpio": "^0.9.13"
+    "@std/esm": "^0.20.0",
+    "debug": "^3.1.0",
+    "deepstream.io-client-js": "^2.3.0",
+    "immutable": "3.8.2",
+    "kefir": "3.8.1",
+    "moment": "2.20.1",
+    "node-dht-sensor": "^0.0.33",
+    "ramda": "0.25.0",
+    "request": "^2.83.0",
+    "rpio": "^0.9.20"
   }
 }

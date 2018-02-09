@@ -18,7 +18,9 @@ const switches: RelaisSwitch = {
 const prepareSwitch = switchLib =>
   R.map(sw => {
     console.log(
-      `[Controller] Opening GPIO-output for <${sw.desc}> on pin <${sw.pin}> and pull-up to HIGH:`
+      `[Controller] Opening GPIO-output for <${sw.desc}> on pin <${
+        sw.pin
+      }> and pull-up to HIGH:`
     );
     return switchLib.open(sw.pin, switchLib.OUTPUT, switchLib.HIGH);
   }, switches);
