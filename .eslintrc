@@ -4,29 +4,22 @@
   },
   "parser"  : "babel-eslint",
   "extends" : [
-    "airbnb-base",
-    "plugin:flowtype/recommended"
+    'eslint:recommended', 'prettier', 'plugin:flowtype/recommended'
   ],
   "plugins": [
+    "prettier",
     "flowtype",
     "fp"
   ],
   "rules": {
-    // Soften some rules.
-    "arrow-parens": 0, // Does not work with Flow generic types.
-    "global-require": 0, // Used by webpack isomorphic tools and React Native.
-    "import/first": 0, // Este sorts by atom/sort lines natural order.
-    "import/prefer-default-export": 0, // No. Actions can have just one action.
-    "jsx-a11y/anchor-has-content": 0, // Does not work with new components.
-    "jsx-a11y/html-has-lang": 0, // Can not recognize the Helmet.
-    "no-confusing-arrow": 0, // This rule is confusing.
-    "no-mixed-operators": 0, // Prettier ftw.
-    "no-nested-ternary": 0, // Nice for JSX.
-    "no-param-reassign": 0, // We love param reassignment. Naming is hard.
-    "no-shadow": 0, // Shadowing is a nice language feature. Naming is hard.
-    "indent": 0, // Prettier ftw.
-    // Flow.
-    "flowtype/space-after-type-colon": 0, // Prettier ftw.
+    'prettier/prettier': [ // customizing prettier rules (unfortunately not many of them are customizable)
+      'error',
+      {
+        singleQuote: true,
+        trailingComma: 'all',
+      },
+    ],
+    eqeqeq: ['error', 'always'], // adding some custom ESLint rules
     // misc (CjK)
     "comma-dangle": ["error", "only-multiline"],
     "max-len": ["error", 120],
