@@ -1,10 +1,14 @@
 // @flow
 
-/* eslint no-console: "off" */
 import K from 'kefir';
 import config from './config';
 import createCommandStream from './createCommandStream';
 import deepstream from 'deepstream.io-client-js';
+
+import logger from 'debug';
+
+const info = logger('smt:fermenter:client'),
+  error = logger('smt:fermenter:client');
 
 const login$ = K.fromPromise(
   new Promise((resolve, reject) => {
@@ -12,11 +16,13 @@ const login$ = K.fromPromise(
       { username: config.namespace },
       success => {
         if (success) {
+          info(`Connected to backend <${config.host}>`);
           resolve(client);
         } else {
           /* login or connection failed - see
              https:deepstream.io/docs/client-js/client/ how to handle this situation more
              gracefully than now. */
+          info(`FAILED to connect to backend <${config.host}>`);
           reject();
         }
       }
@@ -40,9 +46,9 @@ function createClient() {
         value(dsClient) {
           this.dsClient = dsClient;
         },
-        err(error) {
-          console.error('Failed to connect to deepstream-server!');
-          console.error(error);
+        err(err) {
+          error('Error connecting to deepstream-server!');
+          error(err);
         },
       });
       return this;
@@ -63,10 +69,10 @@ function createClient() {
           putFermenterState(newState);
         },
         error(error) {
-          console.error(`[fermenterClient] An error occured: ${error}`);
+          error(`[fermenterClient] An error occured: ${error}`);
         },
         end() {
-          console.log('[fermenterClient] Fermenter-client connection ended.');
+          info('[fermenterClient] Fermenter-client connection ended.');
         },
       });
     },

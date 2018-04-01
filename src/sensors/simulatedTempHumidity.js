@@ -31,49 +31,34 @@ const simulatedTempHumStream = K.repeat(n => {
     case 1:
       return K.interval(
         interval,
-        initialState
-          .setIn(['env', 'temperature'], 29)
-          .setIn(['env', 'humidity'], 30)
+        initialState.setIn(['env', 'temperature'], 29).setIn(['env', 'humidity'], 30)
       )
         .take(1)
         .toProperty();
     case 2:
-      return K.interval(
-        interval,
-        initialState.setIn(['env', 'temperature'], 23)
-      )
+      return K.interval(interval, initialState.setIn(['env', 'temperature'], 23))
         .take(1)
         .toProperty();
     case 3:
-      return K.interval(
-        interval,
-        initialState.setIn(['env', 'temperature'], 22)
-      )
+      return K.interval(interval, initialState.setIn(['env', 'temperature'], 22))
         .take(1)
         .toProperty();
     case 4:
       /* Cause a false alarm emergency */
       return K.interval(
         interval,
-        initialState
-          .setIn(['env', 'temperature'], 99)
-          .setIn(['env', 'isValid'], true)
+        initialState.setIn(['env', 'temperature'], 99).setIn(['env', 'isValid'], true)
       )
         .take(1)
         .toProperty(); /* NOTE that currently three emergencies are needed to trigger halt, so this won't */
     case 6:
-      return K.interval(
-        interval,
-        initialState.setIn(['env', 'temperature'], 32.1)
-      )
+      return K.interval(interval, initialState.setIn(['env', 'temperature'], 32.1))
         .take(1)
         .toProperty();
     case 7:
       return K.interval(
         interval,
-        initialState
-          .setIn(['env', 'temperature'], '0')
-          .setIn(['env', 'humidity'], '0')
+        initialState.setIn(['env', 'temperature'], '0').setIn(['env', 'humidity'], '0')
       )
         .take(1)
         .toProperty();
@@ -84,9 +69,7 @@ const simulatedTempHumStream = K.repeat(n => {
     case 9:
       return K.interval(
         interval,
-        initialState
-          .setIn(['env', 'temperature'], 30)
-          .setIn(['env', 'humidity'], 57)
+        initialState.setIn(['env', 'temperature'], 30).setIn(['env', 'humidity'], 57)
       )
         .take(1)
         .toProperty();

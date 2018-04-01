@@ -1,24 +1,21 @@
 /* @flow */
 import type { FermenterState } from '../types';
 
-import R from 'ramda';
+import * as R from 'ramda';
 import { createNotifier, buildMessage } from '../notifications';
+import logger from 'debug';
 
-function fermenterIsActive(rts) {
-  return rts.get('active');
-}
+const warn = logger('smt:fermenter:runtime');
 
-function _update(rts, props) {
-  return rts.withMutations(newRts =>
-    R.map(R.apply(newRts.set.bind(newRts)), R.toPairs(props))
-  );
-}
+const fermenterIsActive = rts => rts.get('active');
 
-function updateDevice(dev, props) {
-  return dev.withMutations(newDevState =>
+const _update = (rts, props) =>
+  rts.withMutations(newRts => R.map(R.apply(newRts.set.bind(newRts)), R.toPairs(props)));
+
+const updateDevice = (dev, props) =>
+  dev.withMutations(newDevState =>
     R.map(R.apply(newDevState.set.bind(newDevState)), R.toPairs(props))
   );
-}
 
 function bootstrapRuntimeState(prev: FermenterState, curr: FermenterState) {
   const prevRts = prev.get('rts');
@@ -68,9 +65,9 @@ function bootstrapRuntimeState(prev: FermenterState, curr: FermenterState) {
       break;
     }
     default: {
-      console.warn(
-        `[WARNING] Received unknown command <${rts.currentCmd}> - ignoring.`
-      );
+      // don't warn on empty commands
+      if (rts.currentCmd)
+        warn(`[WARNING] Received unknown command <${rts.currentCmd}> - ignoring.`);
     }
   }
 
