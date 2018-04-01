@@ -21,9 +21,7 @@ const detectEnvEmergency = (prev, curr) => {
   if (hasEnvEmergency) {
     const notice = `There has been more than ${maxOffScaleReadingsAllowed} temperature/humididy measurements exceeding a safe range - please check the fermenter-closet and it's devices for any abnormal conditions!`;
     return curr
-      .update('rts', rtState =>
-        createNotifier(rtState, buildMessage(notice, 'warning'))
-      )
+      .update('rts', rtState => createNotifier(rtState, buildMessage(notice, 'warning')))
       .setIn(rtsEnvEmergencyPath, hasEnvEmergency);
   }
 
