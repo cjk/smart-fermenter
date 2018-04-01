@@ -22,10 +22,8 @@ function readSensor() {
 }
 
 const sensorStream = sensor.initialize()
-  ? K.fromPoll(
-      5000,
-      readSensor
-    ) /* emit a new sensor-reading every 10 seconds */.toProperty()
+  ? K.fromPoll(3000, readSensor) /* Sleep-time between sensor-readings *must* be > 2 seconds! */
+      .toProperty()
   : K.constantError('Failed to initialize temp-/humidity-sensor.');
 
 export default sensorStream;
