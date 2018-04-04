@@ -58,6 +58,7 @@ function bootstrapRuntimeState(prev: FermenterState, curr: FermenterState) {
             shouldSwitchTo: 'off',
             willSwitch: true,
             isOn: false,
+            lastSwitchAt: Date.now,
           })
         );
         message = buildMessage('Fermenter was stopped.');
@@ -65,7 +66,7 @@ function bootstrapRuntimeState(prev: FermenterState, curr: FermenterState) {
       break;
     }
     default: {
-      // don't warn on empty commands
+      // Warn on unknown but not empty commands
       if (rts.currentCmd)
         warn(`[WARNING] Received unknown command <${rts.currentCmd}> - ignoring.`);
     }

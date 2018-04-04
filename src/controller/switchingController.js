@@ -1,6 +1,10 @@
 // @flow
 import type { FermenterState$ } from '../types';
 
+import * as R from 'ramda';
+
+const getDeviceProp = R.curry((devType, prop, devMap) => devMap.get(devType).get('lastSwitchAt'));
+
 function switchingController(prev: FermenterState$, curr: FermenterState$) {
   /* Do nothing if fermenter is off */
   if (!curr.get('rts').active) {
@@ -18,8 +22,7 @@ function switchingController(prev: FermenterState$, curr: FermenterState$) {
 
     /* Avoids switching non-running devices off and running devices on several times */
     const deviceAlreadyOnOff = (_dev_, shouldSwitchTo) =>
-      (lastIsOn && shouldSwitchTo === 'off') ||
-      (!lastIsOn && shouldSwitchTo === 'on');
+      (lastIsOn && shouldSwitchTo === 'off') || (!lastIsOn && shouldSwitchTo === 'on');
 
     const shouldSwitchTo = cDev.get('shouldSwitchTo');
     /* Decide whether we actually need to switch a device on or off */
@@ -37,6 +40,7 @@ function switchingController(prev: FermenterState$, curr: FermenterState$) {
         curr
           .setIn(['devices', dev, 'isOn'], shouldSwitchTo === 'on')
           .setIn(['devices', dev, 'willSwitch'], true)
+          .setIn(['devices', dev, 'lastSwitchAt'], Date.now())
           .getIn(['devices', dev])
       );
     }
@@ -46,6 +50,10 @@ function switchingController(prev: FermenterState$, curr: FermenterState$) {
       curr
         .setIn(['devices', dev, 'willSwitch'], false)
         .setIn(['devices', dev, 'isOn'], lastIsOn)
+        .setIn(
+          ['devices', dev, 'lastSwitchAt'],
+          getDeviceProp(dev, 'lastSwitchAt', prev.get('devices'))
+        )
         .getIn(['devices', dev])
     );
   }, curr);

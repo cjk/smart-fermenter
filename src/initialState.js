@@ -13,6 +13,7 @@ const Device = new Record({
   isOn: false,
   shouldSwitchTo: null,
   willSwitch: false,
+  lastSwitchAt: null,
 });
 
 const SwitchOp = new Record({
