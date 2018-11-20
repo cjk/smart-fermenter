@@ -1,25 +1,26 @@
 // @flow
+
 /* eslint no-console: "off" */
-import K from 'kefir';
+import type { Observable } from 'kefir'
+import K from 'kefir'
 
-const fermenterStartCmd = { currentCmd: 'none', tempLimits: [] };
+const fermenterInitialCmd = { currentCmd: 'none', tempLimits: [] }
 
-function handleCommands(client: Function) {
-  const remoteCommand = client.record.getRecord('fermenter/commands');
+function handleCommands(peer: any): Observable<Object> {
+  const remoteCommands = peer.get('fermenter').get('commands')
 
   const stream = K.stream(emitter => {
-    function emitCommand(cmd) {
+    remoteCommands.on((cmd, key) => {
       /* DEBUGGING */
       console.log(
-        `[Fermenter-Cmd-Stream] Emitting fermenter command we just received: <${JSON.stringify(
-          cmd
-        )}>`
-      );
-      emitter.emit(cmd);
-    }
-    remoteCommand.subscribe(emitCommand);
-  });
-  return stream.toProperty(() => fermenterStartCmd);
+        `[Fermenter-Cmd-Stream] Emitting fermenter <${key}> command we just received: <${JSON.stringify(cmd)}>`
+      )
+      emitter.emit(cmd)
+    })
+  })
+  remoteCommands.put(fermenterInitialCmd)
+
+  return stream.toProperty(() => fermenterInitialCmd)
 }
 
-export default handleCommands;
+export default handleCommands

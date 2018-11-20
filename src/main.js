@@ -1,30 +1,29 @@
 /* eslint no-console: "off" */
 
-import { pipe } from 'ramda';
-import controlEnvironment from './controller';
-import handleDevices from './actors';
-import createClient from './client';
-import state$ from './sensors';
-import { setupCleanClientDisconnectHandler } from './lib/util';
+import { pipe } from 'ramda'
+import controlEnvironment from './controller'
+import handleDevices from './actors'
+import createPeer from './client'
+import state$ from './sensors'
+import { setupCleanClientDisconnectHandler } from './lib/util'
 
-const client = createClient();
-// Cleanup client-connection on restarts or interrupts
-setupCleanClientDisconnectHandler(client);
+const peer = createPeer()
+// Cleanup peer-connection on restarts or interrupts
+setupCleanClientDisconnectHandler(peer)
 
-// stateStream.log();/* DEBUGGING only */
+// DEBUGGING only
+// state$.log()
 
 const workflow = pipe(
-  client.mergeCommandStream,
+  // peer.mergeCommandStream,
   controlEnvironment,
-  handleDevices,
-  client.start
-);
+  handleDevices
+  // peer.start
+)
 
-console.log(
-  '----------------------------------------------------------------------'
-);
+console.log('----------------------------------------------------------------------')
 
-workflow(state$);
+workflow(state$)
 
 // Send startup-completed signal to process-manager
-if (process.send) process.send('ready');
+if (process.send) process.send('ready')
