@@ -1,10 +1,5 @@
-import buildEmergencyNotifications from './buildEmergencyNotifications';
-import createMessageEmitter from './messageStream';
-import { createNotifier, buildMessage } from './message';
+import buildEmergencyNotifications from './buildEmergencyNotifications'
+import createMessageEmitter from './messageStream'
+import { addNotification, buildMessage } from './message'
 
-export {
-  createNotifier,
-  buildMessage,
-  createMessageEmitter,
-  buildEmergencyNotifications,
-};
+export { addNotification, buildMessage, createMessageEmitter, buildEmergencyNotifications }

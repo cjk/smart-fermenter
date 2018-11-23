@@ -1,32 +1,33 @@
-import { List } from 'immutable';
-import InitialState from '../initialState';
+// @flow
+
+import type { Devices } from '../types'
+
+import * as R from 'ramda'
+import { devices } from '../initialState'
 /* For switching */
-import relaisSwitch from './relais/relaisSwitch';
+import relaisSwitch from './relais/relaisSwitch'
 
 const switchImpl =
-  process.env.NODE_ENV === 'development'
-    ? require('./simulatedSwitch').simulatedSwitch
-    : require('rpio');
+  process.env.NODE_ENV === 'development' ? require('./simulatedSwitch').simulatedSwitch : require('rpio')
 
 /* What switching implementation shall we use? Simulated or real: */
-const switcher = relaisSwitch(switchImpl);
+const switcher = relaisSwitch(switchImpl)
 
 // dynamic version of: new List.of('heater', 'humidifier');
-const devices = new List(InitialState.get('devices').keys());
+const deviceNames = R.keys(devices)
 
 function switchOffAllDevices() {
-  devices.map(dev => switcher(dev, 'off').log());
+  R.map(dev => switcher(dev, 'off').log(), deviceNames)
 }
 
-function maybeSwitchDevices(deviceState) {
-  devices.forEach(dev => {
-    const device = deviceState.get(dev);
-    const { willSwitch, shouldSwitchTo } = device;
+function maybeSwitchDevices(devices: Devices) {
+  R.map(dev => {
+    const { willSwitch, shouldSwitchTo } = dev
 
     if (willSwitch) {
-      switcher(dev, shouldSwitchTo);
+      switcher(dev, shouldSwitchTo)
     }
-  });
+  }, devices)
 }
 
-export { switchOffAllDevices, maybeSwitchDevices };
+export { switchOffAllDevices, maybeSwitchDevices }

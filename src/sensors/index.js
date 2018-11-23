@@ -1,42 +1,40 @@
 // @flow
+import type { FermenterState } from '../types'
+import type { Observable } from 'kefir'
 
-const isNumeric = n => !isNaN(parseFloat(n)) && isFinite(n);
+import * as R from 'ramda'
 
-const device =
-  process.env.NODE_ENV === 'development' ? './simulatedTempHumidity' : './tempHumidity';
+const isNumeric = n => !isNaN(parseFloat(n)) && isFinite(n)
 
-const tempHumStream = require(device).default;
+const device = process.env.NODE_ENV === 'development' ? './simulatedTempHumidity' : './tempHumidity'
 
-export default tempHumStream
-  .map(state => {
-    const env = state.get('env');
-    const { temperature, humidity } = env;
+const tempHumStream = require(device).default
 
-    /* Add timestamp and convert possible string-numbers to native floats */
-    return state.set(
-      'env',
-      env.withMutations(map =>
-        map
-          .set('createdAt', Date.now())
-          .set('temperature', Number.parseFloat(temperature))
-          .set('humidity', Number.parseFloat(humidity))
-      )
-    );
-  })
-  .map(state => {
-    /* Perform a basic first validity-check */
+const envTransform = {
+  createdAt: Date.now,
+  temperature: Number.parseFloat,
+  humidity: Number.parseFloat,
+}
 
-    const { temperature, humidity, errors, isValid } = state.get('env');
-    /* Only states with valid timestamp + sensor-readings are flagged as valid */
-    if (
+function createEnvInStateStream(): Observable<Object> {
+  return tempHumStream.map((state: FermenterState) => {
+    // Add timestamp and convert possible string-numbers to native floats
+    const env = R.evolve(envTransform, state.env)
+    // Perform a basic first validity-check
+    const { temperature, humidity, errors, isValid } = env
+    // Only states with valid timestamp + sensor-readings are flagged as valid
+    const newEnv =
       !isNumeric(temperature) ||
       !isNumeric(humidity) ||
       temperature === 0 ||
       humidity === 0 ||
       errors > 0 ||
       isValid === false
-    ) {
-      return state.setIn(['env', 'isValid'], false);
-    }
-    return state.setIn(['env', 'isValid'], true);
-  });
+        ? R.assoc('isValid', false, env)
+        : R.assoc('isValid', true, env)
+
+    return R.assoc('env', newEnv, state)
+  })
+}
+
+export default createEnvInStateStream

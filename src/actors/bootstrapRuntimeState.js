@@ -1,87 +1,67 @@
 /* @flow */
-import type { FermenterState } from '../types';
+import type { FermenterState } from '../types'
 
-import * as R from 'ramda';
-import { createNotifier, buildMessage } from '../notifications';
-import logger from 'debug';
+import * as R from 'ramda'
+import { addNotification } from '../notifications'
+import logger from 'debug'
 
-const warn = logger('smt:fermenter:runtime');
-
-const fermenterIsActive = rts => rts.get('active');
-
-const _update = (rts, props) =>
-  rts.withMutations(newRts => R.map(R.apply(newRts.set.bind(newRts)), R.toPairs(props)));
-
-const updateDevice = (dev, props) =>
-  dev.withMutations(newDevState =>
-    R.map(R.apply(newDevState.set.bind(newDevState)), R.toPairs(props))
-  );
+const warn = logger('smt:fermenter:runtime')
 
 function bootstrapRuntimeState(prev: FermenterState, curr: FermenterState) {
-  const prevRts = prev.get('rts');
+  const prevRts = prev.rts
 
   /* Carry over current fermenter-is-active state from previous state */
-  const rts = curr
-    .get('rts')
-    .set('active', prevRts.active)
-    .set('status', prevRts.status);
+  const rts = R.merge(curr.rts, {
+    active: prevRts.active,
+    status: prevRts.status === 'initializing' ? (prevRts.active ? 'running' : 'off') : prevRts.status,
+  })
 
-  const fermenterIsRunning = fermenterIsActive(rts);
-  const updateRts = R.partial(_update, [rts]);
-
-  let newRts = rts;
-  let devices = curr.get('devices');
-  let message = null;
+  const updateStateWith = (rts, devices = curr.devices) => R.merge(curr, { rts, devices })
 
   switch (rts.currentCmd) {
     case 'none': {
       /* Do nothing if no command has been received */
-      break;
+      break
     }
     case 'start': {
-      if (!fermenterIsRunning) {
-        newRts = updateRts({
+      if (!rts.active) {
+        const newRts = R.merge(addNotification('Fermenter was started.', rts), {
           active: true,
           status: 'running',
           currentCmd: null,
-        });
-        message = buildMessage('Fermenter was started.');
+        })
+        return updateStateWith(newRts)
       }
-      break;
+      break
     }
     case 'stop': {
-      if (fermenterIsRunning) {
-        newRts = updateRts({ active: false, status: 'off', currentCmd: null });
-        /* IMPORTANT: Make sure we switch all devices off as well as the fermenter-closet! */
-        devices = devices.map(dev =>
-          updateDevice(dev, {
-            shouldSwitchTo: 'off',
-            willSwitch: true,
-            isOn: false,
-            lastSwitchAt: Date.now,
-          })
-        );
-        message = buildMessage('Fermenter was stopped.');
+      if (rts.active) {
+        /* Make sure we switch all devices off as well as the fermenter-closet! */
+        const devices = R.map(
+          dev =>
+            R.merge(dev, {
+              shouldSwitchTo: 'off',
+              willSwitch: true,
+              isOn: false,
+              lastSwitchAt: Date.now(),
+            }),
+          curr.devices
+        )
+        const newRts = R.merge(addNotification('Fermenter was stopped.', rts), {
+          active: false,
+          status: 'off',
+          currentCmd: null,
+        })
+        return updateStateWith(newRts, devices)
       }
-      break;
+      break
     }
     default: {
       // Warn on unknown but not empty commands
-      if (rts.currentCmd)
-        warn(`[WARNING] Received unknown command <${rts.currentCmd}> - ignoring.`);
+      if (rts.currentCmd) warn(`[WARNING] Received unknown command <${rts.currentCmd}> - ignoring.`)
+      return updateStateWith(rts)
     }
   }
-
-  if (rts.status === 'initializing') {
-    newRts = newRts.set('status', fermenterIsRunning ? 'running' : 'off');
-  }
-
-  const queueMessage = createNotifier(newRts);
-
-  return curr
-    .set('rts', queueMessage(message))
-    .set('devices', devices)
-    .set('rts', newRts);
 }
 
-export default bootstrapRuntimeState;
+export default bootstrapRuntimeState

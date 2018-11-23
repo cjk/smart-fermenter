@@ -1,62 +1,30 @@
 // @flow
-import type { FermenterState$ } from '../types';
 
-import * as R from 'ramda';
+import type { FermenterState } from '../types'
 
-const getDeviceProp = R.curry((devType, prop, devMap) => devMap.get(devType).get('lastSwitchAt'));
+import * as R from 'ramda'
 
-function switchingController(prev: FermenterState$, curr: FermenterState$) {
+function switchingController(prev: FermenterState, curr: FermenterState) {
   /* Do nothing if fermenter is off */
-  if (!curr.get('rts').active) {
-    return curr;
+  if (!R.path(['rts', 'active'], curr)) {
+    return curr
   }
 
-  const devices = curr.get('devices').keySeq();
+  const deviceLens = dev => R.lensPath(['devices', dev])
 
-  return devices.reduce((next, dev) => {
-    const devPath = ['devices', dev];
-    const [cDev, pDev] = [curr.getIn(devPath), prev.getIn(devPath)];
+  const newDeviceState = R.mapObjIndexed((dev, devName, _) => {
+    const prevDev = R.view(deviceLens(devName), prev)
+    const currDev = R.view(deviceLens(devName), curr)
 
-    /* TODO Apply destructuring */
-    const lastIsOn = pDev.get('isOn');
+    /* Return true only if a device should be switched on/off based on it's current and previous state. Avoids switching
+     * non-running devices off and running devices on several times */
+    return currDev.shouldSwitchTo &&
+      ((prevDev.isOn && currDev.shouldSwitchTo === 'off') || (!prevDev.isOn && currDev.shouldSwitchTo === 'on'))
+      ? R.merge(dev, { isOn: currDev.shouldSwitchTo === 'on', willSwitch: true, lastSwitchAt: Date.now() })
+      : R.merge(dev, { isOn: prevDev.isOn, willSwitch: false, lastSwitchAt: prevDev.lastSwitchAt })
+  }, R.prop('devices', curr))
 
-    /* Avoids switching non-running devices off and running devices on several times */
-    const deviceAlreadyOnOff = (_dev_, shouldSwitchTo) =>
-      (lastIsOn && shouldSwitchTo === 'off') || (!lastIsOn && shouldSwitchTo === 'on');
-
-    const shouldSwitchTo = cDev.get('shouldSwitchTo');
-    /* Decide whether we actually need to switch a device on or off */
-    const willSwitch =
-      shouldSwitchTo /* 1. Someone indicated a switch is necessary */ &&
-      deviceAlreadyOnOff(
-        dev,
-        shouldSwitchTo
-      ); /* 2. Isn't the device already in desired switch-state? */
-
-    if (willSwitch) {
-      // console.log(`>>> We *intend* to switch ${dev} ${shouldSwitchTo}!`);
-      return next.mergeIn(
-        ['devices', dev],
-        curr
-          .setIn(['devices', dev, 'isOn'], shouldSwitchTo === 'on')
-          .setIn(['devices', dev, 'willSwitch'], true)
-          .setIn(['devices', dev, 'lastSwitchAt'], Date.now())
-          .getIn(['devices', dev])
-      );
-    }
-    // console.log(`*No intend* switching ${lastIsOn ? 'already running' : 'not running'} ${dev}`);
-    return next.mergeIn(
-      ['devices', dev],
-      curr
-        .setIn(['devices', dev, 'willSwitch'], false)
-        .setIn(['devices', dev, 'isOn'], lastIsOn)
-        .setIn(
-          ['devices', dev, 'lastSwitchAt'],
-          getDeviceProp(dev, 'lastSwitchAt', prev.get('devices'))
-        )
-        .getIn(['devices', dev])
-    );
-  }, curr);
+  return R.assoc('devices', newDeviceState, curr)
 }
 
-export default switchingController;
+export default switchingController

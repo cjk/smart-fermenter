@@ -3,13 +3,17 @@
 import { pipe } from 'ramda'
 import controlEnvironment from './controller'
 import handleDevices from './actors'
-import createPeer from './client'
-import state$ from './sensors'
+// import createPeer from './client'
+import createEnvInStateStream from './sensors'
 import { setupCleanClientDisconnectHandler } from './lib/util'
 
-const peer = createPeer()
+const state$ = createEnvInStateStream()
+
+// TODO:
+// const peer = createPeer()
+
 // Cleanup peer-connection on restarts or interrupts
-setupCleanClientDisconnectHandler(peer)
+// setupCleanClientDisconnectHandler(peer)
 
 // DEBUGGING only
 // state$.log()

@@ -1,29 +1,38 @@
-import K from 'kefir';
-import sensorLib from 'node-dht-sensor';
-import state from '../initialState';
+import K from 'kefir'
+import * as R from 'ramda'
+import sensorLib from 'node-dht-sensor'
+import state from '../initialState'
 
 const sensor = {
   initialize: () => sensorLib.initialize(22, 4),
   read: () => sensorLib.read(),
-};
+}
 
 function readSensor() {
-  const env = sensor.read();
+  const env = sensor.read()
+
+  const trans = {
+    temperature: () => Number.parseFloat(env.temperature).toFixed(1),
+    humidity: () => Number.parseFloat(env.humidity).toFixed(1),
+    errors: R.always(env.errors),
+    isValid: R.always(env.isValid),
+  }
 
   return (
-    state /* Initial state's offspring! */
-      /* PENDING: Possible dupe - move this conversion to our general validity-check
+    /* Initial state's offspring! */
+    /* PENDING: Possible dupe - move this conversion to our general validity-check
      in './index.js' ?! */
-      .updateIn(['env', 'temperature'], _temp => env.temperature.toFixed(1))
-      .updateIn(['env', 'humidity'], _hum => env.humidity.toFixed(1))
-      .setIn(['env', 'isValid'], env.isValid)
-      .setIn(['env', 'errors'], env.errors)
-  );
+    R.pipe(
+      R.prop('env'),
+      R.evolve(trans),
+      R.assoc('env', R.__, state)
+    )(state)
+  )
 }
 
 const sensorStream = sensor.initialize()
   ? K.fromPoll(3000, readSensor) /* Sleep-time between sensor-readings *must* be > 2 seconds! */
       .toProperty()
-  : K.constantError('Failed to initialize temp-/humidity-sensor.');
+  : K.constantError('Failed to initialize temp-/humidity-sensor.')
 
-export default sensorStream;
+export default sensorStream

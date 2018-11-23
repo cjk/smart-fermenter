@@ -1,34 +1,19 @@
-import R from 'ramda';
-import { Record } from 'immutable';
+// @flow
 
-const Message = Record({
-  level: 'notice',
-  msg: 'Some notification-message',
-});
+import type { Notification, RunTimeState } from '../types'
 
-function messageIsEmpty(message) {
-  return (
-    !(message instanceof Message) ||
-    R.isNil(message.msg) ||
-    R.isEmpty(message.msg)
-  );
+import * as R from 'ramda'
+
+const notificationLens = R.lensProp(['notifications'])
+
+function buildMessage(msg: string, level: string = 'notify'): Notification {
+  return { level, msg }
 }
 
-function queueMessage(runtimeState, message) {
-  /* Do nothing on empty messages */
-  if (messageIsEmpty(message)) {
-    return runtimeState;
-  }
+function addNotification(msg: string, rts: RunTimeState): RunTimeState {
+  const notifications = R.view(notificationLens, rts)
 
-  return runtimeState.update('notifications', msgLst =>
-    msgLst.unshift(message)
-  );
+  return R.assoc('notifications', R.assoc([Date.now()], buildMessage(msg), notifications), rts)
 }
 
-function buildMessage(msg, level = 'notify') {
-  return new Message({ level, msg });
-}
-
-const createNotifier = R.curry(queueMessage);
-
-export { buildMessage, createNotifier };
+export { addNotification, buildMessage }
