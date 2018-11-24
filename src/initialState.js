@@ -60,6 +60,7 @@ const emergency: Emergency = {
   device: null,
   sensor: null,
   at: undefined,
+  value: undefined,
 }
 
 export { env, devices, history, switchOp, emergency }

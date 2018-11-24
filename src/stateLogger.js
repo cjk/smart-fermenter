@@ -19,11 +19,10 @@ function logState(state: FermenterState) {
     R.keys(groupedSwitchOps)
   )
 
-  /* TODO: re-add after refactoring emergencies!
-  // const emergencies = state
-  //   .getIn(['history', 'emergencies'])
-  //   .groupBy(v => v.device)
-  //   .reduce((ems, dev, name) => ems.set(name, dev.size), new Map());
+  const emergencies = R.pipe(
+    R.groupBy(e => e.device),
+    grp => `Heat: ${R.length(grp.heater) || 0};Hum:${R.length(grp.humidifier) || 0}`
+  )(R.path(['history', 'emergencies'], state))
 
   // const hasEnvEmergency = rts.hasEnvEmergency ? '!' : '#';
 
@@ -54,7 +53,7 @@ temp/hum: [${log.temp}/${log.hum}] \
 heater: [${log.heaterIsOn}|${log.heaterShouldSwitch}|${log.heaterWillSwitch}] \
 humidifier: [${log.humidifierIsOn}|${log.humidifierShouldSwitch}|${log.humidifierWillSwitch}] \
 switchOps: #${JSON.stringify(switchOps)} \
-Emergencies: [TODO] \
+Emergencies: ${emergencies} \
  <--${log.rts.currentCmd}`
   )
   // TODO: emergencies where previously logged like this:

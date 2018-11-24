@@ -18,8 +18,8 @@ const randomizeEnvironment = (state: FermenterState) =>
 
 const _setTempAndHumIn = R.curry((state: FermenterState, temp: number, hum: number) =>
   R.pipe(
-    R.assocPath(['env', 'temperature'], temp >= 0 ? temp : R.path(['env', 'temperature'], state)),
-    R.assocPath(['env', 'humidity'], hum >= 0 ? hum : R.path(['env', 'temperature'], state))
+    R.assocPath(['env', 'temperature'], temp > 0 ? temp : R.path(['env', 'temperature'], state)),
+    R.assocPath(['env', 'humidity'], hum > 0 ? hum : R.path(['env', 'humidity'], state))
   )(state)
 )
 

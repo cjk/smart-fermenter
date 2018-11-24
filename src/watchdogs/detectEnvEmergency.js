@@ -1,31 +1,38 @@
+// @flow
+
 /* Checks for consecutive occuring emergency-signals and signals a
    runtime-emergency when a certain limit is reached. */
+import type { FermenterState, Emergency } from '../types'
 
-import { createNotifier, buildMessage } from '../notifications'
+import * as R from 'ramda'
+import logger from 'debug'
 
-const maxOffScaleReadingsAllowed = 2
+const error = logger('smt:fermenter:Emergencies')
 
-const histEmergencyPath = ['history', 'emergencies']
-const rtsEnvEmergencyPath = ['rts', 'hasEnvEmergency']
+const within10Secs = startTs => Math.floor((Date.now() - startTs) / 1000) < 10
+const maxOffScaleReadingsAllowed = 1
 
-const detectEnvEmergency = (prev, curr) => {
-  /* TODO: Emergencies need refactoring! */
+function detectEnvEmergency(prev: FermenterState, curr: FermenterState) {
+  const emLst: Array<Emergency> = R.path(['history', 'emergencies'], curr)
 
-  // const emHist = curr.getIn(histEmergencyPath);
+  // Recent emergencies are those that occured in the last 10 seconds
+  const recentEmergencies = R.filter(e => within10Secs(e.at), emLst)
 
-  // const now = Date.now();
-  // /* Recent emergencies are those that occured in the last 20 seconds */
-  // const recentEms = emHist.filter(v => (now - v.at) / 1000 < 20);
+  // Also print warning to the console about recent emergencies:
+  R.map(e => error(`Recent emergency-state for ${e.device} (${e.sensor} = ${e.value}) detected!`), recentEmergencies)
 
-  // /* Signal active environmental emergency when two or more *recent* emergency-states occured */
-  // const hasEnvEmergency = recentEms.count() > maxOffScaleReadingsAllowed;
+  // Signal active environmental emergency when two or more *recent* emergency-states occured
+  const hasEnvEmergency: boolean = R.length(recentEmergencies) >= maxOffScaleReadingsAllowed
 
-  // if (hasEnvEmergency) {
-  //   const notice = `There has been more than ${maxOffScaleReadingsAllowed} temperature/humididy measurements exceeding a safe range - please check the fermenter-closet and it's devices for any abnormal conditions!`;
-  //   return curr
-  //     .update('rts', rtState => createNotifier(rtState, buildMessage(notice, 'warning')))
-  //     .setIn(rtsEnvEmergencyPath, hasEnvEmergency);
-  // }
+  if (hasEnvEmergency) {
+    const notice = `There has been more than ${maxOffScaleReadingsAllowed} temperature/humididy measurements exceeding a safe range - please check the fermenter-closet and it's devices for any abnormal conditions!`
+    const withEmergencies = {
+      hasEnvEmergency: R.always(true),
+      notifications: R.merge(R.__, { [Date.now()]: { level: 'notify', msg: notice } }),
+    }
+
+    return R.assoc('rts', R.evolve(withEmergencies, curr.rts), curr)
+  }
 
   return curr
 }

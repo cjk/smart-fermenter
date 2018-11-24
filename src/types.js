@@ -28,9 +28,10 @@ export type SwitchOp = {
 }
 
 export type Emergency = {
-  device: ?string,
-  sensor: ?string,
-  at: ?number,
+  device: string,
+  sensor: string,
+  at: number,
+  value: number,
 }
 
 export type Notification = {

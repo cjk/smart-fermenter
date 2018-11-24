@@ -16,7 +16,7 @@ const state$ = createEnvInStateStream()
 // setupCleanClientDisconnectHandler(peer)
 
 // DEBUGGING only
-// state$.log()
+// state$.spy()
 
 const workflow = pipe(
   // peer.mergeCommandStream,

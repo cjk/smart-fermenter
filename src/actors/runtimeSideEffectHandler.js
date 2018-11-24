@@ -1,31 +1,29 @@
+// @flow
+
 /* Runtime notification handler - sends all collected message-events out as
    notifications */
-import { createMessageEmitter, buildEmergencyNotifications } from '../notifications'
+import type { FermenterState, Notification, Notifications } from '../types'
+
+import * as R from 'ramda'
+import { createMessageEmitter } from '../notifications'
 
 const messageEmitter = createMessageEmitter()
 
-// TODO:
-function sendNotifications(notLst) {
-  /* Send all messages as notifications in reverse-chronological order
-     (first-in-first-out) */
-  const queue = notLst
-    .toSeq()
-    .reverse()
-    .values()
-
-  let notification
-  while (!(notification = queue.next()).done) {
-    messageEmitter.emit(notification.value)
-  }
+// TODO: just pretending for now
+// TODO: not taking care of malfunctioning devices yet - see '../watchdogs/deviceRunningTooLong.js'
+function sendNotifications(notifications: Notifications): void {
+  R.mapObjIndexed((n: Notification, ts, _) => console.log(`Sending notification ${JSON.stringify(n)}`), notifications)
+  // messageEmitter.emit(notification.value)
 }
 
-function handleRuntime(state) {
-  const { rts } = state
-  const notifications = buildEmergencyNotifications(rts).concat(rts.notifications)
+function handleRuntime(state: FermenterState): void {
+  const {
+    rts: { notifications },
+  } = state
+  // const notifications = buildEmergencyNotifications(rts).concat(rts.notifications)
 
-  // TODO: Notifications disabled for now!
   /* Send notifications from queue */
-  // sendNotifications(notifications)
+  sendNotifications(notifications)
 }
 
 export default handleRuntime

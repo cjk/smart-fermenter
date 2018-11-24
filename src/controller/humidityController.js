@@ -4,9 +4,6 @@ import type { Observable } from 'kefir'
 
 import * as R from 'ramda'
 import { addEmergency } from '../history'
-import logger from 'debug'
-
-const error = logger('smt:fermenter:humControl')
 
 const deviceShouldSwitchTo = (name, onOff, state) => R.assocPath(['devices', name, 'shouldSwitchTo'], onOff, state)
 
@@ -16,24 +13,29 @@ function humidifierController(state$: Observable<Object>) {
     const isValid = R.path(['env', 'isValid'], state)
     const [humLowerLimit, humUpperLimit] = R.path(['rts', 'humidityLimits'], state)
 
-    /* If the reading can be trusted, this is an emergency! */
-    if (humidity > humUpperLimit + 25 && isValid) {
-      error(`Emergency-state for humidity (${humidity}) detected!`)
-      addEmergency(state, {
-        at: Date.now(),
-        sensor: 'humidity',
-        device: 'humidifier',
-      })
-    }
+    /* Add an emergency to emergency-history if needed */
+    const newState =
+      humidity > humUpperLimit + 3 && isValid
+        ? R.assocPath(
+            ['history', 'emergencies'],
+            addEmergency(state, {
+              at: Date.now(),
+              sensor: 'humidity',
+              device: 'humidifier',
+              value: humidity,
+            }),
+            state
+          )
+        : state
 
     if (humidity > humUpperLimit) {
       // console.info('[hum-controller]: too humid - humidifier should NOT be running');
-      return deviceShouldSwitchTo('humidifier', 'off', state)
+      return deviceShouldSwitchTo('humidifier', 'off', newState)
     } else if (humidity < humLowerLimit) {
       // console.info('[hum-controller]: too try - humidifier should be running');
-      return deviceShouldSwitchTo('humidifier', 'on', state)
+      return deviceShouldSwitchTo('humidifier', 'on', newState)
     }
-    return state
+    return newState
   })
 }
 

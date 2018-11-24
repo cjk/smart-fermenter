@@ -10,10 +10,10 @@ import initialState from '../initialState'
 import makeSwitchingDecisions from '../controller/switchingController'
 
 /* TODO: History */
-// import { switchOps, carryoverEmergencies } from '../history'
+import { switchOps, carryoverEmergencies } from '../history'
 
 /* TODO: Watchdogs */
-// import { detectEnvEmergency, deviceRunningTooLong } from '../watchdogs'
+import { detectEnvEmergency, deviceRunningTooLong } from '../watchdogs'
 
 /* Update global state (like switching-decisions) based on current / previous
    runtime state */
@@ -45,10 +45,10 @@ const handleDevices = (state$: FermenterState$) =>
     // TODO: refactor!
     // .scan(switchOps)
     /* Collects (emergency-) history here: */
-    // .scan(carryoverEmergencies)
+    .scan(carryoverEmergencies)
     /* Evaluate emergency-history and set an active environmental emergency
        under certain conditions */
-    // .scan(detectEnvEmergency)
+    .scan(detectEnvEmergency)
     /* also signal malfunctioning switches / devices, if any device exceeds running
        over a period of time */
     // PENDING: Re-enable this for increased security in case switching goes wrong!
@@ -56,7 +56,7 @@ const handleDevices = (state$: FermenterState$) =>
     //     .scan(deviceRunningTooLong)
     /* Analyse runtime-state and carry out resulting side-effect, like sending
        notifications etc. */
-    // .onValue(handleRuntimeSideEffects)
+    .onValue(handleRuntimeSideEffects)
     /* Perform actual switches here - depending on current state and if we
        actually got this far in the stream */
     .onValue(switchDevices)

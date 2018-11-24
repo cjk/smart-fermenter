@@ -1,30 +1,21 @@
 // @flow
-import type { Emergency } from '../types'
+import type { Emergency, FermenterState } from '../types'
 
 import * as R from 'ramda'
-import { emergency } from '../initialState'
 
-const maxEmergancyEntries = 100
 const histEmergencyPath = ['history', 'emergencies']
 
-const carryoverEmergencies = (prev: Emergency, curr: Emergency) => {
+const within24Hours = startTs => Math.floor((Date.now() - startTs) / 1000 / 60 / 60 / 24) < 1
+
+const carryoverEmergencies = (prev: FermenterState, curr: FermenterState) => {
   /* Retrieve previous and current emergencies from history-state */
   const [prevEms, currEms] = [R.path(histEmergencyPath, prev), R.path(histEmergencyPath, curr)]
 
-  return R.assocPath(histEmergencyPath, R.concat(prevEms, currEms), curr)
+  return R.assocPath(histEmergencyPath, R.concat(R.filter(em => within24Hours(em.at), prevEms), currEms), curr)
 }
 
-const addEmergency = (state, e) => {
-  // const history = state.getIn(histEmergencyPath)
-  // const emergency = new Record({ [e.at]: new emergency(e) })()
-
-  /* Save a limited number of emergencies in our history-state */
-  // return state.setIn(histEmergencyPath, history.concat(emergency).takeLast(maxEmergancyEntries))
-
-  // TODO / PENDING: need to rethink/refactor emergencies, since basically this information belongs to each device, not
-  // in a history. And a list of emergencies doesn't make sense since each device / sensor can only have one in the
-  // present, while past emergencies don't give us much value!
-  return state
+const addEmergency = (state: FermenterState, em: Emergency) => {
+  return R.append(em, R.path(histEmergencyPath, state))
 }
 
 export { addEmergency, carryoverEmergencies }
