@@ -1,7 +1,9 @@
+// @flow
+
 export type Transport = {
   type: string,
   pin: number,
-};
+}
 
 export type RemoteSwitch = {
   [name: string]: {
@@ -10,4 +12,4 @@ export type RemoteSwitch = {
     unitCode: ?string,
     transport: ?Transport,
   },
-};
+}

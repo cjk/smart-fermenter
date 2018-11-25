@@ -30,7 +30,7 @@ const setupCleanupHandler = switchLib => {
   })
 }
 
-function relaisSwitch(switchLib: RpioSwitchLib) {
+function relaisSwitch(switchLib: RpioSwitchLib): (string, string) => void {
   /* Must configure GPIO-pins *before* any switching is done */
   prepareSwitch(switchLib)
   /* Also make sure we reset GPIOs on exit  */

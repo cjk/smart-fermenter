@@ -1,7 +1,7 @@
-import moment from 'moment';
+import moment from 'moment'
 
 function prettifyTimestamp(s) {
-  return moment(s).isValid() ? moment(s).format() : undefined;
+  return moment(s).isValid() ? moment(s).format() : undefined
 }
 
-export { prettifyTimestamp };
+export { prettifyTimestamp }

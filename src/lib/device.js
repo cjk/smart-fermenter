@@ -1,17 +1,20 @@
 // @flow
 
 import type { Devices } from '../types'
+import type { RpioSwitchLib } from './relais/types'
 
 import * as R from 'ramda'
 import { devices } from '../initialState'
 /* For switching */
 import relaisSwitch from './relais/relaisSwitch'
 
-const switchImpl =
+type SwitchRelais = (string, string) => void
+
+const switchImpl: RpioSwitchLib =
   process.env.NODE_ENV === 'development' ? require('./simulatedSwitch').simulatedSwitch : require('rpio')
 
 /* What switching implementation shall we use? Simulated or real: */
-const switcher = relaisSwitch(switchImpl)
+const switcher: SwitchRelais = relaisSwitch(switchImpl)
 
 // dynamic version of: new List.of('heater', 'humidifier');
 const deviceNames = R.keys(devices)

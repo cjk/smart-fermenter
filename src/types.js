@@ -16,7 +16,7 @@ export type Env = {
 
 export type Device = {
   isOn: boolean,
-  shouldSwitchTo: ?string,
+  shouldSwitchTo: string,
   willSwitch: boolean,
   lastSwitchAt: ?number,
 }
