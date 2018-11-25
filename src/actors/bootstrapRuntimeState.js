@@ -2,7 +2,6 @@
 import type { FermenterState } from '../types'
 
 import * as R from 'ramda'
-import { addNotification } from '../notifications'
 import logger from 'debug'
 
 const warn = logger('smt:fermenter:runtime')
@@ -25,10 +24,11 @@ function bootstrapRuntimeState(prev: FermenterState, curr: FermenterState) {
     }
     case 'start': {
       if (!rts.active) {
-        const newRts = R.merge(addNotification('Fermenter was started.', rts), {
+        const newRts = R.merge(rts, {
           active: true,
           status: 'running',
           currentCmd: null,
+          notifications: { [Date.now()]: { level: 'error', msg: 'Fermenter was started' } },
         })
         return updateStateWith(newRts)
       }
@@ -47,10 +47,11 @@ function bootstrapRuntimeState(prev: FermenterState, curr: FermenterState) {
             }),
           curr.devices
         )
-        const newRts = R.merge(addNotification('Fermenter was stopped.', rts), {
+        const newRts = R.merge(rts, {
           active: false,
           status: 'off',
           currentCmd: null,
+          notifications: { [Date.now()]: { level: 'error', msg: 'Fermenter was stopped' } },
         })
         return updateStateWith(newRts, devices)
       }

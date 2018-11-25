@@ -9,14 +9,14 @@ import logger from 'debug'
 
 const error = logger('smt:fermenter:Emergencies')
 
-const within10Secs = startTs => Math.floor((Date.now() - startTs) / 1000) < 10
+const within1Secs = startTs => Math.floor((Date.now() - startTs) / 1000) <= 1
 const maxOffScaleReadingsAllowed = 1
 
 function detectEnvEmergency(prev: FermenterState, curr: FermenterState) {
   const emLst: Array<Emergency> = R.path(['history', 'emergencies'], curr)
 
   // Recent emergencies are those that occured in the last 10 seconds
-  const recentEmergencies = R.filter(e => within10Secs(e.at), emLst)
+  const recentEmergencies = R.filter(e => within1Secs(e.at), emLst)
 
   // Also print warning to the console about recent emergencies:
   R.map(e => error(`Recent emergency-state for ${e.device} (${e.sensor} = ${e.value}) detected!`), recentEmergencies)
@@ -28,7 +28,7 @@ function detectEnvEmergency(prev: FermenterState, curr: FermenterState) {
     const notice = `There has been more than ${maxOffScaleReadingsAllowed} temperature/humididy measurements exceeding a safe range - please check the fermenter-closet and it's devices for any abnormal conditions!`
     const withEmergencies = {
       hasEnvEmergency: R.always(true),
-      notifications: R.merge(R.__, { [Date.now()]: { level: 'notify', msg: notice } }),
+      notifications: R.merge(R.__, { [Date.now()]: { level: 'error', msg: notice } }),
     }
 
     return R.assoc('rts', R.evolve(withEmergencies, curr.rts), curr)
