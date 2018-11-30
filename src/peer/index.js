@@ -37,12 +37,15 @@ function createPeer(): Peer {
     start(state$: Observable<Object>) {
       this.subscription = state$.observe({
         value(newState) {
-          const { rts } = newState
+          const { env, rts } = newState
           // info(`pushing new runtime state: ${JSON.stringify(rts)}`)
           peer
             .get('fermenter')
-            .get('state')
+            .get('rts')
             .put(rts)
+            .back()
+            .get('env')
+            .put(env)
         },
         error(err) {
           error(`[fermenterPeer] An error occured: ${err}`)
