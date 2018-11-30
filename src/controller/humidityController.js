@@ -1,6 +1,7 @@
 // @flow
 
 import type { Observable } from 'kefir'
+import type { FermenterState } from '../types'
 
 import * as R from 'ramda'
 import { addEmergency } from '../history'
@@ -8,10 +9,14 @@ import { addEmergency } from '../history'
 const deviceShouldSwitchTo = (name, onOff, state) => R.assocPath(['devices', name, 'shouldSwitchTo'], onOff, state)
 
 function humidifierController(state$: Observable<Object>) {
-  return state$.map(state => {
-    const humidity = R.path(['env', 'humidity'], state)
-    const isValid = R.path(['env', 'isValid'], state)
-    const [humLowerLimit, humUpperLimit] = R.path(['rts', 'humidityLimits'], state)
+  return state$.map((state: FermenterState) => {
+    const humidity: number = R.path(['env', 'humidity'], state)
+    const isValid: boolean = R.path(['env', 'isValid'], state)
+    const {
+      rts: {
+        humidityLimits: { lower: humLowerLimit, upper: humUpperLimit },
+      },
+    } = state
 
     /* Add an emergency to emergency-history if needed */
     const newState =

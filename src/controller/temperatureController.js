@@ -1,5 +1,6 @@
 // @flow
 import type { Observable } from 'kefir'
+import type { FermenterState } from '../types'
 
 import * as R from 'ramda'
 import { addEmergency } from '../history'
@@ -10,10 +11,14 @@ const padUpperLimit = limit => limit - (1 / 100) * limit
 const deviceShouldSwitchTo = (name, onOff, state) => R.assocPath(['devices', name, 'shouldSwitchTo'], onOff, state)
 
 function temperatureController(state$: Observable<Object>) {
-  return state$.map(state => {
-    const temperature = R.path(['env', 'temperature'], state)
-    const isValid = R.path(['env', 'isValid'], state)
-    const [tempLowerLimit, tempUpperLimit] = R.path(['rts', 'tempLimits'], state)
+  return state$.map((state: FermenterState) => {
+    const temperature: number = R.path(['env', 'temperature'], state)
+    const isValid: boolean = R.path(['env', 'isValid'], state)
+    const {
+      rts: {
+        tempLimits: { lower: tempLowerLimit, upper: tempUpperLimit },
+      },
+    } = state
 
     /* Add an emergency to emergency-history if needed */
     const newState =

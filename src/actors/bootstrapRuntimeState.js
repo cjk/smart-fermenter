@@ -60,9 +60,12 @@ function bootstrapRuntimeState(prev: FermenterState, curr: FermenterState) {
     default: {
       // Warn on unknown but not empty commands
       if (rts.currentCmd) warn(`[WARNING] Received unknown command <${rts.currentCmd}> - ignoring.`)
-      return updateStateWith(rts)
+      break
     }
   }
+  // Don't forget to return a meaningful state in any case, otherwise current-state will become null and the chain will
+  // break.
+  return updateStateWith(rts)
 }
 
 export default bootstrapRuntimeState

@@ -3,26 +3,26 @@
 import { pipe } from 'ramda'
 import controlEnvironment from './controller'
 import handleDevices from './actors'
-// import createPeer from './client'
+import createPeer from './peer'
 import createEnvInStateStream from './sensors'
-import { setupCleanClientDisconnectHandler } from './lib/util'
+import { setupCleanPeerDisconnectHandler } from './lib/util'
 
 const state$ = createEnvInStateStream()
 
+const peer = createPeer()
+
 // TODO:
-// const peer = createPeer()
-
 // Cleanup peer-connection on restarts or interrupts
-// setupCleanClientDisconnectHandler(peer)
+// setupCleanPeerDisconnectHandler(peer)
 
-// DEBUGGING only
+// for DEBUGGING - take care to place #spy in the right order to view state at the time you intend to!
 // state$.spy()
 
 const workflow = pipe(
-  // peer.mergeCommandStream,
+  peer.mergeCommandStream,
   controlEnvironment,
-  handleDevices
-  // peer.start
+  handleDevices,
+  peer.start
 )
 
 console.log('----------------------------------------------------------------------')
