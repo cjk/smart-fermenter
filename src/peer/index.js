@@ -35,25 +35,36 @@ function createPeer(): Peer {
       })
     },
     start(state$: Observable<Object>) {
-      this.subscription = state$.observe({
-        value(newState) {
-          const { env, rts } = newState
-          // info(`pushing new runtime state: ${JSON.stringify(rts)}`)
-          peer
-            .get('fermenter')
-            .get('rts')
-            .put(rts)
-            .back()
-            .get('env')
-            .put(env)
-        },
-        error(err) {
-          error(`[fermenterPeer] An error occured: ${err}`)
-        },
-        end() {
-          info('[fermenterPeer] Fermenter-peer connection ended.')
-        },
-      })
+      const fermenterNode = peer.get('fermenter')
+      // On each start, reset notifications or they'll grow without bounds!
+      fermenterNode
+        .get('rts')
+        .get('notifications')
+        .put(null)
+
+      this.subscription = state$
+        .scan((prev, next) => {
+          // Narrow scope to state-keys we want to share / transmit
+          const minimumState = R.pick(['env', 'rts'], next)
+          // Remove keys from fermenter-state that haven't changed since last time to avoid unneeded network-traffic
+          return R.reduce(
+            (acc, key) => (R.equals(prev[key], minimumState[key]) ? R.dissoc(key, acc) : acc),
+            minimumState,
+            R.keys(minimumState)
+          )
+        })
+        .observe({
+          value(newState) {
+            const fermenterRoot = peer.get('fermenter')
+            R.map(key => fermenterRoot.get(key).put(R.prop(key, newState)), R.keys(newState))
+          },
+          error(err) {
+            error(`[fermenterPeer] An error occured: ${err}`)
+          },
+          end() {
+            info('[fermenterPeer] Fermenter-peer connection ended.')
+          },
+        })
     },
     stop() {
       this.subscription.unsubscribe()
