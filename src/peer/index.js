@@ -45,7 +45,7 @@ function createPeer(): Peer {
       this.subscription = state$
         .scan((prev, next) => {
           // Narrow scope to state-keys we want to share / transmit
-          const minimumState = R.pick(['env', 'rts'], next)
+          const minimumState = R.pick(['env', 'rts', 'devices'], next)
           // Remove keys from fermenter-state that haven't changed since last time to avoid unneeded network-traffic
           return R.reduce(
             (acc, key) => (R.equals(prev[key], minimumState[key]) ? R.dissoc(key, acc) : acc),
