@@ -24,11 +24,11 @@ function switchOffAllDevices() {
 }
 
 function maybeSwitchDevices(devices: Devices) {
-  R.map(dev => {
+  R.mapObjIndexed((dev, name) => {
     const { willSwitch, shouldSwitchTo } = dev
 
     if (willSwitch) {
-      switcher(dev, shouldSwitchTo)
+      switcher(name, shouldSwitchTo)
     }
   }, devices)
 }

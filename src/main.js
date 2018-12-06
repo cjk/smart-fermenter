@@ -1,4 +1,7 @@
+// @flow
 /* eslint no-console: "off" */
+
+import type { Peer } from './types'
 
 import { pipe } from 'ramda'
 import controlEnvironment from './controller'
@@ -9,7 +12,7 @@ import { setupCleanPeerDisconnectHandler } from './lib/util'
 
 const state$ = createEnvInStateStream()
 
-const peer = createPeer()
+const peer: Peer = createPeer()
 
 // TODO:
 // Cleanup peer-connection on restarts or interrupts
@@ -19,7 +22,7 @@ const peer = createPeer()
 // state$.spy()
 
 const workflow = pipe(
-  peer.mergeCommandStream,
+  peer.mergeRemoteUpdates,
   controlEnvironment,
   handleDevices,
   peer.start

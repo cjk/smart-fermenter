@@ -1,8 +1,12 @@
 /* @flow */
 import type { Observable } from 'kefir'
 
-// NOTE: NOT USED YET - need to migrate from immutable to POJOs first!
-// These definitions were originally taken from ./src/common/fermenter/types.js in SmartHomeApp-project
+export type Peer = {
+  subscription: ?any,
+  start: (Observable<Object>) => void,
+  stop: () => void,
+  mergeRemoteUpdates: (any, Observable<Object>) => Observable<Object>,
+}
 
 /* Fermenter related type definitions for Flow */
 export type Env = {

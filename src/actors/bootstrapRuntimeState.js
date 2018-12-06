@@ -28,7 +28,7 @@ function bootstrapRuntimeState(prev: FermenterState, curr: FermenterState) {
           active: true,
           status: 'running',
           currentCmd: null,
-          notifications: { [Date.now()]: { level: 'error', msg: 'Fermenter was started' } },
+          notifications: { [Date.now()]: { level: 'info', msg: 'Fermenter was started' } },
         })
         return updateStateWith(newRts)
       }
@@ -51,7 +51,7 @@ function bootstrapRuntimeState(prev: FermenterState, curr: FermenterState) {
           active: false,
           status: 'off',
           currentCmd: null,
-          notifications: { [Date.now()]: { level: 'error', msg: 'Fermenter was stopped' } },
+          notifications: { [Date.now()]: { level: 'info', msg: 'Fermenter was stopped' } },
         })
         return updateStateWith(newRts, devices)
       }

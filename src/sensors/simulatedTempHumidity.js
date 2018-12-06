@@ -8,7 +8,7 @@ import * as R from 'ramda'
 import { getRandomInt } from '../lib/random'
 import initialState from '../initialState'
 
-const interval = 2000
+const interval = 5000
 
 const randomizeEnvironment = (state: FermenterState) =>
   R.pipe(
