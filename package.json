@@ -11,7 +11,8 @@
     "build": "babel src --out-dir app",
     "watch": "babel src --watch --out-dir app",
     "prod": "env DEBUG='smt:*,error,debug' NODE_ENV=production node ./app/index.js",
-    "dev": "env DEBUG='smt:*,error,debug' PORT=8000 NODE_ENV=development node ./app/index.js"
+    "dev": "env DEBUG='smt:*,error,debug' PORT=8000 NODE_ENV=development node ./app/index.js",
+    "debug": "env DEBUG='smt:*,error,debug' PORT=8000 NODE_ENV=development node --inspect-brk ./app/index.js"
   },
   "engines": {
     "node": ">=9.2.0"
