@@ -27,42 +27,45 @@ import logState from '../stateLogger'
 const switchDevices = state => maybeSwitchDevices(state.devices)
 
 /* Preliminary onEnd-callback */
-function handleEndOfStream() {
+const handleEndOfStream = () => {
   switchOffAllDevices()
-  //   messenger.emit('NOTE: your fermenter-closet just shut itself down cleanly.\nAll devices have been switched off, but please double check this and take care any remaining content in the closet!');
+  // messenger.emit('NOTE: your fermenter-closet just shut itself down cleanly.\nAll devices have been switched off, but please double check this and take care any remaining content in the closet!');
 }
 
-const handleDevices = (state$: FermenterState$) =>
-  state$
-    /* Don't do anything when environment-readings are invalid */
-    .filter(state => R.path(['env', 'isValid'], state))
-    /* Bootstraps runtime-state, like toggling fermenter active-state on/off.
+function handleDevices(state$: FermenterState$) {
+  return (
+    state$
+      /* Don't do anything when environment-readings are invalid */
+      .filter(state => R.path(['env', 'isValid'], state))
+      /* Bootstraps runtime-state, like toggling fermenter active-state on/off.
        Thus, must occur *before* switching devices */
-    .scan(bootstrapRuntimeState)
-    /* Decide whether devices should be switched off/on based on environmental data */
-    .scan(makeSwitchingDecisions, initialState)
-    /* Collects (switching-) history here: */
-    // TODO: refactor!
-    // .scan(switchOps)
-    /* Collects (emergency-) history here: */
-    .scan(carryoverEmergencies)
-    /* Evaluate emergency-history and set an active environmental emergency
+      .scan(bootstrapRuntimeState)
+      /* Decide whether devices should be switched off/on based on environmental data */
+      .scan(makeSwitchingDecisions, initialState)
+      /* Collects (switching-) history here: */
+      // TODO: refactor!
+      // .scan(switchOps)
+      /* Collects (emergency-) history here: */
+      .scan(carryoverEmergencies)
+      /* Evaluate emergency-history and set an active environmental emergency
        under certain conditions */
-    .scan(detectEnvEmergency)
-    /* also signal malfunctioning switches / devices, if any device exceeds running
+      .scan(detectEnvEmergency)
+      /* also signal malfunctioning switches / devices, if any device exceeds running
        over a period of time */
-    // PENDING: Re-enable this for increased security in case switching goes wrong!
-    // This was disabled to prevent benign error-messages when no humidifier was actually connected.
-    //     .scan(deviceRunningTooLong)
-    /* Analyse runtime-state and carry out resulting side-effect, like sending
+      // PENDING: Re-enable this for increased security in case switching goes wrong!
+      // This was disabled to prevent benign error-messages when no humidifier was actually connected.
+      //     .scan(deviceRunningTooLong)
+      /* Analyse runtime-state and carry out resulting side-effect, like sending
        notifications etc. */
-    .onValue(handleRuntimeSideEffects)
-    /* Perform actual switches here - depending on current state and if we
+      .onValue(handleRuntimeSideEffects)
+      /* Perform actual switches here - depending on current state and if we
        actually got this far in the stream */
-    .onValue(switchDevices)
-    /* PENDING: As of now stream is never supposed to end so this is never executed */
-    .onEnd(handleEndOfStream)
-    /* Terse log current state */
-    .onValue(logState)
+      .onValue(switchDevices)
+      /* PENDING: As of now stream is never supposed to end so this is never executed */
+      .onEnd(handleEndOfStream)
+      /* Terse log current state */
+      .onValue(logState)
+  )
+}
 
 export default handleDevices

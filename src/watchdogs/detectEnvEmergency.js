@@ -9,14 +9,14 @@ import logger from 'debug'
 
 const error = logger('smt:fermenter:Emergencies')
 
-const within1Secs = startTs => Math.floor((Date.now() - startTs) / 1000) <= 5
+const withinNSecs = startTs => Math.floor((Date.now() - startTs) / 1000) <= 5
 const maxOffScaleReadingsAllowed = 5
 
 function detectEnvEmergency(prev: FermenterState, curr: FermenterState) {
   const emLst: Array<Emergency> = R.path(['history', 'emergencies'], curr)
 
   // Recent emergencies are those that occured in the last 10 seconds
-  const recentEmergencies = R.filter(e => within1Secs(e.at), emLst)
+  const recentEmergencies = R.filter(e => withinNSecs(e.at), emLst)
 
   // Also print warning to the console about recent emergencies:
   R.map(e => error(`Recent emergency-state for ${e.device} (${e.sensor} = ${e.value}) detected!`), recentEmergencies)

@@ -32,7 +32,7 @@ const rts: RunTimeState = {
   status: 'initializing',
   hasEnvEmergency: false,
   hasDeviceMalfunction: false,
-  currentCmd: null,
+  currentCmd: 'none',
   tempLimits: { lower: 29, upper: 31 },
   humidityLimits: { lower: 62, upper: 68 },
   notifications: {},

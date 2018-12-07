@@ -55,7 +55,7 @@ export type RunTimeState = {
   status: string,
   hasEnvEmergency: boolean,
   hasDeviceMalfunction: boolean,
-  currentCmd: ?string,
+  currentCmd: string,
   tempLimits: { lower: number, upper: number },
   humidityLimits: { lower: number, upper: number },
   notifications: Notifications,
