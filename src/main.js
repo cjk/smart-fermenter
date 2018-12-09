@@ -1,34 +1,33 @@
 // @flow
-/* eslint no-console: "off" */
 
 import type { Peer } from './types'
 
-import { pipe } from 'ramda'
+import * as R from 'ramda'
+import signale from 'signale'
 import controlEnvironment from './controller'
 import handleDevices from './actors'
 import createPeer from './peer'
 import createEnvInStateStream from './sensors'
 import { setupCleanPeerDisconnectHandler } from './lib/util'
 
+// Perform possible cleanup on restarts or interrupts
+setupCleanPeerDisconnectHandler()
+
 const state$ = createEnvInStateStream()
 
 const peer: Peer = createPeer()
 
-// TODO:
-// Cleanup peer-connection on restarts or interrupts
-// setupCleanPeerDisconnectHandler(peer)
-
 // for DEBUGGING - take care to place #spy in the right order to view state at the time you intend to!
 // state$.spy()
 
-const workflow = pipe(
+const workflow = R.pipe(
   peer.mergeRemoteUpdates,
   controlEnvironment,
   handleDevices,
   peer.start
 )
 
-console.log('----------------------------------------------------------------------')
+signale.start('Starting up fermenter-loop...')
 
 workflow(state$)
 

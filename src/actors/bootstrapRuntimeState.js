@@ -2,9 +2,7 @@
 import type { FermenterState } from '../types'
 
 import * as R from 'ramda'
-import logger from 'debug'
-
-const warn = logger('smt:fermenter:runtime')
+import signale from 'signale'
 
 function bootstrapRuntimeState(prev: FermenterState, curr: FermenterState) {
   const prevRts = prev.rts

@@ -4,6 +4,7 @@
  * NOTE: This implementation is deprecated and not used anymore (after switching to relays) - thus handle with care.
  * */
 import type { RemoteSwitch, Transport } from './types'
+
 import R from 'ramda'
 import secureSwitching from './secureSwitching'
 

@@ -4,14 +4,10 @@ import type { Observable } from 'kefir'
 import type { Peer } from '../types'
 
 import * as R from 'ramda'
+import signale from 'signale'
 import config from './config'
 import mergeRemoteUpdates from './mergeRemoteUpdates'
 import Gun from 'gun'
-
-import logger from 'debug'
-
-const info = logger('smt:fermenter:peer')
-const error = logger('smt:fermenter:peer')
 
 const onlyDistributedKeys = R.pick(['env', 'rts', 'devices'])
 
@@ -54,10 +50,10 @@ function createPeer(): Peer {
             R.map(key => fermenterRoot.get(key).put(R.prop(key, newState)), R.keys(onlyDistributedKeys(newState)))
           },
           error(err) {
-            error(`[fermenterPeer] An error occured: ${err}`)
+            signale.error(`[fermenterPeer] An error occured: ${err}`)
           },
           end() {
-            info('[fermenterPeer] Fermenter-peer connection ended.')
+            signale.info('[fermenterPeer] Fermenter-peer connection ended.')
           },
         })
     },

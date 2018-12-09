@@ -1,12 +1,11 @@
-import logger from 'debug'
+// @flow
 
-const debug = logger('smt:fermenter:main')
+import signale from 'signale'
 
 // Allow for clean restarts (e.g. when using pm2 or other process managers)
-const setupCleanPeerDisconnectHandler = peer => {
-  process.on('SIGINT', () => {
-    debug('Received SIGINT. Cleaning up and exiting...')
-    peer.close()
+function setupCleanPeerDisconnectHandler() {
+  return process.on('SIGINT', () => {
+    signale.pause('Received SIGINT. Cleaning up and exiting...')
     process.exit()
   })
 }

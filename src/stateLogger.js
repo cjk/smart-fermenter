@@ -1,8 +1,8 @@
 // @flow
-/* eslint no-console: "off", max-len: "off" */
 
 import type { FermenterState } from './types'
 
+import signale from 'signale'
 import * as R from 'ramda'
 import { prettifyTimestamp } from './lib/datetime'
 
@@ -46,7 +46,7 @@ function logState(state: FermenterState) {
     // humidifierEmergencies: emergencies.get('humidifier'),
   }
 
-  console.log(
+  signale.note(
     `${rts.active ? '=' : '-'}> #${log.count} ${log.ts} \
 [${log.rts.status}] \
 temp/hum: [${log.temp}/${log.hum}] \

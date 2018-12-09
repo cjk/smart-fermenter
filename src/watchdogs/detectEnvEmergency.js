@@ -5,9 +5,7 @@
 import type { FermenterState, Emergency } from '../types'
 
 import * as R from 'ramda'
-import logger from 'debug'
-
-const error = logger('smt:fermenter:Emergencies')
+import signale from 'signale'
 
 const withinNSecs = startTs => Math.floor((Date.now() - startTs) / 1000) <= 5
 const maxOffScaleReadingsAllowed = 5
@@ -19,7 +17,10 @@ function detectEnvEmergency(prev: FermenterState, curr: FermenterState) {
   const recentEmergencies = R.filter(e => withinNSecs(e.at), emLst)
 
   // Also print warning to the console about recent emergencies:
-  R.map(e => error(`Recent emergency-state for ${e.device} (${e.sensor} = ${e.value}) detected!`), recentEmergencies)
+  R.map(
+    e => signale.warn(`Recent emergency-state for ${e.device} (${e.sensor} = ${e.value}) detected!`),
+    recentEmergencies
+  )
 
   // Signal active environmental emergency when two or more *recent* emergency-states occured
   const hasEnvEmergency: boolean = R.length(recentEmergencies) >= maxOffScaleReadingsAllowed

@@ -5,19 +5,17 @@
 import type { FermenterState, Notification, Notifications } from '../types'
 
 import * as R from 'ramda'
+import signale from 'signale'
 import { createMessageEmitter } from '../notifications'
-import logger from 'debug'
-
-const info = logger('smt:fermenter:sideEffectsHandler')
 
 const messageEmitter = createMessageEmitter()
 
-// TODO: just pretending for now
 // TODO: not taking care of malfunctioning devices yet - see '../watchdogs/deviceRunningTooLong.js'
 function sendNotifications(notifications: Notifications): void {
   R.mapObjIndexed((n: Notification, ts, _) => {
-    info(`Sending notification ${JSON.stringify(n)}`)
-    messageEmitter.emit(n)
+    signale.info(`Sending notification ${JSON.stringify(n)}`)
+    // TODO: just pretending for now
+    // messageEmitter.emit(n)
   }, notifications)
 }
 

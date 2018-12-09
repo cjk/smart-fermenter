@@ -37,13 +37,13 @@
   },
   "dependencies": {
     "@std/esm": "^0.26.0",
-    "debug": "^4.1.0",
     "gun": "latest",
     "kefir": "^3.8.5",
     "moment": "^2.22.2",
     "node-dht-sensor": "^0.0.34",
     "ramda": "0.26.0",
     "request": "^2.88.0",
-    "rpio": "^0.9.23"
+    "rpio": "^0.9.23",
+    "signale": "^1.3.0"
   }
 }

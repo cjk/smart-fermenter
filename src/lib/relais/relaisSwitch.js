@@ -2,6 +2,7 @@
 import type { RelaisSwitch, RpioSwitchLib } from './types'
 
 import * as R from 'ramda'
+import signale from 'signale'
 
 const switches: RelaisSwitch = {
   heater: {
@@ -18,13 +19,13 @@ const switches: RelaisSwitch = {
 
 const prepareSwitch = switchLib =>
   R.map(sw => {
-    console.log(`[Controller] Opening GPIO-output for <${sw.desc}> on pin <${sw.pin}> and pull-up to HIGH:`)
+    signale.debug(`[Controller] Opening GPIO-output for <${sw.desc}> on pin <${sw.pin}> and pull-up to HIGH:`)
     return switchLib.open(sw.pin, switchLib.OUTPUT, switchLib.HIGH)
   }, switches)
 
 const setupCleanupHandler = switchLib => {
   process.on('SIGINT', () => {
-    console.log('Received SIGINT. Cleaning up and exiting...')
+    signale.complete('Received SIGINT. Cleaning up and exiting...')
     R.map(sw => switchLib.close(sw.pin), switches)
     process.exit()
   })
@@ -40,12 +41,12 @@ function relaisSwitch(switchLib: RpioSwitchLib): (string, string) => void {
     const swtch = switches[switchName]
 
     const switchOn = sw => {
-      console.log(`[Controller] About to switch ${sw.desc} on pin <${sw.pin}> ON:`)
+      signale.debug(`[Controller] About to switch ${sw.desc} on pin <${sw.pin}> ON:`)
       switchLib.write(sw.pin, switchLib.LOW)
     }
 
     const switchOff = sw => {
-      console.log(`[Controller] About to switch ${sw.desc} on pin <${sw.pin}> OFF:`)
+      signale.debug(`[Controller] About to switch ${sw.desc} on pin <${sw.pin}> OFF:`)
       switchLib.write(sw.pin, switchLib.HIGH)
     }
 

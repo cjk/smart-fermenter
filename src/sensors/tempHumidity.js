@@ -1,5 +1,5 @@
-import K from 'kefir'
 import * as R from 'ramda'
+import K from 'kefir'
 import sensorLib from 'node-dht-sensor'
 import state from '../initialState'
 
