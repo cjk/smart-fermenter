@@ -1,58 +1,67 @@
-import { Record, Map, Seq, List } from 'immutable';
+// @flow
 
-const Env = new Record({
-  createdAt: null,
-  temperature: null,
-  humidity: null,
-  isValid: false,
+import type { Env, FermenterState, Devices, RunTimeState, SwitchOp, Emergency, History } from './types'
+
+const env: Env = {
+  temperature: 20,
+  humidity: 50,
+  createdAt: Date.now(),
   errors: 0,
+  emergency: false,
+  isValid: true,
   iterations: 0,
-});
+}
 
-const Device = new Record({
-  isOn: false,
-  shouldSwitchTo: null,
-  willSwitch: false,
-  lastSwitchAt: null,
-});
+const devices: Devices = {
+  heater: {
+    isOn: false,
+    shouldSwitchTo: null,
+    willSwitch: false,
+    lastSwitchAt: null,
+  },
+  humidifier: {
+    isOn: false,
+    shouldSwitchTo: null,
+    willSwitch: false,
+    lastSwitchAt: null,
+  },
+}
 
-const SwitchOp = new Record({
-  device: '',
-  to: null,
-  at: undefined,
-});
-
-const Emergency = new Record({
-  device: null,
-  sensor: null,
-  at: undefined,
-});
-
-const History = new Record({
-  switchOps: new Seq(),
-  emergencies: new Seq(),
-});
-
-const RunTimeState = new Record({
+const rts: RunTimeState = {
   active: false,
   status: 'initializing',
   hasEnvEmergency: false,
   hasDeviceMalfunction: false,
-  currentCmd: null,
-  tempLimits: [29, 31],
-  humidityLimits: [62, 68],
-  notifications: new List(),
-});
+  currentCmd: 'none',
+  tempLimits: { lower: 29, upper: 31 },
+  humidityLimits: { lower: 62, upper: 68 },
+  notifications: {},
+}
 
-const InitialState = new Map({
-  rts: new RunTimeState(),
-  env: new Env(),
-  devices: new Map({
-    heater: new Device(),
-    humidifier: new Device(),
-  }),
-  history: new History(),
-});
+const history: History = {
+  switchOps: [],
+  emergencies: [],
+}
 
-export { Env, Device, History, SwitchOp, Emergency };
-export default InitialState;
+const initialState: FermenterState = {
+  env,
+  devices,
+  history,
+  rts,
+}
+
+const switchOp: SwitchOp = {
+  device: '',
+  to: null,
+  at: undefined,
+}
+
+const emergency: Emergency = {
+  device: null,
+  sensor: null,
+  at: undefined,
+  value: undefined,
+}
+
+export { env, devices, history, switchOp, emergency }
+export default initialState

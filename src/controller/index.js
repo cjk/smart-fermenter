@@ -1,10 +1,16 @@
-import { pipe } from 'ramda';
-import temperatureController from './temperatureController';
-import humidityController from './humidityController';
+// @flow
+
+import * as R from 'ramda'
+import temperatureController from './temperatureController'
+import humidityController from './humidityController'
+
+const iterationsLens = R.lensPath(['env', 'iterations'])
 
 const incIteration = state$ =>
-  state$.scan((prev, next) =>
-    next.updateIn(['env', 'iterations'], _count => prev.get('env').iterations + 1)
-  );
+  state$.scan((prev, next) => R.set(iterationsLens, R.view(iterationsLens, prev) + 1, next))
 
-export default pipe(incIteration, temperatureController, humidityController);
+export default R.pipe(
+  incIteration,
+  temperatureController,
+  humidityController
+)

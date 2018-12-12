@@ -5,7 +5,7 @@ module.exports = {
     browser: false,
     node: true,
   },
-  extends: ['airbnb-base', 'plugin:flowtype/recommended'],
+  extends: ['eslint:recommended', 'plugin:import/errors', 'plugin:import/warnings', 'plugin:flowtype/recommended'],
   plugins: ['flowtype'],
   globals: {
     APP_NAME: true,
@@ -39,4 +39,4 @@ module.exports = {
     'no-return-assign': ['error', 'except-parens'],
     'one-var': 0,
   },
-};
+}

@@ -1,28 +1,19 @@
-import { Emergency } from '../initialState';
-import { Record } from 'immutable';
+// @flow
+import type { Emergency, FermenterState } from '../types'
 
-const maxEmergancyEntries = 100;
-const histEmergencyPath = ['history', 'emergencies'];
+import * as R from 'ramda'
 
-const carryoverEmergencies = (prev, curr) => {
+const histEmergencyPath = ['history', 'emergencies']
+const within24Hours = startTs => Math.floor((Date.now() - startTs) / 1000 / 60 / 60 / 24) < 1
+const carryoverEmergencies = (prev: FermenterState, curr: FermenterState) => {
   /* Retrieve previous and current emergencies from history-state */
-  const [prevEms, currEms] = [
-    prev.getIn(histEmergencyPath),
-    curr.getIn(histEmergencyPath),
-  ];
+  const [prevEms, currEms] = [R.path(histEmergencyPath, prev), R.path(histEmergencyPath, curr)]
 
-  return curr.setIn(histEmergencyPath, prevEms.concat(currEms));
-};
+  return R.assocPath(histEmergencyPath, R.concat(R.filter(em => within24Hours(em.at), prevEms), currEms), curr)
+}
 
-const addEmergency = (state, e) => {
-  const history = state.getIn(histEmergencyPath);
-  const emergency = new Record({ [e.at]: new Emergency(e) })();
+const addEmergency = (state: FermenterState, em: Emergency) => {
+  return R.append(em, R.path(histEmergencyPath, state))
+}
 
-  /* Save a limited number of emergencies in our history-state */
-  return state.setIn(
-    histEmergencyPath,
-    history.concat(emergency).takeLast(maxEmergancyEntries)
-  );
-};
-
-export { addEmergency, carryoverEmergencies };
+export { addEmergency, carryoverEmergencies }
