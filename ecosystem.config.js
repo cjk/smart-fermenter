@@ -11,15 +11,15 @@ module.exports = {
       wait_ready: true,
       env: {
         PORT: 8000,
-        DEEPSTREAM_ADDR: 'localhost',
-        DEEPSTREAM_PORT: 6020,
+        PEER_ADDR: 'localhost',
+        PEER_PORT: 8765,
         DEBUG: 'smt:*,error,debug',
       },
       env_production: {
         PORT: 8000,
         NODE_ENV: 'production',
-        DEEPSTREAM_ADDR: '192.168.1.28',
-        DEEPSTREAM_PORT: 6020,
+        PEER_ADDR: '192.168.1.28',
+        PEER_PORT: 8765,
         DEBUG: 'smt:*,error',
       },
     },
@@ -35,9 +35,8 @@ module.exports = {
       host: 'alarmpi',
       ref: 'origin/master',
       repo: 'git@github.com:cjk/smart-fermenter.git',
-      path: '/home/cjk/proj/smarthome-fermenter',
-      'post-deploy':
-        'yarn install && yarn run build && pm2 reload ecosystem.config.js --env production',
+      path: '/home/cjk/apps/smarthome-fermenter',
+      'post-deploy': 'yarn install && yarn run build && pm2 reload ecosystem.config.js --env production',
     },
   },
-};
+}

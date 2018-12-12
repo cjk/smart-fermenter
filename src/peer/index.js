@@ -11,6 +11,8 @@ import Gun from 'gun'
 
 const onlyDistributedKeys = R.pick(['env', 'rts', 'devices'])
 
+// const peerAddr = process.env.PEER_ADDR
+// const peerPort = process.env.PEER_PORT
 const peer = Gun(`http://${config.host}:${config.port}/gun`)
 
 function createPeer(): Peer {
