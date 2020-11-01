@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "@std/esm": "^0.26.0",
+    "core-js": "3",
     "gun": "0.2019.627",
     "kefir": "^3.8.6",
     "moment": "^2.24.0",

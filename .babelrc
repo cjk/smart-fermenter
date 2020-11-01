@@ -1,11 +1,15 @@
 {
   "presets": [
-    ["@babel/preset-env", {
-      "targets": {
-        "node": "current"
-      },
-      "useBuiltIns": "entry"
-    }]
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "current"
+        },
+        "useBuiltIns": "usage",
+        "corejs": "3.0.0"
+      }
+    ]
   ],
   "plugins": ["@babel/plugin-transform-async-to-generator", "@babel/transform-flow-strip-types"]
 }
