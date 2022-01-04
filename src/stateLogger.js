@@ -1,10 +1,10 @@
 // @flow
 
-import type { FermenterState } from './types'
+import type { FermenterState } from './types.js'
 
 import signale from 'signale'
 import * as R from 'ramda'
-import { prettifyTimestamp } from './lib/datetime'
+import { prettifyTimestamp } from './lib/datetime.js'
 
 function logState(state: FermenterState) {
   const { rts } = state

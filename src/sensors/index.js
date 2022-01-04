@@ -1,14 +1,14 @@
 // @flow
-import type { FermenterState } from '../types'
+import type { FermenterState } from '../types.js'
 import type { Observable } from 'kefir'
 
 import * as R from 'ramda'
 
 const isNumeric = n => !isNaN(parseFloat(n)) && isFinite(n)
 
-const device = process.env.NODE_ENV === 'development' ? './simulatedTempHumidity' : './tempHumidity'
+const device = process.env.NODE_ENV === 'development' ? './simulatedTempHumidity.js' : './tempHumidity.js'
 
-const tempHumStream = require(device).default
+const {default: tempHumStream} = await import(device)
 
 const envTransform = {
   createdAt: Date.now,

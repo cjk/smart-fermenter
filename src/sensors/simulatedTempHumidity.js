@@ -1,12 +1,12 @@
 // @flow
 /* eslint no-console: "off", max-len: "off" */
 
-import type { FermenterState } from '../types'
+import type { FermenterState } from '../types.js'
 
 import K from 'kefir'
 import * as R from 'ramda'
-import { getRandomInt } from '../lib/random'
-import initialState from '../initialState'
+import { getRandomInt } from '../lib/random.js'
+import initialState from '../initialState.js'
 
 const interval = 5000
 

@@ -1,6 +1,6 @@
 // TODO: history / switchOps needs refactoring!
 
-import { SwitchOp } from '../initialState'
+import { switchOp } from '../initialState.js'
 
 const maxSwitchOpsEntries = 1000
 
@@ -10,13 +10,13 @@ const createSwitchOps = devices =>
   devices
     .filter(dev => dev.willSwitch)
     .reduce(
-      (ops, dev, name) => ops.push(new SwitchOp({ device: name, to: dev.shouldSwitchTo, at: Date.now() })),
+      (ops, dev, name) => ops.push(new switchOp({ device: name, to: dev.shouldSwitchTo, at: Date.now() })),
       new List()
     )
 
 const addSwitchOp = (state, o) => {
   const history = state.getIn(histSwOpsPath)
-  const op = new SwitchOp(o)
+  const op = new switchOp(o)
 
   /* Save a limited number of switching operations to our history-state */
   return state.setIn(histSwOpsPath, history.concat(op).takeLast(maxSwitchOpsEntries))

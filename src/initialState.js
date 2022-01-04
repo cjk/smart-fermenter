@@ -1,6 +1,6 @@
 // @flow
 
-import type { Env, FermenterState, Devices, RunTimeState, SwitchOp, Emergency, History } from './types'
+import type { Env, FermenterState, Devices, RunTimeState, SwitchOp, Emergency, History } from './types.js'
 
 const env: Env = {
   temperature: 20,

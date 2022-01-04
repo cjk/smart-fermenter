@@ -1,9 +1,9 @@
 // @flow
 import type { Observable } from 'kefir'
-import type { FermenterState } from '../types'
+import type { FermenterState } from '../types.js'
 
 import * as R from 'ramda'
-import { addEmergency } from '../history'
+import { addEmergency } from '../history/index.js'
 
 // Hysteresis - prevents temperature to overshoot upper-limit by reducing upper-limit by 1%
 const padUpperLimit = limit => limit - (1 / 100) * limit

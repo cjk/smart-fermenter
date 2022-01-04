@@ -1,10 +1,10 @@
 // @flow
 
 import type { Observable } from 'kefir'
-import type { FermenterState } from '../types'
+import type { FermenterState } from '../types.js'
 
 import * as R from 'ramda'
-import { addEmergency } from '../history'
+import { addEmergency } from '../history/index.js'
 
 const deviceShouldSwitchTo = (name, onOff, state) => R.assocPath(['devices', name, 'shouldSwitchTo'], onOff, state)
 

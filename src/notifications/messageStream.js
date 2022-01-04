@@ -1,5 +1,3 @@
-/* eslint max-len: ["error", 105, 2, {"ignoreUrls": true}] */
-
 import Kefir from 'kefir'
 import request from 'request'
 import signale from 'signale'

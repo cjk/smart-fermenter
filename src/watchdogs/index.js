@@ -1,4 +1,4 @@
-import detectEnvEmergency from './detectEnvEmergency'
-import deviceRunningTooLong from './deviceRunningTooLong'
+import detectEnvEmergency from './detectEnvEmergency.js'
+import deviceRunningTooLong from './deviceRunningTooLong.js'
 
 export { detectEnvEmergency, deviceRunningTooLong }

@@ -2,11 +2,11 @@
 
 /* Runtime notification handler - sends all collected message-events out as
    notifications */
-import type { FermenterState, Notification, Notifications } from '../types'
+import type { FermenterState, Notification, Notifications } from '../types.js'
 
 import * as R from 'ramda'
 import signale from 'signale'
-import { createMessageEmitter } from '../notifications'
+import { createMessageEmitter } from '../notifications/index.js'
 
 const messageEmitter = createMessageEmitter()
 

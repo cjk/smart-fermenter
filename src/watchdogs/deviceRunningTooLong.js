@@ -2,7 +2,8 @@
 
 /* Checks for devices running for too long and thus might be out-of-control or
    in a bad state. Adds a runtime-emergency in that case. */
-import { createNotifier, buildMessage } from '../notifications'
+
+import { createMessageEmitter } from '../notifications/index.js'
 
 const durationLimit = 15000 * 60 /* allow devices to run at most fifteen minutes */
 const deviceHistPath = ['history', 'switchOps']
@@ -27,7 +28,7 @@ const deviceRunningTooLong = (prev, curr) => {
       )} minutes.\n`
     })
   return curr
-    .update('rts', rtState => createNotifier(rtState, buildMessage(noticeTemplate)))
+    .update('rts', rtState => createMessageEmitter(rtState, noticeTemplate))
     .setIn(rtsDeviceMalfunction, maxDurations > 0)
 }
 

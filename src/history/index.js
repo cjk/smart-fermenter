@@ -1,4 +1,4 @@
-import { addEmergency, carryoverEmergencies } from './emergencies';
-import switchOps, { addSwitchOp } from './switchOps';
+import { addEmergency, carryoverEmergencies } from './emergencies.js';
+import switchOps, { addSwitchOp } from './switchOps.js';
 
 export { switchOps, carryoverEmergencies, addEmergency, addSwitchOp };

@@ -1,3 +1,3 @@
-import createMessageEmitter from './messageStream'
+import createMessageEmitter from './messageStream.js'
 
 export { createMessageEmitter }

@@ -1,8 +1,8 @@
 // @flow
 
 import * as R from 'ramda'
-import temperatureController from './temperatureController'
-import humidityController from './humidityController'
+import temperatureController from './temperatureController.js'
+import humidityController from './humidityController.js'
 
 const iterationsLens = R.lensPath(['env', 'iterations'])
 

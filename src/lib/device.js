@@ -1,19 +1,20 @@
 // @flow
 
-import type { Devices } from '../types'
-import type { RpioSwitchLib } from './relais/types'
+import type { Devices } from '../types.js'
+import type { RpioSwitchLib } from './relais/types.js'
 
 import * as R from 'ramda'
-import { devices } from '../initialState'
+import { devices } from '../initialState.js'
+import rpio from 'rpio'
 /* For switching */
-import relaisSwitch from './relais/relaisSwitch'
+import relaisSwitch from './relais/relaisSwitch.js'
 
 type SwitchRelais = (string, string) => void
 
-const switchImpl: RpioSwitchLib =
-  process.env.NODE_ENV === 'development' ? require('./simulatedSwitch').simulatedSwitch : require('rpio')
+const switchImpl: RpioSwitchLib = rpio
 
-/* What switching implementation shall we use? Simulated or real: */
+/* PENDING: We used to distinguish between 'real' and simulated (e.g. on non-Raspi-hardware) switching, but since rpio
+ * supports mocking in the meantime, this is unneeded complexity */
 const switcher: SwitchRelais = relaisSwitch(switchImpl)
 
 // dynamic version of: new List.of('heater', 'humidifier');

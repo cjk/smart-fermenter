@@ -1,13 +1,13 @@
 // @flow
 
+import type { Peer } from '../types.js'
 import type { Observable } from 'kefir'
-import type { Peer } from '../types'
 
 import * as R from 'ramda'
-import signale from 'signale'
-import config from './config'
-import mergeRemoteUpdates from './mergeRemoteUpdates'
 import Gun from 'gun'
+import signale from 'signale'
+import config from './config.js'
+import mergeRemoteUpdates from './mergeRemoteUpdates.js'
 
 const onlyDistributedKeys = R.pick(['env', 'rts', 'devices'])
 

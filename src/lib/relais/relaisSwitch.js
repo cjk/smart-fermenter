@@ -3,6 +3,7 @@ import type { RelaisSwitch, RpioSwitchLib } from './types'
 
 import * as R from 'ramda'
 import signale from 'signale'
+import { inspect } from 'util'
 
 const switches: RelaisSwitch = {
   heater: {

@@ -1,27 +1,27 @@
 // @flow
 
-import type { FermenterState$ } from '../types'
+import type { FermenterState$ } from '../types.js'
 
 import * as R from 'ramda'
 
-import { maybeSwitchDevices, switchOffAllDevices } from '../lib/device'
-import initialState from '../initialState'
+import { maybeSwitchDevices, switchOffAllDevices } from '../lib/device.js'
+import initialState from '../initialState.js'
 
-import makeSwitchingDecisions from '../controller/switchingController'
+import makeSwitchingDecisions from '../controller/switchingController.js'
 
 /* TODO: History */
-import { switchOps, carryoverEmergencies } from '../history'
+import { switchOps, carryoverEmergencies } from '../history/index.js'
 
 /* TODO: Watchdogs */
-import { detectEnvEmergency, deviceRunningTooLong } from '../watchdogs'
+import { detectEnvEmergency, deviceRunningTooLong } from '../watchdogs/index.js'
 
 /* Update global state (like switching-decisions) based on current / previous
    runtime state */
-import bootstrapRuntimeState from './bootstrapRuntimeState'
+import bootstrapRuntimeState from './bootstrapRuntimeState.js'
 /* Handle runtime-state, like emergencies, notifications, on/off */
-import handleRuntimeSideEffects from './runtimeSideEffectHandler'
+import handleRuntimeSideEffects from './runtimeSideEffectHandler.js'
 /* Logging */
-import logState from '../stateLogger'
+import logState from '../stateLogger.js'
 
 /* Filter out devices from state and pass them on for conditional switching */
 const switchDevices = state => maybeSwitchDevices(state.devices)
