@@ -1,6 +1,6 @@
 {
   "name": "fermenter",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Automate your fermenter-closet",
   "main": "./app/index.js",
   "type": "module",
