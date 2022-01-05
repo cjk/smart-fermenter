@@ -1,6 +1,6 @@
 // @flow
 
-import type { FermenterState } from '../types'
+import type { FermenterState } from '../types.js'
 
 import * as R from 'ramda'
 

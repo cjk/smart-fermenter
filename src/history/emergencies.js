@@ -1,5 +1,5 @@
 // @flow
-import type { Emergency, FermenterState } from '../types'
+import type { Emergency, FermenterState } from '../types.js'
 
 import * as R from 'ramda'
 

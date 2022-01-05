@@ -1,5 +1,5 @@
 /* @flow */
-import type { FermenterState } from '../types'
+import type { FermenterState } from '../types.js'
 
 import * as R from 'ramda'
 import signale from 'signale'
@@ -57,7 +57,7 @@ function bootstrapRuntimeState(prev: FermenterState, curr: FermenterState) {
     }
     default: {
       // Warn on unknown but not empty commands
-      if (rts.currentCmd) warn(`[WARNING] Received unknown command <${rts.currentCmd}> - ignoring.`)
+      if (rts.currentCmd) signale.warn(`[WARNING] Received unknown command <${rts.currentCmd}> - ignoring.`)
       break
     }
   }

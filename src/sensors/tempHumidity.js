@@ -1,7 +1,7 @@
 import * as R from 'ramda'
 import K from 'kefir'
 import sensorLib from 'node-dht-sensor'
-import state from '../initialState'
+import state from '../initialState.js'
 
 const sensor = {
   initialize: () => sensorLib.initialize(22, 4),
