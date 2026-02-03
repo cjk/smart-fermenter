@@ -1,6 +1,6 @@
 {
   "name": "fermenter",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Automate your fermenter-closet",
   "main": "./app/index.js",
   "type": "module",
@@ -16,7 +16,7 @@
     "debug": "env DEBUG='smt:*,error,debug' PORT=8000 NODE_ENV=development node --inspect-brk ./app/index.js"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "author": "Claus Klingberg <cjk@pobox.com> (http://cjk.github.io/Resume/)",
   "license": "ISC",
