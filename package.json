@@ -37,7 +37,7 @@
   "dependencies": {
     "gun": "^0.2020.1235",
     "kefir": "^3.8.6",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "node-dht-sensor": "^0.4.3",
     "ramda": "0.27.1",
     "request": "^2.88.0",
